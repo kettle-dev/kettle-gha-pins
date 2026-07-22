@@ -535,3 +535,14 @@ Thanks for RTFM. ☺️
 [💎appraisal2]: https://github.com/appraisal-rb/appraisal2
 [💎appraisal2-img]: https://img.shields.io/badge/appraised_by-appraisal2-34495e.svg?plastic&logo=ruby&logoColor=white
 [💎d-in-dvcs]: https://railsbling.com/posts/dvcs/put_the_d_in_dvcs/
+
+<!-- kettle-jem:metadata:start -->
+| Field | Value |
+|---|---|
+| Package | kettle-gha-pins |
+| Description | 📌 Shared, deterministic GitHub Actions release-tag parsing, canonicalization, and upgrade selection logic for kettle-dev and kettle-jem workflow pin maintenance. |
+| Homepage | https://github.com/kettle-dev/kettle-gha-pins |
+| Source | https://github.com/kettle-dev/kettle-gha-pins |
+| License | `MIT` |
+| Funding | https://github.com/sponsors/pboling, https://ko-fi.com/pboling, https://liberapay.com/pboling/donate, https://opencollective.com/kettle-dev, https://thanks.dev/u/gh/pboling, https://tidelift.com/funding/github/rubygems/kettle-gha-pins, https://www.buymeacoffee.com/pboling |
+<!-- kettle-jem:metadata:end -->
