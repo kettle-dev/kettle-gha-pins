@@ -12,8 +12,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Peter H. Boling"]
   spec.email = ["floss@galtzo.com"]
 
-  spec.summary = "💎 Shared GitHub Actions pin version rules for kettle-dev tooling."
-  spec.description = "Shared, deterministic GitHub Actions release-tag parsing, canonicalization, and upgrade selection logic for kettle-dev and kettle-jem workflow pin maintenance."
+  spec.summary = "📌 Shared GitHub Actions pin version rules for kettle-dev tooling."
+  spec.description = "📌 Shared, deterministic GitHub Actions release-tag parsing, canonicalization, and upgrade selection logic for kettle-dev and kettle-jem workflow pin maintenance."
   spec.homepage = "https://github.com/kettle-dev/kettle-gha-pins"
   spec.licenses = ["MIT"]
   spec.required_ruby_version = ">= 3.2.0"
@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
     end
   end
 
-  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["homepage_uri"] = "TODO: Put your gem's website or public repo URL here."
   spec.metadata["source_code_uri"] = "#{spec.homepage}/tree/v#{spec.version}"
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/v#{spec.version}/CHANGELOG.md"
   spec.metadata["bug_tracker_uri"] = "#{spec.homepage}/issues"
