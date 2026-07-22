@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: "kettle-gha-pins"
+message: >-
+  If you use this work and you want to cite it,
+  then you can use the metadata from this file.
+type: software
+authors:
+  - given-names: "Peter H."
+    family-names: "Boling"
+    email: "floss@galtzo.com"
+    affiliation: "galtzo.com"
+    orcid: 'https://orcid.org/0009-0008-8519-441X'
+identifiers:
+  - type: url
+    value: 'https://github.com/kettle-dev/kettle-gha-pins'
+    description: "kettle-gha-pins"
+repository-code: 'https://github.com/kettle-dev/kettle-gha-pins'
+abstract: >-
+  kettle-gha-pins
+license: See license file
