@@ -1,6 +1,0 @@
-{
-  "spec/kettle/gha/pins_spec.rb:3040451346": [
-    [9, 12, 5, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 170962968],
-    [9, 22, 2, "RSpec/BeEq: Prefer `be` over `eq`.", 5860785]
-  ]
-}

@@ -20,6 +20,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- Added `Kettle::Gha::Pins::VersionRubric` as the shared version parsing,
+  canonicalization, and upgrade-target selection API for GitHub Actions pin
+  maintenance.
+
 ### Changed
 
 - kettle-jem-template-20260716-001 - Shim gemspec manifests now include

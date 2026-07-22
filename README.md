@@ -21,6 +21,15 @@ I've summarized my thoughts in [this blog post](https://dev.to/galtzo/hostile-ta
 
 ## 🌻 Synopsis <a href="https://discord.gg/3qme4XHNKN"><img alt="Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0" src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-128px.svg" width="8%" align="right"/></a> <a href="https://ruby-toolbox.com"><img alt="ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5" src="https://logos.galtzo.com/assets/images/ruby-lang/avatar-128px.svg" width="8%" align="right"/></a>
 
+`kettle-gha-pins` is the shared version-rubric library for kettle-dev GitHub
+Actions pin maintenance. It owns the deterministic rules for parsing action
+release tags, ordering equivalent release spellings, and selecting patch,
+minor, or major upgrade targets.
+
+The gem is intentionally small and API-focused. Command-line tools such as
+`kettle-gha-sha-pins` and template maintenance scripts can depend on this gem
+instead of each carrying their own subtly different version comparison logic.
+
 ## 💡 Info you can shake a stick at
 
 | Tokens to Remember | [![Gem name][⛳️name-img]][⛳️gem-name] [![Gem namespace][⛳️namespace-img]][⛳️gem-namespace] |
@@ -120,9 +129,47 @@ gem install kettle-gha-pins
 
 ## ⚙️ Configuration
 
+There is no global configuration for the library API. Callers pass release-tag
+data directly to `Kettle::Gha::Pins::VersionRubric`.
+
+The shared upgrade policies are:
+
+- `patch` - upgrade within the same major/minor line.
+- `minor` - upgrade within the same major line.
+- `major` - upgrade to the latest higher release, including major-line tags such
+  as `v2` to `v3`.
+
+Invalid upgrade levels normalize to `patch`, matching the historical
+`kettle-gha-sha-pins` default.
+
 ## 🔧 Basic Usage
 
-TODO: Write usage instructions here
+```ruby
+require "kettle/gha/pins"
+
+versions = Kettle::Gha::Pins::VersionRubric.build_release_versions(
+  release_tags: ["v7.0.0"],
+  tag_shas: {
+    "v7" => "abc123...",
+    "v7.0.0" => "abc123..."
+  }
+)
+
+target = Kettle::Gha::Pins::VersionRubric.choose_upgrade_target(
+  "v6.5.0",
+  versions,
+  "major"
+)
+
+target[:tag]
+# => "v7.0.0"
+```
+
+When two version-equivalent tags point at the same SHA, the rubric keeps the
+more explicit release spelling. For example, `v7` and `v7.0.0` pointing at the
+same commit canonicalize to `v7.0.0`; if they point at different SHAs, both
+entries remain available so callers can report the moving major-line tag
+honestly.
 
 ## 🦷 FLOSS Funding
 
