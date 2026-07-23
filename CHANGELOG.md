@@ -20,6 +20,26 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.1.0] - 2026-07-22
+
+- TAG: [v0.1.0][0.1.0t]
+- COVERAGE: 97.65% -- 83/85 lines in 3 files
+- BRANCH COVERAGE: 88.89% -- 24/27 branches in 3 files
+- 20.83% documented
+- Initial release
+
+### Added
+
 - Added `Kettle::Gha::Pins::VersionRubric` as the shared version parsing,
   canonicalization, and upgrade-target selection API for GitHub Actions pin
   maintenance.
@@ -41,14 +61,6 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
-## [0.1.0] - 2026-07-22
-
-- Initial release
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/c633526495c7db0a8721a94a71c3def0f3cc71bb...v0.1.0
+[0.1.0t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.1.0
