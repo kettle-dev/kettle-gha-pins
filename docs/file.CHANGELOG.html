@@ -90,8 +90,8 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 <ul>
   <li>TAG: <a href="https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.2.1">v0.2.1</a>
 </li>
-  <li>COVERAGE: 99.07% – 855/863 lines in 8 files</li>
-  <li>BRANCH COVERAGE: 92.15% – 352/382 branches in 8 files</li>
+  <li>COVERAGE: 99.08% – 858/866 lines in 8 files</li>
+  <li>BRANCH COVERAGE: 92.11% – 350/380 branches in 8 files</li>
   <li>22.22% documented</li>
 </ul>
 
@@ -101,6 +101,8 @@ Please file a bug if you notice a violation of semantic versioning.</p>
   <li>Lowered the generated gemspec Ruby requirement to <code>&gt;= 2.4.0</code> to match<br>
 <code>kettle-dev</code>, restored Ruby 2.4-compatible runtime syntax, and explicitly<br>
 required the <code>set</code> stdlib used by the CLI.</li>
+  <li>Made CLI line rewrites tolerate Psych scalar column differences across Ruby<br>
+versions.</li>
 </ul>
 
 <h2 id="020---2026-07-22">
