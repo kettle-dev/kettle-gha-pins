@@ -18,7 +18,7 @@ K_SOUP_COV_OPEN_BIN = ""
 MAX_ROWS = "1"
 OPENCOLLECTIVE_HANDLE = "kettle-dev"
 _.file = { path = ".env.local", redact = true }
-_.path = ["exe", "bin"]
+_.path = ["bin", "exe"]
 _.source = ".config/mise/env.sh"
 
 [tools]
