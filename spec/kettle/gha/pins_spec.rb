@@ -120,4 +120,134 @@ RSpec.describe Kettle::Gha::Pins do
       expect(described_class.latest_outdated_target("v1.2.0.pre", prerelease_versions)).to include(version: "1.3.0.pre")
     end
   end
+
+  describe Kettle::Gha::Pins::PersistentActionCache do
+    let(:clock_time) { Time.utc(2026, 7, 22, 12, 0, 0) }
+    let(:clock) { -> { clock_time } }
+    let(:path) { File.join(Dir.mktmpdir, "gha-sha-pins-cache.json") }
+
+    after do
+      FileUtils.rm_rf(File.dirname(path))
+    end
+
+    it "persists release versions and ref SHAs with the historical cache shape" do
+      cache = described_class.new(path: path, clock: clock)
+      cache.write_versions(
+        "codecov/codecov-action",
+        [
+          {
+            tag: "v7.0.0",
+            version_obj: Gem::Version.new("7.0.0"),
+            version: "7.0.0",
+            sha: "a" * 40
+          }
+        ]
+      )
+      cache.write_ref_sha("codecov/codecov-action", "v7.0.0", "a" * 40)
+
+      reloaded = described_class.new(path: path, clock: clock)
+
+      expect(reloaded.versions_for_repo("codecov/codecov-action")).to contain_exactly(
+        include(tag: "v7.0.0", version: "7.0.0", sha: "a" * 40)
+      )
+      expect(reloaded.ref_sha("codecov/codecov-action", "v7.0.0")).to eq("a" * 40)
+    end
+  end
+
+  describe Kettle::Gha::Pins::GitHubClient do
+    let(:response_class) do
+      Struct.new(:code, :body) do
+        def [](key)
+          nil
+        end
+      end
+    end
+
+    it "resolves release tags through the GitHub release and tag APIs" do
+      client = described_class.new(token: nil, api_base: "https://api.example.test", user_agent: "spec")
+      releases = response_class.new("200", JSON.generate([{"tag_name" => "v7.0.0"}]))
+      tags = response_class.new(
+        "200",
+        JSON.generate(
+          [
+            {"ref" => "refs/tags/v7", "object" => {"type" => "commit", "sha" => "a" * 40}},
+            {"ref" => "refs/tags/v7.0.0", "object" => {"type" => "commit", "sha" => "a" * 40}}
+          ]
+        )
+      )
+      allow(client).to receive(:http_request).and_return(releases, tags)
+
+      versions = client.versions_for_repo("codecov/codecov-action")
+
+      expect(versions).to contain_exactly(include(tag: "v7.0.0", version: "7.0.0", sha: "a" * 40))
+    end
+  end
+
+  describe Kettle::Gha::Pins::ActionResolver do
+    let(:client) do
+      instance_double(
+        Kettle::Gha::Pins::GitHubClient,
+        commit_sha: "a" * 40
+      )
+    end
+
+    it "plans version comment normalization using the shared v7 to v7.0.0 rubric" do
+      versions = [
+        {
+          tag: "v7.0.0",
+          version_obj: Gem::Version.new("7.0.0"),
+          version: "7.0.0",
+          sha: "a" * 40
+        }
+      ]
+
+      plan = described_class.determine_upgrade_plan(
+        old_ref: "a" * 40,
+        repo_ref: "codecov/codecov-action",
+        versions: versions,
+        upgrade_level: "major",
+        client: client
+      )
+
+      expect(plan).to include(is_outdated: false, updates: nil, current_version: "7.0.0")
+    end
+
+    it "resolves versions once per action repo through a caller-provided cache" do
+      versions = [
+        {
+          tag: "v1.0.1",
+          version_obj: Gem::Version.new("1.0.1"),
+          version: "1.0.1",
+          sha: "b" * 40
+        },
+        {
+          tag: "v1.0.0",
+          version_obj: Gem::Version.new("1.0.0"),
+          version: "1.0.0",
+          sha: "a" * 40
+        }
+      ]
+      client = instance_double(Kettle::Gha::Pins::GitHubClient, versions_for_repo: versions)
+      cache = {}
+
+      first = described_class.resolve_action_plan(
+        cache: cache,
+        client: client,
+        repo_ref: "actions/checkout",
+        old_ref: "a" * 40,
+        upgrade_level: "major"
+      )
+      second = described_class.resolve_action_plan(
+        cache: cache,
+        client: client,
+        repo_ref: "actions/checkout",
+        old_ref: "a" * 40,
+        upgrade_level: "major"
+      )
+
+      expect(client).to have_received(:versions_for_repo).once
+      expect(first.fetch(:updates)).to include(sha: "b" * 40, version: "1.0.1")
+      expect(second.fetch(:updates)).to include(sha: "b" * 40, version: "1.0.1")
+    end
+  end
 end

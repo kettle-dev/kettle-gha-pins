@@ -20,6 +20,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- Added the shared `PersistentActionCache`, `GitHubClient`, and action ref
+  resolver API so GitHub Actions pin tools can reuse cache, network, and upgrade
+  planning behavior without shelling out to each other.
+
 ### Changed
 
 ### Deprecated

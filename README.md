@@ -21,14 +21,15 @@ I've summarized my thoughts in [this blog post](https://dev.to/galtzo/hostile-ta
 
 ## 🌻 Synopsis <a href="https://discord.gg/3qme4XHNKN"><img alt="Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0" src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-128px.svg" width="8%" align="right"/></a> <a href="https://ruby-toolbox.com"><img alt="ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5" src="https://logos.galtzo.com/assets/images/ruby-lang/avatar-128px.svg" width="8%" align="right"/></a>
 
-`kettle-gha-pins` is the shared version-rubric library for kettle-dev GitHub
-Actions pin maintenance. It owns the deterministic rules for parsing action
-release tags, ordering equivalent release spellings, and selecting patch,
-minor, or major upgrade targets.
+`kettle-gha-pins` is the shared GitHub Actions pin maintenance library for
+kettle-dev tooling. It owns the action-release version rubric, persistent action
+metadata cache, GitHub release/tag/commit resolution client, and ref upgrade
+planner used by pin maintenance commands.
 
-The gem is intentionally small and API-focused. Command-line tools such as
+The gem is intentionally API-focused. Command-line tools such as
 `kettle-gha-sha-pins` and template maintenance scripts can depend on this gem
-instead of each carrying their own subtly different version comparison logic.
+instead of each carrying their own subtly different cache, network, and version
+comparison logic.
 
 ## 💡 Info you can shake a stick at
 
@@ -129,8 +130,8 @@ gem install kettle-gha-pins
 
 ## ⚙️ Configuration
 
-There is no global configuration for the library API. Callers pass release-tag
-data directly to `Kettle::Gha::Pins::VersionRubric`.
+There is no global configuration for the library API. Callers pass options to
+the client and cache objects they create.
 
 The shared upgrade policies are:
 
@@ -142,27 +143,37 @@ The shared upgrade policies are:
 Invalid upgrade levels normalize to `patch`, matching the historical
 `kettle-gha-sha-pins` default.
 
+`Kettle::Gha::Pins::PersistentActionCache.default_path` intentionally preserves
+the historical `kettle-gha-sha-pins` cache location so command-line tools can
+share action metadata without coupling to each other.
+
 ## 🔧 Basic Usage
 
 ```ruby
 require "kettle/gha/pins"
 
-versions = Kettle::Gha::Pins::VersionRubric.build_release_versions(
-  release_tags: ["v7.0.0"],
-  tag_shas: {
-    "v7" => "abc123...",
-    "v7.0.0" => "abc123..."
-  }
+cache = Kettle::Gha::Pins::PersistentActionCache.new(
+  path: Kettle::Gha::Pins::PersistentActionCache.default_path
 )
 
-target = Kettle::Gha::Pins::VersionRubric.choose_upgrade_target(
-  "v6.5.0",
-  versions,
-  "major"
+client = Kettle::Gha::Pins::GitHubClient.new(
+  token: ENV["GITHUB_TOKEN"],
+  api_base: Kettle::Gha::Pins::API_BASE,
+  user_agent: "my-gha-pin-tool",
+  persistent_cache: cache
 )
 
-target[:tag]
-# => "v7.0.0"
+versions_by_repo = {}
+plan = Kettle::Gha::Pins.resolve_action_plan(
+  cache: versions_by_repo,
+  client: client,
+  repo_ref: "codecov/codecov-action",
+  old_ref: "fb8b3582c8e4def4969c97caa2f19720cb33a72f",
+  upgrade_level: "major"
+)
+
+plan[:updates]
+# => {sha: "...", version: "7.0.0", reason: "upgrade_to_allowed_release"}
 ```
 
 When two version-equivalent tags point at the same SHA, the rubric keeps the
