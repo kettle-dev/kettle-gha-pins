@@ -209,7 +209,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#determine_upgrade_plan-class_method" title="determine_upgrade_plan (class method)">.<strong>determine_upgrade_plan</strong>  &#x21d2; Object </a>
+      <a href="#determine_upgrade_plan-class_method" title="determine_upgrade_plan (class method)">.<strong>determine_upgrade_plan</strong>(**kwargs)  &#x21d2; Object </a>
     
 
     
@@ -232,7 +232,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#matching_version_entry-class_method" title="matching_version_entry (class method)">.<strong>matching_version_entry</strong>  &#x21d2; Object </a>
+      <a href="#matching_version_entry-class_method" title="matching_version_entry (class method)">.<strong>matching_version_entry</strong>(versions, current_ref, current_sha, client, repo_ref)  &#x21d2; Object </a>
     
 
     
@@ -255,7 +255,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#non_sha%3F-class_method" title="non_sha? (class method)">.<strong>non_sha?</strong>  &#x21d2; Boolean </a>
+      <a href="#non_sha%3F-class_method" title="non_sha? (class method)">.<strong>non_sha?</strong>(candidate)  &#x21d2; Boolean </a>
     
 
     
@@ -278,7 +278,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#resolve_action_plan-class_method" title="resolve_action_plan (class method)">.<strong>resolve_action_plan</strong>  &#x21d2; Object </a>
+      <a href="#resolve_action_plan-class_method" title="resolve_action_plan (class method)">.<strong>resolve_action_plan</strong>(**kwargs)  &#x21d2; Object </a>
     
 
     
@@ -301,7 +301,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#short_sha%3F-class_method" title="short_sha? (class method)">.<strong>short_sha?</strong>  &#x21d2; Boolean </a>
+      <a href="#short_sha%3F-class_method" title="short_sha? (class method)">.<strong>short_sha?</strong>(candidate)  &#x21d2; Boolean </a>
     
 
     
@@ -324,7 +324,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#stale_sha%3F-class_method" title="stale_sha? (class method)">.<strong>stale_sha?</strong>  &#x21d2; Boolean </a>
+      <a href="#stale_sha%3F-class_method" title="stale_sha? (class method)">.<strong>stale_sha?</strong>(current, latest)  &#x21d2; Boolean </a>
     
 
     
@@ -347,7 +347,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#version_entry_sha-class_method" title="version_entry_sha (class method)">.<strong>version_entry_sha</strong>  &#x21d2; Object </a>
+      <a href="#version_entry_sha-class_method" title="version_entry_sha (class method)">.<strong>version_entry_sha</strong>(entry, client, repo_ref)  &#x21d2; Object </a>
     
 
     
@@ -380,7 +380,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="determine_upgrade_plan-class_method">
   
-    .<strong>determine_upgrade_plan</strong>  &#x21d2; <tt>Object</tt> 
+    .<strong>determine_upgrade_plan</strong>(**kwargs)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -399,8 +399,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 174</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_determine_upgrade_plan'>determine_upgrade_plan</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_determine_upgrade_plan'><span class='object_link'><a href="Pins/ActionResolver.html#determine_upgrade_plan-class_method" title="Kettle::Gha::Pins::ActionResolver.determine_upgrade_plan (method)">determine_upgrade_plan</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_determine_upgrade_plan'>determine_upgrade_plan</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_determine_upgrade_plan'><span class='object_link'><a href="Pins/ActionResolver.html#determine_upgrade_plan-class_method" title="Kettle::Gha::Pins::ActionResolver.determine_upgrade_plan (method)">determine_upgrade_plan</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -410,7 +410,7 @@
       <div class="method_details ">
   <h3 class="signature " id="matching_version_entry-class_method">
   
-    .<strong>matching_version_entry</strong>  &#x21d2; <tt>Object</tt> 
+    .<strong>matching_version_entry</strong>(versions, current_ref, current_sha, client, repo_ref)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -429,8 +429,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 178</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_matching_version_entry'>matching_version_entry</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_matching_version_entry'><span class='object_link'><a href="Pins/ActionResolver.html#matching_version_entry-class_method" title="Kettle::Gha::Pins::ActionResolver.matching_version_entry (method)">matching_version_entry</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_matching_version_entry'>matching_version_entry</span><span class='lparen'>(</span><span class='id identifier rubyid_versions'>versions</span><span class='comma'>,</span> <span class='id identifier rubyid_current_ref'>current_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_current_sha'>current_sha</span><span class='comma'>,</span> <span class='id identifier rubyid_client'>client</span><span class='comma'>,</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_matching_version_entry'><span class='object_link'><a href="Pins/ActionResolver.html#matching_version_entry-class_method" title="Kettle::Gha::Pins::ActionResolver.matching_version_entry (method)">matching_version_entry</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_versions'>versions</span><span class='comma'>,</span> <span class='id identifier rubyid_current_ref'>current_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_current_sha'>current_sha</span><span class='comma'>,</span> <span class='id identifier rubyid_client'>client</span><span class='comma'>,</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -440,7 +440,7 @@
       <div class="method_details ">
   <h3 class="signature " id="non_sha?-class_method">
   
-    .<strong>non_sha?</strong>  &#x21d2; <tt>Boolean</tt> 
+    .<strong>non_sha?</strong>(candidate)  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -482,8 +482,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 190</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_non_sha?'>non_sha?</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_non_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#non_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.non_sha? (method)">non_sha?</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_non_sha?'>non_sha?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_non_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#non_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.non_sha? (method)">non_sha?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -493,7 +493,7 @@
       <div class="method_details ">
   <h3 class="signature " id="resolve_action_plan-class_method">
   
-    .<strong>resolve_action_plan</strong>  &#x21d2; <tt>Object</tt> 
+    .<strong>resolve_action_plan</strong>(**kwargs)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -512,8 +512,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 170</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_resolve_action_plan'>resolve_action_plan</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve_action_plan'><span class='object_link'><a href="Pins/ActionResolver.html#resolve_action_plan-class_method" title="Kettle::Gha::Pins::ActionResolver.resolve_action_plan (method)">resolve_action_plan</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_resolve_action_plan'>resolve_action_plan</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve_action_plan'><span class='object_link'><a href="Pins/ActionResolver.html#resolve_action_plan-class_method" title="Kettle::Gha::Pins::ActionResolver.resolve_action_plan (method)">resolve_action_plan</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -523,7 +523,7 @@
       <div class="method_details ">
   <h3 class="signature " id="short_sha?-class_method">
   
-    .<strong>short_sha?</strong>  &#x21d2; <tt>Boolean</tt> 
+    .<strong>short_sha?</strong>(candidate)  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -565,8 +565,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 186</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_short_sha?'>short_sha?</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_short_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#short_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.short_sha? (method)">short_sha?</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_short_sha?'>short_sha?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_short_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#short_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.short_sha? (method)">short_sha?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -576,7 +576,7 @@
       <div class="method_details ">
   <h3 class="signature " id="stale_sha?-class_method">
   
-    .<strong>stale_sha?</strong>  &#x21d2; <tt>Boolean</tt> 
+    .<strong>stale_sha?</strong>(current, latest)  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -618,8 +618,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 194</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_stale_sha?'>stale_sha?</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_stale_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#stale_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.stale_sha? (method)">stale_sha?</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_stale_sha?'>stale_sha?</span><span class='lparen'>(</span><span class='id identifier rubyid_current'>current</span><span class='comma'>,</span> <span class='id identifier rubyid_latest'>latest</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_stale_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#stale_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.stale_sha? (method)">stale_sha?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_current'>current</span><span class='comma'>,</span> <span class='id identifier rubyid_latest'>latest</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -629,7 +629,7 @@
       <div class="method_details ">
   <h3 class="signature " id="version_entry_sha-class_method">
   
-    .<strong>version_entry_sha</strong>  &#x21d2; <tt>Object</tt> 
+    .<strong>version_entry_sha</strong>(entry, client, repo_ref)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -648,8 +648,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 182</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_version_entry_sha'>version_entry_sha</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_version_entry_sha'><span class='object_link'><a href="Pins/ActionResolver.html#version_entry_sha-class_method" title="Kettle::Gha::Pins::ActionResolver.version_entry_sha (method)">version_entry_sha</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_version_entry_sha'>version_entry_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='comma'>,</span> <span class='id identifier rubyid_client'>client</span><span class='comma'>,</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_version_entry_sha'><span class='object_link'><a href="Pins/ActionResolver.html#version_entry_sha-class_method" title="Kettle::Gha::Pins::ActionResolver.version_entry_sha (method)">version_entry_sha</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='comma'>,</span> <span class='id identifier rubyid_client'>client</span><span class='comma'>,</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>

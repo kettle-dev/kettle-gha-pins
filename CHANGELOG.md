@@ -28,10 +28,19 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+### Security
+
+## [0.2.1] - 2026-07-22
+
+- TAG: [v0.2.1][0.2.1t]
+- COVERAGE: 99.07% -- 854/862 lines in 8 files
+- BRANCH COVERAGE: 92.15% -- 352/382 branches in 8 files
+- 22.22% documented
+
+### Fixed
+
 - Lowered the generated gemspec Ruby requirement to `>= 2.4.0` to match
   `kettle-dev` and restored Ruby 2.4-compatible runtime syntax.
-
-### Security
 
 ## [0.2.0] - 2026-07-22
 
@@ -79,7 +88,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.0...v0.2.1
+[0.2.1t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.2.1
 [0.2.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.1.0...v0.2.0
 [0.2.0t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.2.0
 [0.1.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/c633526495c7db0a8721a94a71c3def0f3cc71bb...v0.1.0
