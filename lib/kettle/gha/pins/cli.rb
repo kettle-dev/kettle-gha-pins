@@ -599,14 +599,10 @@ module Kettle
           line_text = text.lines[line]
           return nil if line_text.nil?
 
-          raw = line_text[col..-1]
-          return nil if raw.nil?
-
-          token_info = extract_scalar_token(raw)
+          token_info = locate_scalar_token(line_text, col, old_token)
           return nil unless token_info
-          return nil unless token_info[:token] == old_token
 
-          suffix = raw[token_info[:span]..-1].to_s
+          suffix = line_text[token_info[:end]..-1].to_s
           match = suffix.match(VERSION_COMMENT_SUFFIX_RE)
           match && match[:version]
         end
@@ -615,20 +611,16 @@ module Kettle
           line_text = text.lines[line]
           return nil if line_text.nil?
 
-          raw = line_text[col..-1]
-          return nil if raw.nil?
-
-          token_info = extract_scalar_token(raw)
+          token_info = locate_scalar_token(line_text, col, old_token)
           return nil unless token_info
-          return nil unless token_info[:token] == old_token
 
           rendered = render_replacement(old_token, new_ref, token_info[:quote])
           return nil unless rendered
 
-          span = token_info[:span]
+          span = token_info[:end] - token_info[:start]
           new_scalar = rendered[:quoted]
           if new_version && token_info[:quote] == :plain
-            suffix = raw[span..-1].to_s
+            suffix = line_text[token_info[:end]..-1].to_s
             comment = suffix.match(VERSION_COMMENT_REPLACEMENT_RE)
             if comment
               span += comment[0].length
@@ -637,12 +629,29 @@ module Kettle
           end
 
           {
-            start: col,
-            end: col + span,
+            start: token_info[:start],
+            end: token_info[:start] + span,
             new_scalar: new_scalar,
             new_ref: new_ref,
             old_token: old_token
           }
+        end
+
+        def locate_scalar_token(line_text, col, old_token)
+          return nil if col.nil? || col.negative? || col >= line_text.length
+
+          matches = []
+          0.upto(line_text.length - 1) do |index|
+            token_info = extract_scalar_token(line_text[index..-1])
+            next unless token_info
+            next unless token_info[:token] == old_token
+
+            matches << token_info.merge(
+              start: index,
+              end: index + token_info[:span]
+            )
+          end
+          matches.min_by { |match| [(match[:start] - col).abs, match[:start]] }
         end
 
         def apply_edits(original_text, edits)

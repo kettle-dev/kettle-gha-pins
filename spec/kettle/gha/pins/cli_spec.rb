@@ -291,6 +291,11 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(dummy_cli.send(:build_replacement_from_line, text, 0, 10, "other/action@v1", "sha")).to be_nil
       expect(dummy_cli.send(:build_replacement_from_line, "foobar\n", 0, 0, "foobar", "sha")).to be_nil
 
+      quoted_text = '  - uses: "foo/bar@v1"' + "\n"
+      content_col = quoted_text.index("foo/bar@v1")
+      replacement = dummy_cli.send(:build_replacement_from_line, quoted_text, 0, content_col, "foo/bar@v1", "sha")
+      expect(replacement).to include(start: content_col - 1, new_scalar: %("foo/bar@sha"))
+
       unchanged = dummy_cli.send(:apply_edits, "one\n", [{line: 5, start: 0, end: 1, new_scalar: "x"}])
       expect(unchanged).to include(changed: false, text: "one\n")
     end

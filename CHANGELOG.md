@@ -42,6 +42,8 @@ Please file a bug if you notice a violation of semantic versioning.
 - Lowered the generated gemspec Ruby requirement to `>= 2.4.0` to match
   `kettle-dev`, restored Ruby 2.4-compatible runtime syntax, and explicitly
   required the `set` stdlib used by the CLI.
+- Made CLI line rewrites tolerate Psych scalar column differences across Ruby
+  versions.
 
 ## [0.2.0] - 2026-07-22
 
