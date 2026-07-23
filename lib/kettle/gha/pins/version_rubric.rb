@@ -24,7 +24,7 @@ module Kettle
           value.to_s.match?(/\A\d+\z/)
         end
 
-        def entry(tag:, sha: nil)
+        def entry(tag:, sha: nil, released_at: nil)
           version_obj = parse(tag)
           return nil unless version_obj
 
@@ -32,14 +32,15 @@ module Kettle
             tag: tag.to_s,
             version_obj: version_obj,
             version: version_obj.to_s,
-            sha: sha
+            sha: sha,
+            released_at: released_at.to_s
           }
         end
 
-        def build_release_versions(release_tags:, tag_shas:)
+        def build_release_versions(release_tags:, tag_shas:, release_dates: {})
           released_tags = release_tags.each_with_object({}) { |tag, memo| memo[tag.to_s] = true }
           releases = release_tags.each_with_object([]) do |tag, memo|
-            release_entry = entry(tag: tag, sha: tag_shas[tag.to_s])
+            release_entry = entry(tag: tag, sha: tag_shas[tag.to_s], released_at: release_dates[tag.to_s])
             memo << release_entry if release_entry
           end
           tag_versions = tag_shas.each_with_object([]) do |(tag, sha), memo|

@@ -9,7 +9,7 @@ module Kettle
     module Pins
       # Persistent cache of GitHub Action release versions and target SHAs.
       class PersistentActionCache
-        VERSION = 2
+        VERSION = 3
 
         def self.default_path
           state_home = ENV["XDG_STATE_HOME"]
@@ -65,6 +65,7 @@ module Kettle
               "tag" => entry[:tag].to_s,
               "version" => version,
               "sha" => entry[:sha].to_s,
+              "released_at" => entry[:released_at].to_s,
               "cached_at" => timestamp
             }
           end
@@ -145,7 +146,8 @@ module Kettle
             tag: entry["tag"].to_s,
             version_obj: parsed,
             version: version,
-            sha: entry["sha"].to_s
+            sha: entry["sha"].to_s,
+            released_at: entry["released_at"].to_s
           }
         end
 
@@ -173,6 +175,7 @@ module Kettle
             "tag" => entry[:tag],
             "version" => entry[:version],
             "sha" => entry[:sha],
+            "released_at" => entry[:released_at],
             "cached_at" => entry[:cached_at]
           }
         end

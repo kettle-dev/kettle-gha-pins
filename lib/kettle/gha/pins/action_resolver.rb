@@ -68,6 +68,7 @@ module Kettle
               updates = {
                 sha: target_sha,
                 version: target[:version],
+                released_at: target[:released_at],
                 reason: UPGRADE_REASON
               }
               reason ||= UPGRADE_REASON

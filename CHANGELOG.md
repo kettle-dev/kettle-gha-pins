@@ -25,6 +25,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - `kettle-gha-pins` now defaults `--upgrade` to `major`, making
   `kettle-gha-pins --check` fail for any unapplied GitHub Actions pin update
   unless callers choose a narrower upgrade level.
+- `kettle-gha-pins --check` now supports `--cooldown-days` and
+  `KETTLE_GHA_PINS_COOLDOWN_DAYS` so projects can warn on freshly released
+  action version upgrades before enforcing them.
 
 ### Deprecated
 

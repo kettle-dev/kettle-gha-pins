@@ -5,6 +5,7 @@ require "open3"
 require "optparse"
 require "pathname"
 require "set"
+require "time"
 
 require "psych"
 require "kettle/gha/pins"
@@ -43,7 +44,13 @@ module Kettle
           Kettle::Gha::Pins::VersionRubric.specificity(entry)
         end
 
-        def initialize(argv, err: $stderr)
+        def initialize(argv, err: $stderr, clock: -> { Time.now })
+          cooldown_days = begin
+            Integer(ENV.fetch("KETTLE_GHA_PINS_COOLDOWN_DAYS", "0"))
+          rescue ArgumentError, TypeError
+            0
+          end
+          cooldown_days = 0 if cooldown_days.negative?
           @argv = argv
           @err = err
           @options = {
@@ -58,6 +65,8 @@ module Kettle
             user_agent: "kettle-gha-pins",
             upgrade: DEFAULT_UPGRADE_LEVEL,
             cache_path: ENV["KETTLE_GHA_SHA_PINS_CACHE"] || PersistentActionCache.default_path,
+            cooldown_days: cooldown_days,
+            clock: clock,
             refresh_cache: false,
             reject_patterns: Set.new,
             progress: nil
@@ -89,6 +98,7 @@ module Kettle
             errors: [],
             changed_files: [],
             planned_changes: [],
+            cooldown_changes: [],
             outdated_pins: []
           }
 
@@ -136,6 +146,7 @@ module Kettle
                   updates = compute_updates(old_ref, upgrade_plan[:updates][:sha], upgrade_plan[:updates][:reason], repo_ref)
                   updates[:new_version] = upgrade_plan[:updates][:version]
                   updates[:old_version] = upgrade_plan[:current_version]
+                  updates[:released_at] = upgrade_plan[:updates][:released_at]
                 end
                 if updates.nil? && upgrade_plan[:current_version]
                   comment_version = version_comment_from_line(text, node[:line], node[:col], parsed_ref[:value])
@@ -165,6 +176,22 @@ module Kettle
                 end
 
                 next unless updates
+
+                if (cooldown = cooldown_details(updates))
+                  state[:cooldown_changes] << {
+                    path: path,
+                    line: node[:line] + 1,
+                    old_ref: old_ref,
+                    old_version: updates[:old_version],
+                    new_ref: updates[:new_ref],
+                    new_version: updates[:new_version],
+                    reason: updates[:reason],
+                    released_at: cooldown[:released_at],
+                    cooldown_until: cooldown[:cooldown_until],
+                    action: repo_ref
+                  }
+                  next
+                end
 
                 replacement = build_replacement_from_line(text, node[:line], node[:col], parsed_ref[:value], updates[:new_ref], updates[:new_version])
                 unless replacement
@@ -257,6 +284,11 @@ module Kettle
                 Kernel.abort("Invalid --upgrade value #{level.inspect}; use one of: #{VALID_UPGRADE_LEVELS.join(", ")}")
               end
               @options[:upgrade] = normalized
+            end
+            opt.on("--cooldown-days DAYS", Integer, "Warn instead of failing --check for new release upgrades newer than DAYS days (default: #{@options[:cooldown_days]})") do |days|
+              Kernel.abort("Invalid --cooldown-days value #{days.inspect}; use a non-negative integer") if days.negative?
+
+              @options[:cooldown_days] = days
             end
             opt.on("--token VALUE", "GitHub token to increase API rate-limit") do |token|
               @options[:token] = token
@@ -541,6 +573,31 @@ module Kettle
           }
         end
 
+        def cooldown_details(updates)
+          return nil unless @options[:check]
+          return nil unless @options[:cooldown_days].positive?
+          return nil unless updates[:reason] == UPGRADE_REASON
+
+          released_at = parse_time(updates[:released_at])
+          return nil unless released_at
+
+          cooldown_until = released_at + (@options[:cooldown_days] * 24 * 60 * 60)
+          return nil unless @options[:clock].call < cooldown_until
+
+          {
+            released_at: released_at.utc.iso8601,
+            cooldown_until: cooldown_until.utc.iso8601
+          }
+        end
+
+        def parse_time(value)
+          return nil if value.to_s.empty?
+
+          Time.iso8601(value.to_s)
+        rescue ArgumentError
+          nil
+        end
+
         def extract_scalar_token(raw_text)
           return nil if raw_text.nil? || raw_text.empty?
 
@@ -695,6 +752,7 @@ module Kettle
 
         def print_report(state)
           mode = @options[:write] ? "write" : "dry-run"
+          cooldown_changes = state.fetch(:cooldown_changes, [])
           if @options[:json]
             payload = {
               mode: mode,
@@ -706,6 +764,7 @@ module Kettle
               failures: state[:failures],
               outdated_pins: state[:outdated_pins],
               changed_files: state[:changed_files].sort,
+              cooldown_changes: cooldown_changes.sort_by { |c| [c[:path], c[:line], c[:new_ref]] },
               planned_changes: state[:planned_changes].sort_by { |c| [c[:path], c[:line], c[:new_ref]] },
               errors: state[:errors]
             }
@@ -722,6 +781,7 @@ module Kettle
           lines << "  changed_files: #{state[:changed_files].length}"
           lines << "  planned_updates: #{state[:updates]}"
           lines << "  outdated_pins: #{state[:outdated_pins].length}"
+          lines << "  cooldown_warnings: #{cooldown_changes.length}"
           lines << "  failures: #{state[:failures]}"
           lines << ""
 
@@ -745,6 +805,18 @@ module Kettle
               from = pin[:old_version] || pin[:old_ref]
               to = pin[:new_version] || pin[:new_ref]
               lines << "- #{pin[:path]}:#{pin[:line]} #{pin[:action]} #{from} -> #{to} #{pin[:reason]}"
+            end
+            lines << ""
+          end
+
+          if cooldown_changes.any?
+            lines << "Cooldown warnings (#{cooldown_changes.length}):"
+            lines << "Action Current Latest Location Reason CooldownUntil"
+            cooldown_changes.sort_by { |c| [c[:action], c[:path], c[:line]] }.each do |change|
+              current = change[:old_version] || change[:old_ref]
+              latest = change[:new_version] || change[:new_ref]
+              location = "#{change[:path]}:#{change[:line]}"
+              lines << "#{change[:action]} #{current} #{latest} #{location} #{change[:reason]} #{change[:cooldown_until]}"
             end
             lines << ""
           end

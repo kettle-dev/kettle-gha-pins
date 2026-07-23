@@ -96,18 +96,22 @@ module Kettle
         end
 
         def build_release_versions(data, tag_shas)
+          release_dates = {}
           release_tags = data.each_with_object([]) do |release, memo|
             next unless release.is_a?(Hash)
 
             tag = release["tag_name"].to_s
             next unless VersionRubric.parse(tag)
 
+            release_dates[tag] = release["published_at"].to_s
+            release_dates[tag] = release["created_at"].to_s if release_dates[tag].empty?
             memo << tag
           end
 
           VersionRubric.build_release_versions(
             release_tags: release_tags,
-            tag_shas: tag_shas
+            tag_shas: tag_shas,
+            release_dates: release_dates
           )
         end
 

@@ -146,7 +146,7 @@ RSpec.describe Kettle::Gha::Pins do
       expect(described_class.default_path).to be_nil
     end
 
-    it "persists release versions and ref SHAs with the historical cache shape" do
+    it "persists release versions with release timestamps and ref SHAs" do
       cache = described_class.new(path: path, clock: clock)
       cache.write_versions(
         "codecov/codecov-action",
@@ -155,7 +155,8 @@ RSpec.describe Kettle::Gha::Pins do
             tag: "v7.0.0",
             version_obj: Gem::Version.new("7.0.0"),
             version: "7.0.0",
-            sha: "a" * 40
+            sha: "a" * 40,
+            released_at: "2026-07-22T12:00:00Z"
           }
         ]
       )
@@ -164,8 +165,9 @@ RSpec.describe Kettle::Gha::Pins do
       reloaded = described_class.new(path: path, clock: clock)
 
       expect(reloaded.versions_for_repo("codecov/codecov-action")).to contain_exactly(
-        include(tag: "v7.0.0", version: "7.0.0", sha: "a" * 40)
+        include(tag: "v7.0.0", version: "7.0.0", sha: "a" * 40, released_at: "2026-07-22T12:00:00Z")
       )
+      expect(reloaded.to_h.dig("actions", "codecov/codecov-action", "targets", "major", "*", "released_at")).to eq("2026-07-22T12:00:00Z")
       expect(reloaded.ref_sha("codecov/codecov-action", "v7.0.0")).to eq("a" * 40)
     end
 
@@ -282,7 +284,7 @@ RSpec.describe Kettle::Gha::Pins do
 
     it "resolves release tags through the GitHub release and tag APIs" do
       client = described_class.new(token: nil, api_base: "https://api.example.test", user_agent: "spec")
-      releases = response_class.new("200", JSON.generate([{"tag_name" => "v7.0.0"}]))
+      releases = response_class.new("200", JSON.generate([{"tag_name" => "v7.0.0", "published_at" => "2026-07-22T12:00:00Z"}]))
       tags = response_class.new(
         "200",
         JSON.generate(
@@ -296,7 +298,7 @@ RSpec.describe Kettle::Gha::Pins do
 
       versions = client.versions_for_repo("codecov/codecov-action")
 
-      expect(versions).to contain_exactly(include(tag: "v7.0.0", version: "7.0.0", sha: "a" * 40))
+      expect(versions).to contain_exactly(include(tag: "v7.0.0", version: "7.0.0", sha: "a" * 40, released_at: "2026-07-22T12:00:00Z"))
     end
 
     it "uses fresh and stale persistent release cache entries" do
@@ -473,7 +475,8 @@ RSpec.describe Kettle::Gha::Pins do
           tag: "v1.0.1",
           version_obj: Gem::Version.new("1.0.1"),
           version: "1.0.1",
-          sha: "b" * 40
+          sha: "b" * 40,
+          released_at: "2026-07-22T12:00:00Z"
         },
         {
           tag: "v1.0.0",
@@ -501,7 +504,7 @@ RSpec.describe Kettle::Gha::Pins do
       )
 
       expect(client).to have_received(:versions_for_repo).once
-      expect(first.fetch(:updates)).to include(sha: "b" * 40, version: "1.0.1")
+      expect(first.fetch(:updates)).to include(sha: "b" * 40, version: "1.0.1", released_at: "2026-07-22T12:00:00Z")
       expect(second.fetch(:updates)).to include(sha: "b" * 40, version: "1.0.1")
     end
 

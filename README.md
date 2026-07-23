@@ -148,8 +148,14 @@ The shared upgrade policies are:
 - `major` - upgrade to the latest higher release, including major-line tags such
   as `v2` to `v3`.
 
-Invalid upgrade levels normalize to `patch`, matching the historical
-`kettle-gha-sha-pins` default.
+Invalid upgrade levels normalize to `major`, matching the strict default used
+by release checks.
+
+`kettle-gha-pins --check --cooldown-days DAYS` reports newly released action
+version upgrades without failing until the selected release has aged past the
+cooldown window. The same default can be supplied with
+`KETTLE_GHA_PINS_COOLDOWN_DAYS`. The default is `0`, so checks remain strict
+unless a project opts into a warning window.
 
 `Kettle::Gha::Pins::PersistentActionCache.default_path` intentionally preserves
 the historical `kettle-gha-sha-pins` cache location so command-line tools can

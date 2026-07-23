@@ -46,6 +46,24 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(cli.instance_variable_get(:@options)[:upgrade]).to eq("major")
     end
 
+    it "defaults cooldown days to zero" do
+      cli = described_class.new(["--root", workflow_root])
+      cli.send(:parse!)
+      expect(cli.instance_variable_get(:@options)[:cooldown_days]).to eq(0)
+    end
+
+    it "accepts --cooldown-days" do
+      cli = described_class.new(["--root", workflow_root, "--cooldown-days", "3"])
+      cli.send(:parse!)
+      expect(cli.instance_variable_get(:@options)[:cooldown_days]).to eq(3)
+    end
+
+    it "aborts on negative --cooldown-days values", :real_exit_adapter do
+      cli = described_class.new(["--root", workflow_root, "--cooldown-days", "-1"])
+
+      expect { cli.send(:parse!) }.to raise_error(SystemExit)
+    end
+
     it "accepts --refresh-cache and --cache-path" do
       cache_path = File.join(workflow_root, "gha-cache.json")
       cli = described_class.new(["--root", workflow_root, "--refresh-cache", "--cache-path", cache_path])
@@ -724,13 +742,15 @@ RSpec.describe Kettle::Gha::Pins::CLI do
           tag: "v1.3.0",
           version_obj: Gem::Version.new("1.3.0"),
           version: "1.3.0",
-          sha: "bbb"
+          sha: "bbb",
+          released_at: "2026-07-22T12:00:00Z"
         },
         {
           tag: "v2.0.0",
           version_obj: Gem::Version.new("2.0.0"),
           version: "2.0.0",
-          sha: "ccc"
+          sha: "ccc",
+          released_at: "2026-07-01T12:00:00Z"
         },
         {
           tag: "v1.2.0",
@@ -824,6 +844,38 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect do
         expect(cli.run!).to eq(3)
       end.to output(/Outdated actions \(1\):.*Recommended fix: kettle-gha-pins --write --upgrade minor/m).to_stdout
+    end
+
+    it "warns without failing check mode for fresh release upgrades inside cooldown" do
+      clock = -> { Time.utc(2026, 7, 23, 12, 0, 0) }
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "minor", "--check", "--cooldown-days", "3"], clock: clock)
+
+      expect do
+        expect(cli.run!).to eq(0)
+      end.to output(/Cooldown warnings \(1\):.*foo\/bar 1\.2\.0 1\.3\.0 .*2026-07-25T12:00:00Z.*Outdated actions: none.*No change candidates found\./m).to_stdout
+    end
+
+    it "emits cooldown warnings in JSON reports" do
+      clock = -> { Time.utc(2026, 7, 23, 12, 0, 0) }
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "minor", "--check", "--cooldown-days", "3", "--json"], clock: clock)
+
+      payload = nil
+      expect do
+        expect(cli.run!).to eq(0)
+      end.to output(satisfy { |stdout|
+        payload = JSON.parse(stdout)
+      }).to_stdout
+
+      expect(payload.fetch("planned_changes")).to be_empty
+      expect(payload.fetch("cooldown_changes")).to contain_exactly(
+        a_hash_including(
+          "action" => "foo/bar",
+          "old_version" => "1.2.0",
+          "new_version" => "1.3.0",
+          "released_at" => "2026-07-22T12:00:00Z",
+          "cooldown_until" => "2026-07-25T12:00:00Z"
+        )
+      )
     end
 
     it "does not fail check mode for broader outdated pins outside the selected upgrade level" do
