@@ -8,6 +8,7 @@ require "set"
 require "time"
 
 require "psych"
+require "ruby-progressbar"
 require "kettle/gha/pins"
 require_relative "cache_progress"
 
@@ -252,6 +253,7 @@ module Kettle
               end
             end
           end
+          action_progress.stop
           progress_message("Action resolution checks: #{action_progress.cached_count} cached, #{action_progress.live_count} live.") if action_count.positive?
 
           print_report(state)

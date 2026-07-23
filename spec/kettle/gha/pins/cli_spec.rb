@@ -1207,6 +1207,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(err.string).to eq("")
 
       err = StringIO.new
+      allow(err).to receive(:tty?).and_return(true)
       cli = described_class.new(["--root", workflow_root, "--upgrade", "minor"], err: err)
       cli.run!
 

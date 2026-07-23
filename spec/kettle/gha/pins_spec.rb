@@ -631,6 +631,7 @@ RSpec.describe Kettle::Gha::Pins do
   describe Kettle::Gha::Pins::CacheProgress do
     it "counts cached, live, and skipped events with optional progress bars" do
       output = StringIO.new
+      allow(output).to receive(:tty?).and_return(true)
 
       progress = described_class.new(
         total: 3,
@@ -643,13 +644,16 @@ RSpec.describe Kettle::Gha::Pins do
       progress.cached
       progress.live
       progress.skipped
+      progress.stop
 
       expect(progress.cached_count).to eq(1)
       expect(progress.live_count).to eq(1)
       expect(progress.skipped_count).to eq(1)
       expect(output.string).to include("Cached")
+      expect(output.string).to include("Live")
+      expect(output.string).to include("Skipped")
 
-      disabled = described_class.new(total: 0, cached_title: "Cached", live_title: "Live", output: output, enabled: false)
+      disabled = described_class.new(total: 0, cached_title: "Cached", live_title: "Live", output: StringIO.new, enabled: false)
       disabled.cached
       disabled.skipped
 
