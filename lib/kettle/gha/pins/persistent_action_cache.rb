@@ -55,19 +55,23 @@ module Kettle
 
           action = data.fetch("actions")[repo_ref] ||= {}
           stored_versions = action["versions"] ||= {}
+          refs = action["refs"] ||= {}
           timestamp = @clock.call.utc.iso8601
 
           versions.each do |entry|
             version = entry[:version].to_s
             next if version.empty?
+            tag = entry[:tag].to_s
+            sha = entry[:sha].to_s
 
             stored_versions[version] = {
-              "tag" => entry[:tag].to_s,
+              "tag" => tag,
               "version" => version,
-              "sha" => entry[:sha].to_s,
+              "sha" => sha,
               "released_at" => entry[:released_at].to_s,
               "cached_at" => timestamp
             }
+            refs[tag] = {"sha" => sha[0, 40], "cached_at" => timestamp} unless tag.empty? || sha.empty?
           end
 
           action["targets"] = target_cache(stored_versions.values)

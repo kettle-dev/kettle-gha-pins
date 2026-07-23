@@ -21,16 +21,24 @@ module Kettle
           @refresh_timeout = refresh_timeout
           @commit_cache = {}
           @release_cache = {}
+          @last_versions_cache_hit = false
         end
 
+        attr_reader :last_versions_cache_hit
+
         def versions_for_repo(repo_ref)
+          @last_versions_cache_hit = false
           return [] if repo_ref.to_s.empty?
-          return @release_cache[repo_ref] if @release_cache.key?(repo_ref)
+          if @release_cache.key?(repo_ref)
+            @last_versions_cache_hit = true
+            return @release_cache[repo_ref]
+          end
 
           stale = nil
           unless @refresh_cache
             cached = @persistent_cache&.versions_for_repo(repo_ref, fresh: true)
             if cached
+              @last_versions_cache_hit = true
               @release_cache[repo_ref] = cached
               return cached
             end
@@ -91,6 +99,7 @@ module Kettle
 
         def cached_versions(repo_ref, stale)
           versions = stale || []
+          @last_versions_cache_hit = !stale.nil?
           @release_cache[repo_ref] = versions
           versions
         end

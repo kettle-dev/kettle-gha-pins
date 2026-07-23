@@ -35,6 +35,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- GitHub Actions pin cache writes now persist tag SHA refs from release version
+  metadata, so repeated runs can reuse cached action resolution instead of
+  rechecking freshly cached actions live.
+
 ### Security
 
 ## [0.2.1] - 2026-07-22

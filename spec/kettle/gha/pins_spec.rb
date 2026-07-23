@@ -160,7 +160,6 @@ RSpec.describe Kettle::Gha::Pins do
           }
         ]
       )
-      cache.write_ref_sha("codecov/codecov-action", "v7.0.0", "a" * 40)
 
       reloaded = described_class.new(path: path, clock: clock)
 

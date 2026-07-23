@@ -365,7 +365,7 @@ module Kettle
             old_ref: old_ref,
             upgrade_level: @options[:upgrade]
           )
-          if cached
+          if cached || (client.respond_to?(:last_versions_cache_hit) && client.last_versions_cache_hit)
             progress.cached
           else
             progress.live

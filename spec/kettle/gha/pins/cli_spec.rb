@@ -580,6 +580,43 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(versions.map { |entry| entry[:version] }).to eq(%w[2.0.0 1.3.0 1.2.3])
     end
 
+    it "reports persistent cache hits as cached action checks", freeze: Time.utc(2026, 6, 8, 12, 0, 0) do
+      File.write(
+        workflow_path,
+        <<~YAML
+          name: ci
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: foo/bar@v1.2.3
+        YAML
+      )
+      cache_path = File.join(workflow_root, "gha-cache.json")
+      Kettle::Gha::Pins::CLI::PersistentActionCache.new(path: cache_path).write_versions(
+        "foo/bar",
+        [
+          {tag: "v1.2.3", version_obj: Gem::Version.new("1.2.3"), version: "1.2.3", sha: "a" * 40},
+          {tag: "v1.3.0", version_obj: Gem::Version.new("1.3.0"), version: "1.3.0", sha: "b" * 40}
+        ]
+      )
+      cli_client = Kettle::Gha::Pins::CLI::GitHubClient.new(
+        token: nil,
+        api_base: Kettle::Gha::Pins::CLI::API_BASE,
+        user_agent: "kettle-gha-pins",
+        persistent_cache: Kettle::Gha::Pins::CLI::PersistentActionCache.new(path: cache_path)
+      )
+      allow(Kettle::Gha::Pins::CLI::GitHubClient).to receive(:new).and_return(cli_client)
+      expect(cli_client).not_to receive(:request_json)
+      err = StringIO.new
+
+      cli = Kettle::Gha::Pins::CLI.new(["--root", workflow_root, "--upgrade", "minor", "--cache-path", cache_path], err: err)
+      expect(cli.run!).to eq(0)
+
+      expect(err.string).to include("Action resolution checks: 1 cached, 0 live.")
+    end
+
     it "bypasses fresh cache when refreshing and preserves unrelated cached actions", freeze: Time.utc(2026, 6, 8, 12, 5, 0) do
       cache_path = File.join(workflow_root, "gha-cache.json")
       cache = Kettle::Gha::Pins::CLI::PersistentActionCache.new(path: cache_path)
