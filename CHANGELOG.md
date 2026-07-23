@@ -20,12 +20,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
-- Added the shared `PersistentActionCache`, `GitHubClient`, and action ref
-  resolver API so GitHub Actions pin tools can reuse cache, network, and upgrade
-  planning behavior without shelling out to each other.
-- Added the `kettle-gha-pins` executable for scanning standard GitHub Actions
-  workflow YAML files and updating action refs to immutable SHAs.
-
 ### Changed
 
 ### Deprecated
@@ -35,6 +29,21 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Fixed
 
 ### Security
+
+## [0.2.0] - 2026-07-22
+
+- TAG: [v0.2.0][0.2.0t]
+- COVERAGE: 99.07% -- 849/857 lines in 8 files
+- BRANCH COVERAGE: 92.55% -- 348/376 branches in 8 files
+- 22.22% documented
+
+### Added
+
+- Added the shared `PersistentActionCache`, `GitHubClient`, and action ref
+  resolver API so GitHub Actions pin tools can reuse cache, network, and upgrade
+  planning behavior without shelling out to each other.
+- Added the `kettle-gha-pins` executable for scanning standard GitHub Actions
+  workflow YAML files and updating action refs to immutable SHAs.
 
 ## [0.1.0] - 2026-07-22
 
@@ -67,6 +76,8 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.1.0...v0.2.0
+[0.2.0t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.2.0
 [0.1.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/c633526495c7db0a8721a94a71c3def0f3cc71bb...v0.1.0
 [0.1.0t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.1.0

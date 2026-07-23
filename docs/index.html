@@ -83,14 +83,21 @@
 <h2 id="-synopsis--">🌻 Synopsis <a href="https://discord.gg/3qme4XHNKN"><img alt="Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0" src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-128px.svg" width="8%" align="right"></a> <a href="https://ruby-toolbox.com"><img alt="ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5" src="https://logos.galtzo.com/assets/images/ruby-lang/avatar-128px.svg" width="8%" align="right"></a>
 </h2>
 
-<p><code>kettle-gha-pins</code> is the shared version-rubric library for kettle-dev GitHub<br>
-Actions pin maintenance. It owns the deterministic rules for parsing action<br>
-release tags, ordering equivalent release spellings, and selecting patch,<br>
-minor, or major upgrade targets.</p>
+<p><code>kettle-gha-pins</code> is the shared GitHub Actions pin maintenance library for<br>
+kettle-dev tooling. It owns the action-release version rubric, persistent action<br>
+metadata cache, GitHub release/tag/commit resolution client, and ref upgrade<br>
+planner used by pin maintenance commands.</p>
 
-<p>The gem is intentionally small and API-focused. Command-line tools such as<br>
+<p>The gem is intentionally API-focused. Command-line tools such as<br>
 <code>kettle-gha-sha-pins</code> and template maintenance scripts can depend on this gem<br>
-instead of each carrying their own subtly different version comparison logic.</p>
+instead of each carrying their own subtly different cache, network, and version<br>
+comparison logic.</p>
+
+<p>For ordinary workflow pin maintenance, install this gem and run:</p>
+
+<pre class="code language-console"><code class="language-console">kettle-gha-pins --check
+kettle-gha-pins --write --upgrade patch
+</code></pre>
 
 <h2 id="-info-you-can-shake-a-stick-at">💡 Info you can shake a stick at</h2>
 
@@ -137,7 +144,7 @@ instead of each carrying their own subtly different version comparison logic.</p
     <tr>
       <td>Source</td>
       <td>
-<a href="https://gitlab.com/kettle-dev/kettle-gha-pins"><img src="https://img.shields.io/badge/GitLab-FBA326?style=for-the-badge&amp;logo=Gitlab&amp;logoColor=orange" alt="Source on GitLab.com"></a> <a href="https://codeberg.org/kettle-dev/kettle-gha-pins"><img src="https://img.shields.io/badge/CodeBerg-4893CC?style=for-the-badge&amp;logo=CodeBerg&amp;logoColor=blue" alt="Source on CodeBerg.org"></a> <a href="https://github.com/kettle-dev/kettle-gha-pins"><img src="https://img.shields.io/badge/GitHub-238636?style=for-the-badge&amp;logo=GitHub&amp;logoColor=green" alt="Source on GitHub.com"></a> <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><img src="https://img.shields.io/badge/KLOC-0.085-FFDD67.svg?style=for-the-badge&amp;logo=YouTube&amp;logoColor=blue" alt="The best SHA: dQw4w9WgXcQ!"></a>
+<a href="https://gitlab.com/kettle-dev/kettle-gha-pins"><img src="https://img.shields.io/badge/GitLab-FBA326?style=for-the-badge&amp;logo=Gitlab&amp;logoColor=orange" alt="Source on GitLab.com"></a> <a href="https://codeberg.org/kettle-dev/kettle-gha-pins"><img src="https://img.shields.io/badge/CodeBerg-4893CC?style=for-the-badge&amp;logo=CodeBerg&amp;logoColor=blue" alt="Source on CodeBerg.org"></a> <a href="https://github.com/kettle-dev/kettle-gha-pins"><img src="https://img.shields.io/badge/GitHub-238636?style=for-the-badge&amp;logo=GitHub&amp;logoColor=green" alt="Source on GitHub.com"></a> <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><img src="https://img.shields.io/badge/KLOC-0.857-FFDD67.svg?style=for-the-badge&amp;logo=YouTube&amp;logoColor=blue" alt="The best SHA: dQw4w9WgXcQ!"></a>
 </td>
     </tr>
     <tr>
@@ -358,8 +365,8 @@ not practical for the current toolchain.</p>
 
 <h2 id="️-configuration">⚙️ Configuration</h2>
 
-<p>There is no global configuration for the library API. Callers pass release-tag<br>
-data directly to <code>Kettle::Gha::Pins::VersionRubric</code>.</p>
+<p>There is no global configuration for the library API. Callers pass options to<br>
+the client and cache objects they create.</p>
 
 <p>The shared upgrade policies are:</p>
 
@@ -376,26 +383,36 @@ as <code>v2</code> to <code>v3</code>.</li>
 <p>Invalid upgrade levels normalize to <code>patch</code>, matching the historical<br>
 <code>kettle-gha-sha-pins</code> default.</p>
 
+<p><code>Kettle::Gha::Pins::PersistentActionCache.default_path</code> intentionally preserves<br>
+the historical <code>kettle-gha-sha-pins</code> cache location so command-line tools can<br>
+share action metadata without coupling to each other.</p>
+
 <h2 id="-basic-usage">🔧 Basic Usage</h2>
 
 <pre class="code language-ruby"><code class="language-ruby">require &quot;kettle/gha/pins&quot;
 
-versions = Kettle::Gha::Pins::VersionRubric.build_release_versions(
-  release_tags: [&quot;v7.0.0&quot;],
-  tag_shas: {
-    &quot;v7&quot; =&gt; &quot;abc123...&quot;,
-    &quot;v7.0.0&quot; =&gt; &quot;abc123...&quot;
-  }
+cache = Kettle::Gha::Pins::PersistentActionCache.new(
+  path: Kettle::Gha::Pins::PersistentActionCache.default_path
 )
 
-target = Kettle::Gha::Pins::VersionRubric.choose_upgrade_target(
-  &quot;v6.5.0&quot;,
-  versions,
-  &quot;major&quot;
+client = Kettle::Gha::Pins::GitHubClient.new(
+  token: ENV[&quot;GITHUB_TOKEN&quot;],
+  api_base: Kettle::Gha::Pins::API_BASE,
+  user_agent: &quot;my-gha-pin-tool&quot;,
+  persistent_cache: cache
 )
 
-target[:tag]
-# =&gt; &quot;v7.0.0&quot;
+versions_by_repo = {}
+plan = Kettle::Gha::Pins.resolve_action_plan(
+  cache: versions_by_repo,
+  client: client,
+  repo_ref: &quot;codecov/codecov-action&quot;,
+  old_ref: &quot;fb8b3582c8e4def4969c97caa2f19720cb33a72f&quot;,
+  upgrade_level: &quot;major&quot;
+)
+
+plan[:updates]
+# =&gt; {sha: &quot;...&quot;, version: &quot;7.0.0&quot;, reason: &quot;upgrade_to_allowed_release&quot;}
 </code></pre>
 
 <p>When two version-equivalent tags point at the same SHA, the rubric keeps the<br>

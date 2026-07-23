@@ -81,7 +81,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>lib/kettle/gha/pins.rb<span class="defines">,<br>
-  lib/kettle/gha/pins/version.rb,<br> lib/kettle/gha/pins/version_rubric.rb</span>
+  lib/kettle/gha/pins/cli.rb,<br> lib/kettle/gha/pins/version.rb,<br> lib/kettle/gha/pins/github_client.rb,<br> lib/kettle/gha/pins/cache_progress.rb,<br> lib/kettle/gha/pins/version_rubric.rb,<br> lib/kettle/gha/pins/action_resolver.rb,<br> lib/kettle/gha/pins/persistent_action_cache.rb</span>
 
 </dd>
   </dl>
@@ -92,11 +92,11 @@
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Pins/Version.html" title="Kettle::Gha::Pins::Version (module)">Version</a></span>, <span class='object_link'><a href="Pins/VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span>, <span class='object_link'><a href="Pins/Version.html" title="Kettle::Gha::Pins::Version (module)">Version</a></span>, <span class='object_link'><a href="Pins/VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span>
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Pins/Error.html" title="Kettle::Gha::Pins::Error (class)">Error</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Pins/CLI.html" title="Kettle::Gha::Pins::CLI (class)">CLI</a></span>, <span class='object_link'><a href="Pins/CacheProgress.html" title="Kettle::Gha::Pins::CacheProgress (class)">CacheProgress</a></span>, <span class='object_link'><a href="Pins/Error.html" title="Kettle::Gha::Pins::Error (class)">Error</a></span>, <span class='object_link'><a href="Pins/GitHubClient.html" title="Kettle::Gha::Pins::GitHubClient (class)">GitHubClient</a></span>, <span class='object_link'><a href="Pins/PersistentActionCache.html" title="Kettle::Gha::Pins::PersistentActionCache (class)">PersistentActionCache</a></span>
     
   
 </p>
@@ -108,6 +108,71 @@
     </h2>
 
     <dl class="constants">
+      
+        <dt id="API_BASE-constant" class="">API_BASE =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://api.github.com</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+      
+        <dt id="RELEASE_PATH-constant" class="">RELEASE_PATH =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>releases/latest</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+      
+        <dt id="SHA_RE-constant" class="">SHA_RE =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A[0-9a-f]{40}\z</span><span class='regexp_end'>/i</span></span></pre></dd>
+      
+        <dt id="WEAK_SHA_RE-constant" class="">WEAK_SHA_RE =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A[0-9a-f]{7,39}\z</span><span class='regexp_end'>/i</span></span></pre></dd>
+      
+        <dt id="NON_SHA_REASON-constant" class="">NON_SHA_REASON =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>convert_to_sha</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+      
+        <dt id="STALE_SHA_REASON-constant" class="">STALE_SHA_REASON =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>upgrade_to_latest_release_sha</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+      
+        <dt id="UPGRADE_REASON-constant" class="">UPGRADE_REASON =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>upgrade_to_allowed_release</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+      
+        <dt id="DEFAULT_UPGRADE_LEVEL-constant" class="">DEFAULT_UPGRADE_LEVEL =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="Pins/VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Pins/VersionRubric.html#DEFAULT_UPGRADE_LEVEL-constant" title="Kettle::Gha::Pins::VersionRubric::DEFAULT_UPGRADE_LEVEL (constant)">DEFAULT_UPGRADE_LEVEL</a></span></span></pre></dd>
+      
+        <dt id="DEFAULT_CACHE_TTL_SECONDS-constant" class="">DEFAULT_CACHE_TTL_SECONDS =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>24</span> <span class='op'>*</span> <span class='int'>60</span> <span class='op'>*</span> <span class='int'>60</span></pre></dd>
+      
+        <dt id="DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS-constant" class="">DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>5</span></pre></dd>
+      
+        <dt id="DEFAULT_HTTP_READ_TIMEOUT_SECONDS-constant" class="">DEFAULT_HTTP_READ_TIMEOUT_SECONDS =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>10</span></pre></dd>
+      
+        <dt id="DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS-constant" class="">DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>20</span></pre></dd>
+      
+        <dt id="VALID_UPGRADE_LEVELS-constant" class="">VALID_UPGRADE_LEVELS =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="Pins/VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Pins/VersionRubric.html#VALID_UPGRADE_LEVELS-constant" title="Kettle::Gha::Pins::VersionRubric::VALID_UPGRADE_LEVELS (constant)">VALID_UPGRADE_LEVELS</a></span></span></pre></dd>
       
         <dt id="VERSION-constant" class="">VERSION =
           <div class="docstring">
@@ -133,7 +198,465 @@
 
 
 
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
 
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#determine_upgrade_plan-class_method" title="determine_upgrade_plan (class method)">.<strong>determine_upgrade_plan</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#matching_version_entry-class_method" title="matching_version_entry (class method)">.<strong>matching_version_entry</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#non_sha%3F-class_method" title="non_sha? (class method)">.<strong>non_sha?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#resolve_action_plan-class_method" title="resolve_action_plan (class method)">.<strong>resolve_action_plan</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#short_sha%3F-class_method" title="short_sha? (class method)">.<strong>short_sha?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#stale_sha%3F-class_method" title="stale_sha? (class method)">.<strong>stale_sha?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#version_entry_sha-class_method" title="version_entry_sha (class method)">.<strong>version_entry_sha</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="determine_upgrade_plan-class_method">
+  
+    .<strong>determine_upgrade_plan</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+174
+175
+176</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 174</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_determine_upgrade_plan'>determine_upgrade_plan</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_determine_upgrade_plan'><span class='object_link'><a href="Pins/ActionResolver.html#determine_upgrade_plan-class_method" title="Kettle::Gha::Pins::ActionResolver.determine_upgrade_plan (method)">determine_upgrade_plan</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="matching_version_entry-class_method">
+  
+    .<strong>matching_version_entry</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+178
+179
+180</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 178</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_matching_version_entry'>matching_version_entry</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_matching_version_entry'><span class='object_link'><a href="Pins/ActionResolver.html#matching_version_entry-class_method" title="Kettle::Gha::Pins::ActionResolver.matching_version_entry (method)">matching_version_entry</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="non_sha?-class_method">
+  
+    .<strong>non_sha?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+190
+191
+192</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 190</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_non_sha?'>non_sha?</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_non_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#non_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.non_sha? (method)">non_sha?</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="resolve_action_plan-class_method">
+  
+    .<strong>resolve_action_plan</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+170
+171
+172</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 170</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_resolve_action_plan'>resolve_action_plan</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve_action_plan'><span class='object_link'><a href="Pins/ActionResolver.html#resolve_action_plan-class_method" title="Kettle::Gha::Pins::ActionResolver.resolve_action_plan (method)">resolve_action_plan</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="short_sha?-class_method">
+  
+    .<strong>short_sha?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+186
+187
+188</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 186</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_short_sha?'>short_sha?</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_short_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#short_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.short_sha? (method)">short_sha?</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="stale_sha?-class_method">
+  
+    .<strong>stale_sha?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+194
+195
+196</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 194</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_stale_sha?'>stale_sha?</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_stale_sha?'><span class='object_link'><a href="Pins/ActionResolver.html#stale_sha%3F-class_method" title="Kettle::Gha::Pins::ActionResolver.stale_sha? (method)">stale_sha?</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="version_entry_sha-class_method">
+  
+    .<strong>version_entry_sha</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+182
+183
+184</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 182</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_version_entry_sha'>version_entry_sha</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Pins/ActionResolver.html" title="Kettle::Gha::Pins::ActionResolver (module)">ActionResolver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_version_entry_sha'><span class='object_link'><a href="Pins/ActionResolver.html#version_entry_sha-class_method" title="Kettle::Gha::Pins::ActionResolver.version_entry_sha (method)">version_entry_sha</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 </div>
 
