@@ -41,7 +41,10 @@ module Kettle
           return nil if entries.empty?
           return nil if fresh && entries.length != versions.length
 
-          entries.filter_map { |entry| deserialize_version_entry(entry) }
+          entries.each_with_object([]) do |entry, memo|
+            deserialized = deserialize_version_entry(entry)
+            memo << deserialized if deserialized
+          end
             .sort_by { |entry| entry[:version_obj] }
             .reverse
         end
@@ -147,11 +150,11 @@ module Kettle
         end
 
         def target_cache(version_entries)
-          entries = version_entries.filter_map do |entry|
+          entries = version_entries.each_with_object([]) do |entry, memo|
             deserialized = deserialize_version_entry(entry)
             next unless deserialized
 
-            deserialized.merge(cached_at: entry["cached_at"].to_s)
+            memo << deserialized.merge(cached_at: entry["cached_at"].to_s)
           end
           return {} if entries.empty?
 

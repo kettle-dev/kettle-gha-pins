@@ -56,8 +56,8 @@ kettle-gha-pins --write --upgrade patch
 
 ### Compatibility
 
-Compatible with MRI Ruby 3.2.0+, and concordant releases of JRuby, and TruffleRuby.
-CI workflows and Appraisals are generated for MRI Ruby 3.2.0+.
+Compatible with MRI Ruby 2.4.0+, and concordant releases of JRuby, and TruffleRuby.
+CI workflows and Appraisals are generated for MRI Ruby 2.4.0+.
 This test floor is configured by `ruby.test_minimum` in `.kettle-jem.yml` and
 may be higher than the gem's runtime compatibility floor when legacy Rubies are
 not practical for the current toolchain.
@@ -558,7 +558,7 @@ Thanks for RTFM. ☺️
 | Field | Value |
 |---|---|
 | Package | kettle-gha-pins |
-| Description | 📌 Shared, deterministic GitHub Actions release-tag parsing, canonicalization, and upgrade selection logic for kettle-dev and kettle-jem workflow pin maintenance. |
+| Description | 📌 GitHub Actions workflow SHA pin maintenance, including deterministic release-tag parsing, canonicalization, cache-backed GitHub ref resolution, and upgrade planning. |
 | Homepage | https://github.com/kettle-dev/kettle-gha-pins |
 | Source | https://github.com/kettle-dev/kettle-gha-pins |
 | License | `MIT` |

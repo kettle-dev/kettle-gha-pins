@@ -6,9 +6,20 @@
 # kettle-jem will then preserve content between those markers across template runs.
 # kettle-jem:unfreeze
 
+gem_version =
+  if Gem.ruby_version >= Gem::Version.new("3.1")
+    # Loading Version into an anonymous module allows version.rb to get code coverage from SimpleCov!
+    # See: https://github.com/simplecov-ruby/simplecov/issues/557#issuecomment-2630782358
+    # See: https://github.com/panorama-ed/memo_wise/pull/397
+    Module.new.tap { |mod| Kernel.load("#{__dir__}/lib/kettle/gha/pins/version.rb", mod) }::Kettle::Gha::Pins::Version::VERSION
+  else
+    require_relative "lib/kettle/gha/pins/version"
+    Kettle::Gha::Pins::Version::VERSION
+  end
+
 Gem::Specification.new do |spec|
   spec.name = "kettle-gha-pins"
-  spec.version = Module.new.tap { |mod| Kernel.load("#{__dir__}/lib/kettle/gha/pins/version.rb", mod) }::Kettle::Gha::Pins::Version::VERSION
+  spec.version = gem_version
   spec.authors = ["Peter H. Boling"]
   spec.email = ["floss@galtzo.com"]
 
@@ -16,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.description = "📌 GitHub Actions workflow SHA pin maintenance, including deterministic release-tag parsing, canonicalization, cache-backed GitHub ref resolution, and upgrade planning."
   spec.homepage = "https://github.com/kettle-dev/kettle-gha-pins"
   spec.licenses = ["MIT"]
-  spec.required_ruby_version = ">= 3.2.0"
+  spec.required_ruby_version = ">= 2.4.0"
 
   # Linux distros often package gems and securely certify them independent
   #   of the official RubyGem certification process. Allowed via ENV["SKIP_GEM_SIGNING"]
@@ -92,17 +103,17 @@ Gem::Specification.new do |spec|
   #       visibility and discoverability.
   #       However, development dependencies in gemspec will install on
   #       all versions of Ruby that will run in CI.
-  #       This gem, and its gemspec runtime dependencies, will install on Ruby down to 3.2.0.
-  #       This gem, and its gemspec development dependencies, will install on Ruby down to 3.2.0.
+  #       This gem, and its gemspec runtime dependencies, will install on Ruby down to 2.4.0.
+  #       This gem, and its gemspec development dependencies, will install on Ruby down to 2.4.0.
   #       Thus, dev dependencies in gemspec must have
   #
-  #       required_ruby_version ">= 3.2.0" (or lower)
+  #       required_ruby_version ">= 2.4.0" (or lower)
   #
   #       Development dependencies that require strictly newer Ruby versions should be in a "gemfile",
   #       and preferably a modular one (see gemfiles/modular/*.gemfile).
 
   # Dev, Test, & Release Tasks
-  spec.add_development_dependency("kettle-dev", "~> 2.3", ">= 2.3.7")     # ruby >= 3.2.0
+  spec.add_development_dependency("kettle-dev", "~> 2.3", ">= 2.3.7")     # ruby >= 2.4.0
 
   # Security
   spec.add_development_dependency("bundler-audit", "~> 0.9.3")                      # ruby >= 2.0.0
@@ -115,11 +126,10 @@ Gem::Specification.new do |spec|
 
   # Testing
   spec.add_development_dependency("appraisal2", "~> 3.2", ">= 3.2.0")               # ruby >= 1.8.7, for testing against multiple versions of dependencies
-  spec.add_development_dependency("kettle-test", "~> 2.0", ">= 2.0.12")            # ruby >= 3.2.0
+  spec.add_development_dependency("kettle-test", "~> 2.0", ">= 2.0.12")            # ruby >= 2.4.0
   spec.add_development_dependency("turbo_tests2", "~> 3.2", ">= 3.2.0")           # ruby >= 2.4.0, default kettle-test runner
 
   # Releasing
-  spec.add_development_dependency("ruby-progressbar", "~> 1.13")                    # ruby >= 0
   spec.add_development_dependency("stone_checksums", "~> 1.0", ">= 1.0.6")          # ruby >= 2.2.0
 
   # Development tasks

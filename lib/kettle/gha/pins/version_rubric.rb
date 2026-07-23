@@ -38,11 +38,15 @@ module Kettle
 
         def build_release_versions(release_tags:, tag_shas:)
           released_tags = release_tags.each_with_object({}) { |tag, memo| memo[tag.to_s] = true }
-          releases = release_tags.filter_map { |tag| entry(tag: tag, sha: tag_shas[tag.to_s]) }
-          tag_versions = tag_shas.filter_map do |tag, sha|
+          releases = release_tags.each_with_object([]) do |tag, memo|
+            release_entry = entry(tag: tag, sha: tag_shas[tag.to_s])
+            memo << release_entry if release_entry
+          end
+          tag_versions = tag_shas.each_with_object([]) do |(tag, sha), memo|
             next if released_tags[tag.to_s]
 
-            entry(tag: tag, sha: sha)
+            tag_entry = entry(tag: tag, sha: sha)
+            memo << tag_entry if tag_entry
           end
 
           sort_versions(canonicalize_equivalent_release_versions(releases + tag_versions)).reverse

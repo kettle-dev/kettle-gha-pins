@@ -273,9 +273,11 @@ module Kettle
               @options[:progress] = bool
             end
             opt.on("--skip-pattern PATTERN", "Skip workflow paths matching pattern (repeatable)") do |pattern|
-              @options[:reject_patterns] << Regexp.new(pattern)
-            rescue RegexpError => e
-              Kernel.abort("Invalid --skip-pattern #{pattern.inspect}: #{e.message}")
+              begin
+                @options[:reject_patterns] << Regexp.new(pattern)
+              rescue RegexpError => e
+                Kernel.abort("Invalid --skip-pattern #{pattern.inspect}: #{e.message}")
+              end
             end
             opt.on("--[no-]validate", "Validate YAML after editing") do |bool|
               @options[:validate] = bool
@@ -297,25 +299,27 @@ module Kettle
         def load_workflows(paths, state)
           file_progress = progress_bar(title: "Files", total: paths.length)
           paths.each_with_object([]) do |path, workflows|
-            state[:files_scanned] += 1
-            text = begin
-              File.read(path)
-            rescue Errno::EACCES => e
-              record_failure(state, path: path, error: "read_error: #{e.message}")
-              next
-            end
+            begin
+              state[:files_scanned] += 1
+              begin
+                text = File.read(path)
+              rescue Errno::EACCES => e
+                record_failure(state, path: path, error: "read_error: #{e.message}")
+                next
+              end
 
-            parsed = begin
-              Psych.parse_stream(text)
-            rescue Psych::Exception => e
-              record_failure(state, path: path, error: "yaml_parse_error: #{e.message}")
-              next
-            end
+              begin
+                parsed = Psych.parse_stream(text)
+              rescue Psych::Exception => e
+                record_failure(state, path: path, error: "yaml_parse_error: #{e.message}")
+                next
+              end
 
-            uses_nodes = extract_uses_nodes(parsed, text)
-            workflows << {path: path, text: text, uses_nodes: uses_nodes} unless uses_nodes.empty?
-          ensure
-            file_progress&.increment
+              uses_nodes = extract_uses_nodes(parsed, text)
+              workflows << {path: path, text: text, uses_nodes: uses_nodes} unless uses_nodes.empty?
+            ensure
+              file_progress&.increment
+            end
           end
         end
 
@@ -469,7 +473,7 @@ module Kettle
             action: {
               owner: parts[0],
               repo: parts[1],
-              path: (parts.length > 2) ? parts[2..].join("/") : nil,
+              path: (parts.length > 2) ? parts[2..-1].join("/") : nil,
               ref: ref
             }
           }
@@ -594,14 +598,14 @@ module Kettle
           line_text = text.lines[line]
           return nil if line_text.nil?
 
-          raw = line_text[col..]
+          raw = line_text[col..-1]
           return nil if raw.nil?
 
           token_info = extract_scalar_token(raw)
           return nil unless token_info
           return nil unless token_info[:token] == old_token
 
-          suffix = raw[token_info[:span]..].to_s
+          suffix = raw[token_info[:span]..-1].to_s
           match = suffix.match(VERSION_COMMENT_SUFFIX_RE)
           match && match[:version]
         end
@@ -610,7 +614,7 @@ module Kettle
           line_text = text.lines[line]
           return nil if line_text.nil?
 
-          raw = line_text[col..]
+          raw = line_text[col..-1]
           return nil if raw.nil?
 
           token_info = extract_scalar_token(raw)
@@ -623,7 +627,7 @@ module Kettle
           span = token_info[:span]
           new_scalar = rendered[:quoted]
           if new_version && token_info[:quote] == :plain
-            suffix = raw[span..].to_s
+            suffix = raw[span..-1].to_s
             comment = suffix.match(VERSION_COMMENT_REPLACEMENT_RE)
             if comment
               span += comment[0].length
@@ -652,7 +656,7 @@ module Kettle
             next if line.nil?
 
             entries.each do |entry|
-              line = line[0...entry[:start]].to_s + entry[:new_scalar] + line[entry[:end]..].to_s
+              line = line[0...entry[:start]].to_s + entry[:new_scalar] + line[entry[:end]..-1].to_s
             end
             updated[line_num] = line
           end

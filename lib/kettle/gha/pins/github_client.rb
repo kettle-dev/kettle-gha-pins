@@ -96,13 +96,13 @@ module Kettle
         end
 
         def build_release_versions(data, tag_shas)
-          release_tags = data.filter_map do |release|
+          release_tags = data.each_with_object([]) do |release, memo|
             next unless release.is_a?(Hash)
 
             tag = release["tag_name"].to_s
             next unless VersionRubric.parse(tag)
 
-            tag
+            memo << tag
           end
 
           VersionRubric.build_release_versions(

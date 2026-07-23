@@ -167,32 +167,32 @@ module Kettle
       end
 
       class << self
-        def resolve_action_plan(...)
-          ActionResolver.resolve_action_plan(...)
+        def resolve_action_plan(**kwargs)
+          ActionResolver.resolve_action_plan(**kwargs)
         end
 
-        def determine_upgrade_plan(...)
-          ActionResolver.determine_upgrade_plan(...)
+        def determine_upgrade_plan(**kwargs)
+          ActionResolver.determine_upgrade_plan(**kwargs)
         end
 
-        def matching_version_entry(...)
-          ActionResolver.matching_version_entry(...)
+        def matching_version_entry(versions, current_ref, current_sha, client, repo_ref)
+          ActionResolver.matching_version_entry(versions, current_ref, current_sha, client, repo_ref)
         end
 
-        def version_entry_sha(...)
-          ActionResolver.version_entry_sha(...)
+        def version_entry_sha(entry, client, repo_ref)
+          ActionResolver.version_entry_sha(entry, client, repo_ref)
         end
 
-        def short_sha?(...)
-          ActionResolver.short_sha?(...)
+        def short_sha?(candidate)
+          ActionResolver.short_sha?(candidate)
         end
 
-        def non_sha?(...)
-          ActionResolver.non_sha?(...)
+        def non_sha?(candidate)
+          ActionResolver.non_sha?(candidate)
         end
 
-        def stale_sha?(...)
-          ActionResolver.stale_sha?(...)
+        def stale_sha?(current, latest)
+          ActionResolver.stale_sha?(current, latest)
         end
       end
     end
