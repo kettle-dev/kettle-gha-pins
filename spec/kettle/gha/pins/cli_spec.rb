@@ -85,6 +85,18 @@ RSpec.describe Kettle::Gha::Pins::CLI do
 
       expect { cli.send(:parse!) }.to raise_error(SystemExit)
     end
+
+    it "aborts on invalid skip patterns", :real_exit_adapter do
+      cli = described_class.new(["--skip-pattern", "["])
+
+      expect { cli.send(:parse!) }.to raise_error(SystemExit)
+    end
+
+    it "prints help and exits", :real_exit_adapter do
+      cli = described_class.new(["--help"])
+
+      expect { cli.send(:parse!) }.to output(/Usage: kettle-gha-pins/).to_stdout.and raise_error(SystemExit)
+    end
   end
 
   describe "workflow discovery" do
@@ -102,6 +114,16 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       cli = described_class.new(["--root", workflow_dir])
 
       expect(cli.send(:discover_workflow_files, workflow_dir, Set.new)).to eq([workflow_path])
+    end
+
+    it "skips non-files and rejected workflow paths" do
+      workflow_dir = File.dirname(workflow_path)
+      skipped_path = File.join(workflow_dir, "skip.yml")
+      FileUtils.mkdir_p(File.join(workflow_dir, "dir.yml"))
+      File.write(skipped_path, File.read(workflow_path))
+      cli = described_class.new(["--root", workflow_dir])
+
+      expect(cli.send(:discover_workflow_files, workflow_dir, Set[/skip/])).to eq([workflow_path])
     end
   end
 
@@ -204,6 +226,73 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       YAML
 
       expect(dummy_cli.send(:fallback_uses_location, text, "foo/bar@v1.2.0", {})).to eq([3, 14])
+    end
+
+    it "falls back to zero location when source scanning cannot locate a scalar" do
+      expect(dummy_cli.send(:fallback_uses_location, nil, "foo/bar@v1.2.0", {})).to eq([0, 0])
+      expect(dummy_cli.send(:fallback_uses_location, "uses: foo/bar@v1.2.0\nuses: foo/bar@v1.2.0\n", "foo/bar@v1.2.0", {0 => true})).to eq([1, 6])
+      expect(dummy_cli.send(:fallback_uses_location, "uses: other/action@v1\n", "foo/bar@v1.2.0", {})).to eq([0, 0])
+    end
+
+    it "classifies only external GitHub action refs" do
+      expect(dummy_cli.send(:classify_action_ref, nil)).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, " ")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "./local/action")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "../local/action")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "/abs/action")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "docker://alpine:latest")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "foo/bar@${{ matrix.ref }}")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "foo/bar")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "@v1")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "foo/@v1")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "foo//path@v1")).to be_nil
+      expect(dummy_cli.send(:classify_action_ref, "foo/bar/path@v1")).to include(
+        value: "foo/bar/path@v1",
+        action: include(owner: "foo", repo: "bar", path: "path", ref: "v1")
+      )
+    end
+
+    it "covers scalar parsing, quoting, replacement, and compatibility delegators" do
+      expect(dummy_cli.send(:extract_scalar_token, nil)).to be_nil
+      expect(dummy_cli.send(:extract_scalar_token, "")).to be_nil
+      expect(dummy_cli.send(:extract_scalar_token, %("foo/\\"bar@v1" # v1))).to include(token: "foo/\"bar@v1", quote: :double)
+      expect(dummy_cli.send(:extract_scalar_token, "'foo/bar@v1''s' # v1")).to include(token: "foo/bar@v1's", quote: :single)
+      expect(dummy_cli.send(:extract_scalar_token, "foo/bar@v1 # v1")).to include(token: "foo/bar@v1", quote: :plain)
+      expect(dummy_cli.send(:extract_scalar_token, "# comment")).to be_nil
+
+      expect(dummy_cli.send(:normalize_quote_scalar, "foo/bar@sha", :plain)).to eq("foo/bar@sha")
+      expect(dummy_cli.send(:normalize_quote_scalar, "foo/bar@sha's", :single)).to eq("'foo/bar@sha''s'")
+      expect(dummy_cli.send(:normalize_quote_scalar, "foo/\"bar@sha", :double)).to eq(%("foo/\\"bar@sha"))
+      expect(dummy_cli.send(:render_replacement, "foo/bar", "sha", :plain)).to be_nil
+      expect(dummy_cli.send(:compute_updates, "same", "same", "reason", "foo/bar")).to be_nil
+      expect(dummy_cli.send(:compute_updates, "same", "", "reason", "foo/bar")).to be_nil
+
+      expect(dummy_cli.send(:matching_version_entry, [], "v1", nil, client, "foo/bar")).to be_nil
+      expect(dummy_cli.send(:choose_upgrade_target, "1.2.0", versions, "patch")).to include(version: "1.2.3")
+      expect(dummy_cli.send(:major_line_version?, "2")).to be(true)
+      expect(dummy_cli.send(:latest_outdated_target, "1.2.0", versions)).to include(version: "2.0.0")
+      expect(dummy_cli.send(:version_entry_sha, nil, client, "foo/bar")).to be_nil
+      expect(dummy_cli.send(:release_version_sort_key, versions.first)).to be_an(Array)
+      expect(dummy_cli.send(:short_sha?, "a" * 12)).to be(true)
+      expect(dummy_cli.send(:non_sha?, "v1")).to be(true)
+      expect(dummy_cli.send(:stale_sha?, "a", "abc")).to be(false)
+    end
+
+    it "returns nil for malformed replacement line coordinates and mismatched tokens" do
+      text = "  - uses: foo/bar@v1 # v1\n"
+
+      expect(dummy_cli.send(:version_comment_from_line, text, 5, 0, "foo/bar@v1")).to be_nil
+      expect(dummy_cli.send(:version_comment_from_line, text, 0, 200, "foo/bar@v1")).to be_nil
+      expect(dummy_cli.send(:version_comment_from_line, "# comment\n", 0, 0, "foo/bar@v1")).to be_nil
+      expect(dummy_cli.send(:version_comment_from_line, text, 0, 10, "other/action@v1")).to be_nil
+      expect(dummy_cli.send(:build_replacement_from_line, text, 5, 0, "foo/bar@v1", "sha")).to be_nil
+      expect(dummy_cli.send(:build_replacement_from_line, text, 0, 200, "foo/bar@v1", "sha")).to be_nil
+      expect(dummy_cli.send(:build_replacement_from_line, "# comment\n", 0, 0, "foo/bar@v1", "sha")).to be_nil
+      expect(dummy_cli.send(:build_replacement_from_line, text, 0, 10, "other/action@v1", "sha")).to be_nil
+      expect(dummy_cli.send(:build_replacement_from_line, "foobar\n", 0, 0, "foobar", "sha")).to be_nil
+
+      unchanged = dummy_cli.send(:apply_edits, "one\n", [{line: 5, start: 0, end: 1, new_scalar: "x"}])
+      expect(unchanged).to include(changed: false, text: "one\n")
     end
 
     it "reports higher-version outdated info even when patch is the write target" do
@@ -685,6 +774,15 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(payload.fetch("planned_changes").first["new_version"]).to eq("1.3.0")
     end
 
+    it "runs with no persistent cache when cache path is blank" do
+      cli = described_class.new(["--root", workflow_root, "--json", "--cache-path", ""])
+
+      expect(cli.run!).to eq(0)
+      expect(described_class::GitHubClient).to have_received(:new).with(
+        hash_including(persistent_cache: nil)
+      )
+    end
+
     it "emits human text report with version-equivalent outdated pins summary" do
       cli = described_class.new(["--root", workflow_root, "--upgrade", "minor"])
 
@@ -693,6 +791,26 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       end.to output(
         %r{Outdated actions \(1\):\nAction Current Latest Location Reason\nfoo/bar 1\.2\.0 1\.3\.0 #{Regexp.escape(workflow_path)}:\d+ #{Regexp.escape(described_class::UPGRADE_REASON)}}
       ).to_stdout
+    end
+
+    it "handles workflow files without external action refs" do
+      File.write(
+        workflow_path,
+        <<~YAML
+          name: ci
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: ./local-action
+        YAML
+      )
+      cli = described_class.new(["--root", workflow_root])
+
+      expect do
+        expect(cli.run!).to eq(0)
+      end.to output(/Outdated actions: none/).to_stdout
     end
 
     it "fails in check mode and recommends the write command when updates are needed" do
@@ -841,6 +959,68 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(cli.run!).to eq(0)
       expect(File.read(workflow_path)).to include("uses: foo/bar@bbb # v7.0.0")
       expect(File.read(workflow_path)).not_to include("# v7\n")
+    end
+
+    it "returns failure and renders line-specific errors when a workflow token cannot be replaced" do
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "minor"])
+      allow(cli).to receive(:build_replacement_from_line).and_return(nil)
+
+      expect do
+        expect(cli.run!).to eq(2)
+      end.to output(/Errors:\n- #{Regexp.escape(workflow_path)}:7 token_parse_failed/m).to_stdout
+    end
+
+    it "records read and YAML parse failures" do
+      cli = described_class.new(["--root", workflow_root])
+      state = {files_scanned: 0, failures: 0, errors: []}
+
+      allow(File).to receive(:read).and_call_original
+      allow(File).to receive(:read).with(workflow_path).and_raise(Errno::EACCES, workflow_path)
+
+      expect(cli.send(:load_workflows, [workflow_path], state)).to be_empty
+      expect(state[:errors]).to contain_exactly(include(path: workflow_path, error: /read_error/))
+
+      allow(File).to receive(:read).with(workflow_path).and_return(":\n")
+      state = {files_scanned: 0, failures: 0, errors: []}
+
+      expect(cli.send(:load_workflows, [workflow_path], state)).to be_empty
+      expect(state[:errors]).to contain_exactly(include(path: workflow_path, error: /yaml_parse_error/))
+    end
+
+    it "renders errors without line numbers" do
+      cli = described_class.new(["--root", workflow_root])
+      state = {
+        files_scanned: 0,
+        files_with_changes: 0,
+        updates: 0,
+        failures: 1,
+        errors: [{path: workflow_path, error: "read_error"}],
+        changed_files: [],
+        planned_changes: [],
+        outdated_pins: []
+      }
+
+      expect { cli.send(:print_report, state) }.to output(/Errors:\n- #{Regexp.escape(workflow_path)} read_error/m).to_stdout
+    end
+
+    it "writes edits without YAML validation when validation is disabled" do
+      File.write(
+        workflow_path,
+        <<~YAML
+          name: ci
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: "foo/bar@v1.2.0"
+        YAML
+      )
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "minor", "--write", "--no-validate"])
+
+      expect(cli).not_to receive(:validate_yaml!)
+      expect(cli.run!).to eq(0)
+      expect(File.read(workflow_path)).to include(%("foo/bar@bbb"))
     end
 
     it "calls GitHub release-version lookup for each workflow action when evaluating pins" do
