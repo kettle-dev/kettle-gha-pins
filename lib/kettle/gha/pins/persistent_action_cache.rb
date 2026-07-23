@@ -45,7 +45,7 @@ module Kettle
             deserialized = deserialize_version_entry(entry)
             memo << deserialized if deserialized
           end
-            .sort_by { |entry| entry[:version_obj] }
+            .sort_by { |entry| VersionRubric.sort_key(entry) }
             .reverse
         end
 

@@ -171,6 +171,33 @@ RSpec.describe Kettle::Gha::Pins do
       expect(reloaded.ref_sha("codecov/codecov-action", "v7.0.0")).to eq("a" * 40)
     end
 
+    it "rehydrates cached versions using the shared release-version rubric" do
+      cache = described_class.new(path: path, clock: clock)
+      cache.write_versions(
+        "codecov/codecov-action",
+        [
+          {
+            tag: "v7.0.0",
+            version_obj: Gem::Version.new("7.0.0"),
+            version: "7.0.0",
+            sha: "a" * 40,
+            released_at: "2026-07-22T12:00:00Z"
+          },
+          {
+            tag: "v7",
+            version_obj: Gem::Version.new("7"),
+            version: "7",
+            sha: "a" * 40,
+            released_at: ""
+          }
+        ]
+      )
+
+      versions = described_class.new(path: path, clock: clock).versions_for_repo("codecov/codecov-action")
+
+      expect(versions.first).to include(tag: "v7.0.0", version: "7.0.0")
+    end
+
     it "returns nil for missing, empty, stale, and invalid cache entries" do
       stale_clock = -> { clock_time - (25 * 60 * 60) }
       cache = described_class.new(path: path, clock: stale_clock)
