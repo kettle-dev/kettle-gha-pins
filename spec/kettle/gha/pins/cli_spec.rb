@@ -808,6 +808,54 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       )
     end
 
+    it "persists dry-run cache data for the next write run", freeze: Time.utc(2026, 7, 23, 12, 0, 0) do
+      File.write(
+        workflow_path,
+        <<~YAML
+          name: ci
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: foo/bar@v1.2.0 # v1.2.0
+        YAML
+      )
+      cache_path = File.join(workflow_root, "gha-cache.json")
+      allow(described_class::GitHubClient).to receive(:new).and_call_original
+      first_client = described_class::GitHubClient.new(
+        token: nil,
+        api_base: described_class::API_BASE,
+        user_agent: "kettle-gha-pins",
+        persistent_cache: described_class::PersistentActionCache.new(path: cache_path)
+      )
+      second_client = described_class::GitHubClient.new(
+        token: nil,
+        api_base: described_class::API_BASE,
+        user_agent: "kettle-gha-pins",
+        persistent_cache: described_class::PersistentActionCache.new(path: cache_path)
+      )
+      allow(described_class::GitHubClient).to receive(:new).and_return(first_client, second_client)
+      allow(first_client).to receive(:request_json).with("/repos/foo/bar/releases?per_page=100").and_return([
+        {"tag_name" => "v1.2.0", "published_at" => "2026-07-01T12:00:00Z"},
+        {"tag_name" => "v1.3.0", "published_at" => "2026-07-22T12:00:00Z"}
+      ])
+      allow(first_client).to receive(:request_json).with("/repos/foo/bar/git/matching-refs/tags/").and_return([
+        {"ref" => "refs/tags/v1.2.0", "object" => {"type" => "commit", "sha" => "a" * 40}},
+        {"ref" => "refs/tags/v1.3.0", "object" => {"type" => "commit", "sha" => "b" * 40}}
+      ])
+      allow(first_client).to receive(:request_json).with("/repos/foo/bar/commits/v1.2.0").and_return({"sha" => "a" * 40})
+      expect(second_client).not_to receive(:request_json)
+
+      dry_run = described_class.new(["--root", workflow_root, "--upgrade", "minor", "--cache-path", cache_path])
+      write_run = described_class.new(["--root", workflow_root, "--upgrade", "minor", "--cache-path", cache_path, "--write"])
+
+      expect(dry_run.run!).to eq(0)
+      expect(JSON.parse(File.read(cache_path)).dig("actions", "foo/bar", "targets", "minor", "1", "version")).to eq("1.3.0")
+      expect(write_run.run!).to eq(0)
+      expect(File.read(workflow_path)).to include("uses: foo/bar@#{"b" * 40} # v1.3.0")
+    end
+
     it "emits human text report with version-equivalent outdated pins summary" do
       cli = described_class.new(["--root", workflow_root, "--upgrade", "minor"])
 
