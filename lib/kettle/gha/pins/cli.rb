@@ -4,6 +4,7 @@ require "json"
 require "open3"
 require "optparse"
 require "pathname"
+require "set"
 
 require "psych"
 require "kettle/gha/pins"
