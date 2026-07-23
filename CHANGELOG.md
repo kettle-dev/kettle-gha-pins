@@ -22,6 +22,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+- `kettle-gha-pins` now defaults `--upgrade` to `major`, making
+  `kettle-gha-pins --check` fail for any unapplied GitHub Actions pin update
+  unless callers choose a narrower upgrade level.
+
 ### Deprecated
 
 ### Removed

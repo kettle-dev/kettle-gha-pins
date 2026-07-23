@@ -35,7 +35,7 @@ For ordinary workflow pin maintenance, install this gem and run:
 
 ```console
 kettle-gha-pins --check
-kettle-gha-pins --write --upgrade patch
+kettle-gha-pins --write --upgrade major
 ```
 
 ## 💡 Info you can shake a stick at

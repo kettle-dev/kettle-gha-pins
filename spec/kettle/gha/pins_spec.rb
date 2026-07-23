@@ -79,8 +79,8 @@ RSpec.describe Kettle::Gha::Pins do
       expect(described_class.choose_upgrade_target("v1.2.0", versions, "major")).to include(version: "2.0.0")
     end
 
-    it "uses the patch policy when callers provide an invalid upgrade level" do
-      expect(described_class.choose_upgrade_target("v1.2.0", versions, "garbage")).to include(version: "1.2.3")
+    it "uses the default major policy when callers provide an invalid upgrade level" do
+      expect(described_class.choose_upgrade_target("v1.2.0", versions, "garbage")).to include(version: "2.0.0")
       expect(described_class.send(:allowed_by_level?, "1.2.0", Gem::Version.new("1.2.0"), versions.first, "custom")).to be(true)
     end
 

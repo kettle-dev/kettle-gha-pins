@@ -40,10 +40,10 @@ RSpec.describe Kettle::Gha::Pins::CLI do
   end
 
   describe "CLI options" do
-    it "defaults --upgrade to patch" do
+    it "defaults --upgrade to major" do
       cli = described_class.new(["--root", workflow_root])
       cli.send(:parse!)
-      expect(cli.instance_variable_get(:@options)[:upgrade]).to eq("patch")
+      expect(cli.instance_variable_get(:@options)[:upgrade]).to eq("major")
     end
 
     it "accepts --refresh-cache and --cache-path" do

@@ -6,7 +6,7 @@ module Kettle
       # Shared version ordering and upgrade selection rules for GitHub Action pins.
       module VersionRubric
         VALID_UPGRADE_LEVELS = %w[major minor patch].freeze
-        DEFAULT_UPGRADE_LEVEL = "patch"
+        DEFAULT_UPGRADE_LEVEL = "major"
         RELEASE_TAG_RE = /\A(?:\d+|\d+\.\d+\.\d+(?:[-.]?[0-9A-Za-z.-]+)?)\z/
 
         module_function
