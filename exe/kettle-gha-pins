@@ -5,6 +5,12 @@ $stdout.sync = true
 $stderr.sync = true
 
 script_basename = File.basename(__FILE__)
+require_relative "../lib/kettle/gha/pins/version"
+
+if ARGV.any? { |arg| arg == "-v" || arg == "--version" }
+  puts Kettle::Gha::Pins::Version::VERSION
+  exit(0)
+end
 
 begin
   require "kettle/gha/pins"
@@ -21,6 +27,8 @@ rescue LoadError
 end
 
 begin
+  puts "== #{script_basename} v#{Kettle::Gha::Pins::Version::VERSION} =="
+
   status = Kettle::Gha::Pins::CLI.new(ARGV).run!
   exit(status)
 rescue => e
