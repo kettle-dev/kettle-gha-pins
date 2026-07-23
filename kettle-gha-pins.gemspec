@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.email = ["floss@galtzo.com"]
 
   spec.summary = "📌 Shared GitHub Actions pin version rules for kettle-dev tooling."
-  spec.description = "📌 Shared, deterministic GitHub Actions release-tag parsing, canonicalization, and upgrade selection logic for kettle-dev and kettle-jem workflow pin maintenance."
+  spec.description = "📌 GitHub Actions workflow SHA pin maintenance, including deterministic release-tag parsing, canonicalization, cache-backed GitHub ref resolution, and upgrade planning."
   spec.homepage = "https://github.com/kettle-dev/kettle-gha-pins"
   spec.licenses = ["MIT"]
   spec.required_ruby_version = ">= 3.2.0"
@@ -85,6 +85,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Utilities
+  spec.add_dependency("ruby-progressbar", "~> 1.13")                    # ruby >= 0
   spec.add_dependency("version_gem", "~> 1.1", ">= 1.1.14")              # ruby >= 2.2.0
 
   # NOTE: It is preferable to list development dependencies in the gemspec due to increased

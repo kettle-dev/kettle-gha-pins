@@ -24,6 +24,9 @@ module Kettle
       DEFAULT_HTTP_READ_TIMEOUT_SECONDS = 10
       DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS = 20
       VALID_UPGRADE_LEVELS = VersionRubric::VALID_UPGRADE_LEVELS
+
+      autoload :CacheProgress, "kettle/gha/pins/cache_progress"
+      autoload :CLI, "kettle/gha/pins/cli"
     end
   end
 end

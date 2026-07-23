@@ -31,6 +31,13 @@ The gem is intentionally API-focused. Command-line tools such as
 instead of each carrying their own subtly different cache, network, and version
 comparison logic.
 
+For ordinary workflow pin maintenance, install this gem and run:
+
+```console
+kettle-gha-pins --check
+kettle-gha-pins --write --upgrade patch
+```
+
 ## 💡 Info you can shake a stick at
 
 | Tokens to Remember | [![Gem name][⛳️name-img]][⛳️gem-name] [![Gem namespace][⛳️namespace-img]][⛳️gem-namespace] |

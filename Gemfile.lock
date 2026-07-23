@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     kettle-gha-pins (0.1.1)
+      ruby-progressbar (~> 1.13)
       version_gem (~> 1.1, >= 1.1.14)
 
 GEM

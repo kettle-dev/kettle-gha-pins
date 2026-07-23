@@ -23,6 +23,8 @@ Please file a bug if you notice a violation of semantic versioning.
 - Added the shared `PersistentActionCache`, `GitHubClient`, and action ref
   resolver API so GitHub Actions pin tools can reuse cache, network, and upgrade
   planning behavior without shelling out to each other.
+- Added the `kettle-gha-pins` executable for scanning standard GitHub Actions
+  workflow YAML files and updating action refs to immutable SHAs.
 
 ### Changed
 
