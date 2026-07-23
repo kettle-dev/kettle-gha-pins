@@ -116,6 +116,39 @@
 
 
 
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#last_versions_cache_hit-instance_method" title="#last_versions_cache_hit (instance method)">#<strong>last_versions_cache_hit</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute last_versions_cache_hit.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
 
 
 
@@ -264,7 +297,8 @@
 21
 22
 23
-24</pre>
+24
+25</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 13</span>
@@ -280,6 +314,7 @@
   <span class='ivar'>@refresh_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_refresh_timeout'>refresh_timeout</span>
   <span class='ivar'>@commit_cache</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='ivar'>@release_cache</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='ivar'>@last_versions_cache_hit</span> <span class='op'>=</span> <span class='kw'>false</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -287,6 +322,53 @@
 </div>
   
 </div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="last_versions_cache_hit-instance_method">
+  
+    #<strong>last_versions_cache_hit</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute last_versions_cache_hit.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+27
+28
+29</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 27</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_last_versions_cache_hit'>last_versions_cache_hit</span>
+  <span class='ivar'>@last_versions_cache_hit</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -308,14 +390,6 @@
       <pre class="lines">
 
 
-57
-58
-59
-60
-61
-62
-63
-64
 65
 66
 67
@@ -333,10 +407,18 @@
 79
 80
 81
-82</pre>
+82
+83
+84
+85
+86
+87
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commit_sha'>commit_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>||</span> <span class='id identifier rubyid_ref'>ref</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -384,14 +466,14 @@
       <pre class="lines">
 
 
-84
-85
-86
-87
-88</pre>
+92
+93
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release_latest_sha'>release_latest_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_versions'>versions</span> <span class='op'>=</span> <span class='id identifier rubyid_versions_for_repo'>versions_for_repo</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
@@ -418,9 +500,6 @@
       <pre class="lines">
 
 
-26
-27
-28
 29
 30
 31
@@ -447,19 +526,32 @@
 52
 53
 54
-55</pre>
+55
+56
+57
+58
+59
+60
+61
+62
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_versions_for_repo'>versions_for_repo</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
+  <span class='ivar'>@last_versions_cache_hit</span> <span class='op'>=</span> <span class='kw'>false</span>
   <span class='kw'>return</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='kw'>return</span> <span class='ivar'>@release_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='ivar'>@release_cache</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='ivar'>@release_cache</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
+    <span class='ivar'>@last_versions_cache_hit</span> <span class='op'>=</span> <span class='kw'>true</span>
+    <span class='kw'>return</span> <span class='ivar'>@release_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
 
   <span class='id identifier rubyid_stale'>stale</span> <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='kw'>unless</span> <span class='ivar'>@refresh_cache</span>
     <span class='id identifier rubyid_cached'>cached</span> <span class='op'>=</span> <span class='ivar'>@persistent_cache</span><span class='op'>&amp;.</span><span class='id identifier rubyid_versions_for_repo'>versions_for_repo</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='comma'>,</span> <span class='label'>fresh:</span> <span class='kw'>true</span><span class='rparen'>)</span>
     <span class='kw'>if</span> <span class='id identifier rubyid_cached'>cached</span>
+      <span class='ivar'>@last_versions_cache_hit</span> <span class='op'>=</span> <span class='kw'>true</span>
       <span class='ivar'>@release_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_cached'>cached</span>
       <span class='kw'>return</span> <span class='id identifier rubyid_cached'>cached</span>
     <span class='kw'>end</span>

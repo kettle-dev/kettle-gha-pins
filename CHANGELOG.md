@@ -22,8 +22,23 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
-- Action-resolution progress now uses `tty-progressbar` multi-line bars so
-  cached, live, and skipped counters no longer overwrite each other on TTYs.
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.3.0] - 2026-07-23
+
+- TAG: [v0.3.0][0.3.0t]
+- COVERAGE: 98.92% -- 915/925 lines in 8 files
+- BRANCH COVERAGE: 90.93% -- 371/408 branches in 8 files
+- 22.77% documented
+
+### Changed
+
 - `kettle-gha-pins` now defaults `--upgrade` to `major`, making
   `kettle-gha-pins --check` fail for any unapplied GitHub Actions pin update
   unless callers choose a narrower upgrade level.
@@ -31,17 +46,14 @@ Please file a bug if you notice a violation of semantic versioning.
   `KETTLE_GHA_PINS_COOLDOWN_DAYS` so projects can warn on freshly released
   action version upgrades before enforcing them.
 
-### Deprecated
-
-### Removed
+- Action-resolution progress now uses `tty-progressbar` multi-line bars so
+  cached, live, and skipped counters no longer overwrite each other on TTYs.
 
 ### Fixed
 
 - GitHub Actions pin cache writes now persist tag SHA refs from release version
   metadata, so repeated runs can reuse cached action resolution instead of
   rechecking freshly cached actions live.
-
-### Security
 
 ## [0.2.1] - 2026-07-22
 
@@ -104,7 +116,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.1...v0.3.0
+[0.3.0t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.0
 [0.2.1]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.0...v0.2.1
 [0.2.1t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.2.1
 [0.2.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.1.0...v0.2.0

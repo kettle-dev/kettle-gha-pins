@@ -389,7 +389,8 @@
 115
 116
 117
-118</pre>
+118
+119</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 26</span>
@@ -439,6 +440,7 @@
       <span class='id identifier rubyid_updates'>updates</span> <span class='op'>=</span> <span class='lbrace'>{</span>
         <span class='label'>sha:</span> <span class='id identifier rubyid_target_sha'>target_sha</span><span class='comma'>,</span>
         <span class='label'>version:</span> <span class='id identifier rubyid_target'>target</span><span class='lbracket'>[</span><span class='symbol'>:version</span><span class='rbracket'>]</span><span class='comma'>,</span>
+        <span class='label'>released_at:</span> <span class='id identifier rubyid_target'>target</span><span class='lbracket'>[</span><span class='symbol'>:released_at</span><span class='rbracket'>]</span><span class='comma'>,</span>
         <span class='label'>reason:</span> <span class='const'><span class='object_link'><a href="../Pins.html#UPGRADE_REASON-constant" title="Kettle::Gha::Pins::UPGRADE_REASON (constant)">UPGRADE_REASON</a></span></span>
       <span class='rbrace'>}</span>
       <span class='id identifier rubyid_reason'>reason</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../Pins.html#UPGRADE_REASON-constant" title="Kettle::Gha::Pins::UPGRADE_REASON (constant)">UPGRADE_REASON</a></span></span>
@@ -507,7 +509,6 @@
       <pre class="lines">
 
 
-120
 121
 122
 123
@@ -521,10 +522,11 @@
 131
 132
 133
-134</pre>
+134
+135</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_matching_version_entry'>matching_version_entry</span><span class='lparen'>(</span><span class='id identifier rubyid_versions'>versions</span><span class='comma'>,</span> <span class='id identifier rubyid_current_ref'>current_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_current_sha'>current_sha</span><span class='comma'>,</span> <span class='id identifier rubyid_client'>client</span><span class='comma'>,</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_parsed'>parsed</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="VersionRubric.html#parse-class_method" title="Kettle::Gha::Pins::VersionRubric.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_current_ref'>current_ref</span><span class='rparen'>)</span>
@@ -584,12 +586,12 @@
       <pre class="lines">
 
 
-151
 152
-153</pre>
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 152</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_non_sha?'>non_sha?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span>
   <span class='op'>!</span><span class='const'><span class='object_link'><a href="../Pins.html#SHA_RE-constant" title="Kettle::Gha::Pins::SHA_RE (constant)">SHA_RE</a></span></span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='const'><span class='object_link'><a href="../Pins.html#WEAK_SHA_RE-constant" title="Kettle::Gha::Pins::WEAK_SHA_RE (constant)">WEAK_SHA_RE</a></span></span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span>
@@ -691,14 +693,14 @@
       <pre class="lines">
 
 
-145
 146
 147
 148
-149</pre>
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 146</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_short_sha?'>short_sha?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_candidate'>candidate</span>
@@ -748,7 +750,6 @@
       <pre class="lines">
 
 
-155
 156
 157
 158
@@ -759,10 +760,11 @@
 163
 164
 165
-166</pre>
+166
+167</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 156</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stale_sha?'>stale_sha?</span><span class='lparen'>(</span><span class='id identifier rubyid_current'>current</span><span class='comma'>,</span> <span class='id identifier rubyid_latest'>latest</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='id identifier rubyid_current'>current</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_latest'>latest</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -796,17 +798,17 @@
       <pre class="lines">
 
 
-136
 137
 138
 139
 140
 141
 142
-143</pre>
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/action_resolver.rb', line 137</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_version_entry_sha'>version_entry_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='comma'>,</span> <span class='id identifier rubyid_client'>client</span><span class='comma'>,</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_entry'>entry</span>

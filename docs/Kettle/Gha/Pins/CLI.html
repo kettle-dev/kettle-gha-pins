@@ -287,7 +287,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(argv, err: $stderr)  &#x21d2; CLI </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(argv, err: $stderr, clock: -&gt; { Time.now })  &#x21d2; CLI </a>
     
 
     
@@ -342,7 +342,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(argv, err: $stderr)  &#x21d2; <tt><span class='object_link'><a href="" title="Kettle::Gha::Pins::CLI (class)">CLI</a></span></tt> 
+    #<strong>initialize</strong>(argv, err: $stderr, clock: -&gt; { Time.now })  &#x21d2; <tt><span class='object_link'><a href="" title="Kettle::Gha::Pins::CLI (class)">CLI</a></span></tt> 
   
 
   
@@ -364,8 +364,6 @@
       <pre class="lines">
 
 
-46
-47
 48
 49
 50
@@ -383,12 +381,28 @@
 62
 63
 64
-65</pre>
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 48</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_argv'>argv</span><span class='comma'>,</span> <span class='label'>err:</span> <span class='gvar'>$stderr</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_argv'>argv</span><span class='comma'>,</span> <span class='label'>err:</span> <span class='gvar'>$stderr</span><span class='comma'>,</span> <span class='label'>clock:</span> <span class='tlambda'>-&gt;</span> <span class='tlambeg'>{</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_cooldown_days'>cooldown_days</span> <span class='op'>=</span> <span class='kw'>begin</span>
+    <span class='const'>Integer</span><span class='lparen'>(</span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>KETTLE_GHA_PINS_COOLDOWN_DAYS</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>0</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='kw'>rescue</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='const'>TypeError</span>
+    <span class='int'>0</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_cooldown_days'>cooldown_days</span> <span class='op'>=</span> <span class='int'>0</span> <span class='kw'>if</span> <span class='id identifier rubyid_cooldown_days'>cooldown_days</span><span class='period'>.</span><span class='id identifier rubyid_negative?'>negative?</span>
   <span class='ivar'>@argv</span> <span class='op'>=</span> <span class='id identifier rubyid_argv'>argv</span>
   <span class='ivar'>@err</span> <span class='op'>=</span> <span class='id identifier rubyid_err'>err</span>
   <span class='ivar'>@options</span> <span class='op'>=</span> <span class='lbrace'>{</span>
@@ -403,6 +417,8 @@
     <span class='label'>user_agent:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>kettle-gha-pins</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
     <span class='label'>upgrade:</span> <span class='const'><span class='object_link'><a href="#DEFAULT_UPGRADE_LEVEL-constant" title="Kettle::Gha::Pins::CLI::DEFAULT_UPGRADE_LEVEL (constant)">DEFAULT_UPGRADE_LEVEL</a></span></span><span class='comma'>,</span>
     <span class='label'>cache_path:</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>KETTLE_GHA_SHA_PINS_CACHE</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="#PersistentActionCache-constant" title="Kettle::Gha::Pins::CLI::PersistentActionCache (constant)">PersistentActionCache</a></span></span><span class='period'>.</span><span class='id identifier rubyid_default_path'>default_path</span><span class='comma'>,</span>
+    <span class='label'>cooldown_days:</span> <span class='id identifier rubyid_cooldown_days'>cooldown_days</span><span class='comma'>,</span>
+    <span class='label'>clock:</span> <span class='id identifier rubyid_clock'>clock</span><span class='comma'>,</span>
     <span class='label'>refresh_cache:</span> <span class='kw'>false</span><span class='comma'>,</span>
     <span class='label'>reject_patterns:</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='comma'>,</span>
     <span class='label'>progress:</span> <span class='kw'>nil</span>
@@ -435,12 +451,12 @@
       <pre class="lines">
 
 
-38
-39
-40</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_release_version_sort_key'>release_version_sort_key</span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../../../Kettle.html" title="Kettle (module)">Kettle</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Gha.html" title="Kettle::Gha (module)">Gha</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Pins.html" title="Kettle::Gha::Pins (module)">Pins</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span></span><span class='period'>.</span><span class='id identifier rubyid_sort_key'><span class='object_link'><a href="VersionRubric.html#sort_key-class_method" title="Kettle::Gha::Pins::VersionRubric.sort_key (method)">sort_key</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='rparen'>)</span>
@@ -465,12 +481,12 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_release_version_specificity'>release_version_specificity</span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../../../Kettle.html" title="Kettle (module)">Kettle</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Gha.html" title="Kettle::Gha (module)">Gha</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Pins.html" title="Kettle::Gha::Pins (module)">Pins</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span></span><span class='period'>.</span><span class='id identifier rubyid_specificity'><span class='object_link'><a href="VersionRubric.html#specificity-class_method" title="Kettle::Gha::Pins::VersionRubric.specificity (method)">specificity</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='rparen'>)</span>
@@ -501,16 +517,6 @@
       <pre class="lines">
 
 
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
 77
 78
 79
@@ -669,10 +675,39 @@
 232
 233
 234
-235</pre>
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_run!'>run!</span>
   <span class='id identifier rubyid_parse!'>parse!</span>
@@ -699,6 +734,7 @@
     <span class='label'>errors:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span>
     <span class='label'>changed_files:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span>
     <span class='label'>planned_changes:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span>
+    <span class='label'>cooldown_changes:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span>
     <span class='label'>outdated_pins:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='rbrace'>}</span>
 
@@ -746,6 +782,7 @@
           <span class='id identifier rubyid_updates'>updates</span> <span class='op'>=</span> <span class='id identifier rubyid_compute_updates'>compute_updates</span><span class='lparen'>(</span><span class='id identifier rubyid_old_ref'>old_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:updates</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:sha</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:updates</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:reason</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
           <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:new_version</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:updates</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:version</span><span class='rbracket'>]</span>
           <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:old_version</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_version</span><span class='rbracket'>]</span>
+          <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:released_at</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:updates</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:released_at</span><span class='rbracket'>]</span>
         <span class='kw'>end</span>
         <span class='kw'>if</span> <span class='id identifier rubyid_updates'>updates</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_version</span><span class='rbracket'>]</span>
           <span class='id identifier rubyid_comment_version'>comment_version</span> <span class='op'>=</span> <span class='id identifier rubyid_version_comment_from_line'>version_comment_from_line</span><span class='lparen'>(</span><span class='id identifier rubyid_text'>text</span><span class='comma'>,</span> <span class='id identifier rubyid_node'>node</span><span class='lbracket'>[</span><span class='symbol'>:line</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_node'>node</span><span class='lbracket'>[</span><span class='symbol'>:col</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_parsed_ref'>parsed_ref</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -775,6 +812,22 @@
         <span class='kw'>end</span>
 
         <span class='kw'>next</span> <span class='kw'>unless</span> <span class='id identifier rubyid_updates'>updates</span>
+
+        <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_cooldown'>cooldown</span> <span class='op'>=</span> <span class='id identifier rubyid_cooldown_details'>cooldown_details</span><span class='lparen'>(</span><span class='id identifier rubyid_updates'>updates</span><span class='rparen'>)</span><span class='rparen'>)</span>
+          <span class='id identifier rubyid_state'>state</span><span class='lbracket'>[</span><span class='symbol'>:cooldown_changes</span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='lbrace'>{</span>
+            <span class='label'>path:</span> <span class='id identifier rubyid_path'>path</span><span class='comma'>,</span>
+            <span class='label'>line:</span> <span class='id identifier rubyid_node'>node</span><span class='lbracket'>[</span><span class='symbol'>:line</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='int'>1</span><span class='comma'>,</span>
+            <span class='label'>old_ref:</span> <span class='id identifier rubyid_old_ref'>old_ref</span><span class='comma'>,</span>
+            <span class='label'>old_version:</span> <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:old_version</span><span class='rbracket'>]</span><span class='comma'>,</span>
+            <span class='label'>new_ref:</span> <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:new_ref</span><span class='rbracket'>]</span><span class='comma'>,</span>
+            <span class='label'>new_version:</span> <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:new_version</span><span class='rbracket'>]</span><span class='comma'>,</span>
+            <span class='label'>reason:</span> <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:reason</span><span class='rbracket'>]</span><span class='comma'>,</span>
+            <span class='label'>released_at:</span> <span class='id identifier rubyid_cooldown'>cooldown</span><span class='lbracket'>[</span><span class='symbol'>:released_at</span><span class='rbracket'>]</span><span class='comma'>,</span>
+            <span class='label'>cooldown_until:</span> <span class='id identifier rubyid_cooldown'>cooldown</span><span class='lbracket'>[</span><span class='symbol'>:cooldown_until</span><span class='rbracket'>]</span><span class='comma'>,</span>
+            <span class='label'>action:</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span>
+          <span class='rbrace'>}</span>
+          <span class='kw'>next</span>
+        <span class='kw'>end</span>
 
         <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='id identifier rubyid_build_replacement_from_line'>build_replacement_from_line</span><span class='lparen'>(</span><span class='id identifier rubyid_text'>text</span><span class='comma'>,</span> <span class='id identifier rubyid_node'>node</span><span class='lbracket'>[</span><span class='symbol'>:line</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_node'>node</span><span class='lbracket'>[</span><span class='symbol'>:col</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_parsed_ref'>parsed_ref</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:new_ref</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_updates'>updates</span><span class='lbracket'>[</span><span class='symbol'>:new_version</span><span class='rbracket'>]</span><span class='rparen'>)</span>
         <span class='kw'>unless</span> <span class='id identifier rubyid_replacement'>replacement</span>
@@ -835,6 +888,7 @@
       <span class='kw'>end</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
+  <span class='id identifier rubyid_action_progress'>action_progress</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span>
   <span class='id identifier rubyid_progress_message'>progress_message</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Action resolution checks: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_action_progress'>action_progress</span><span class='period'>.</span><span class='id identifier rubyid_cached_count'>cached_count</span><span class='embexpr_end'>}</span><span class='tstring_content'> cached, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_action_progress'>action_progress</span><span class='period'>.</span><span class='id identifier rubyid_live_count'>live_count</span><span class='embexpr_end'>}</span><span class='tstring_content'> live.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_action_count'>action_count</span><span class='period'>.</span><span class='id identifier rubyid_positive?'>positive?</span>
 
   <span class='id identifier rubyid_print_report'>print_report</span><span class='lparen'>(</span><span class='id identifier rubyid_state'>state</span><span class='rparen'>)</span>
