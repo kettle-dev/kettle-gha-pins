@@ -28,10 +28,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
-- The `kettle-gha-pins` executable now uses normal `require` loading for its
-  version file, avoiding stale RuboCop Gradual baselines for `require_relative`
-  in shipped executables.
-
 ### Security
 
 ## [0.3.1] - 2026-07-23
@@ -45,6 +41,12 @@ Please file a bug if you notice a violation of semantic versioning.
 
 - The `kettle-gha-pins` executable now supports `-v` / `--version` and prints a
   standard startup header on normal runs.
+
+### Fixed
+
+- The `kettle-gha-pins` executable now uses normal `require` loading for its
+  version file, avoiding stale RuboCop Gradual baselines for `require_relative`
+  in shipped executables.
 
 ## [0.3.0] - 2026-07-23
 

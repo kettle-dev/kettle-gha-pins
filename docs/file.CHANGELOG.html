@@ -82,12 +82,6 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 
 <h3 id="fixed">Fixed</h3>
 
-<ul>
-  <li>The <code>kettle-gha-pins</code> executable now uses normal <code>require</code> loading for its<br>
-version file, avoiding stale RuboCop Gradual baselines for <code>require_relative</code><br>
-in shipped executables.</li>
-</ul>
-
 <h3 id="security">Security</h3>
 
 <h2 id="031---2026-07-23">
@@ -106,6 +100,14 @@ in shipped executables.</li>
 <ul>
   <li>The <code>kettle-gha-pins</code> executable now supports <code>-v</code> / <code>--version</code> and prints a<br>
 standard startup header on normal runs.</li>
+</ul>
+
+<h3 id="fixed-1">Fixed</h3>
+
+<ul>
+  <li>The <code>kettle-gha-pins</code> executable now uses normal <code>require</code> loading for its<br>
+version file, avoiding stale RuboCop Gradual baselines for <code>require_relative</code><br>
+in shipped executables.</li>
 </ul>
 
 <h2 id="030---2026-07-23">
@@ -135,7 +137,7 @@ action version upgrades before enforcing them.</p>
 cached, live, and skipped counters no longer overwrite each other on TTYs.</li>
 </ul>
 
-<h3 id="fixed-1">Fixed</h3>
+<h3 id="fixed-2">Fixed</h3>
 
 <ul>
   <li>GitHub Actions pin cache writes now persist tag SHA refs from release version<br>
@@ -154,7 +156,7 @@ rechecking freshly cached actions live.</li>
   <li>22.22% documented</li>
 </ul>
 
-<h3 id="fixed-2">Fixed</h3>
+<h3 id="fixed-3">Fixed</h3>
 
 <ul>
   <li>Lowered the generated gemspec Ruby requirement to <code>&gt;= 2.4.0</code> to match<br>
