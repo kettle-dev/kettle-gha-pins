@@ -22,9 +22,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
-- The `kettle-gha-pins` executable now supports `-v` / `--version` and prints a
-  standard startup header on normal runs.
-
 ### Deprecated
 
 ### Removed
@@ -32,6 +29,18 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Fixed
 
 ### Security
+
+## [0.3.1] - 2026-07-23
+
+- TAG: [v0.3.1][0.3.1t]
+- COVERAGE: 98.92% -- 915/925 lines in 8 files
+- BRANCH COVERAGE: 90.93% -- 371/408 branches in 8 files
+- 22.77% documented
+
+### Changed
+
+- The `kettle-gha-pins` executable now supports `-v` / `--version` and prints a
+  standard startup header on normal runs.
 
 ## [0.3.0] - 2026-07-23
 
@@ -119,7 +128,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.0...v0.3.1
+[0.3.1t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.1
 [0.3.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.1...v0.3.0
 [0.3.0t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.0
 [0.2.1]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.0...v0.2.1
