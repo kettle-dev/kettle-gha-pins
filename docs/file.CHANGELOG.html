@@ -82,6 +82,12 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 
 <h3 id="fixed">Fixed</h3>
 
+<ul>
+  <li>The <code>kettle-gha-pins</code> executable now uses normal <code>require</code> loading for its<br>
+version file, avoiding stale RuboCop Gradual baselines for <code>require_relative</code><br>
+in shipped executables.</li>
+</ul>
+
 <h3 id="security">Security</h3>
 
 <h2 id="031---2026-07-23">
