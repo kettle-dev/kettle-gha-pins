@@ -4,7 +4,7 @@ module Kettle
   module Gha
     module Pins
       module Version
-        VERSION = "0.3.1"
+        VERSION = "0.3.2"
       end
       VERSION = Version::VERSION # Traditional Constant Location
     end
