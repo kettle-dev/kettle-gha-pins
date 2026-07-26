@@ -28,7 +28,7 @@ rescue LoadError
 end
 
 begin
-  puts "== #{script_basename} v#{Kettle::Gha::Pins::Version::VERSION} =="
+  puts "== #{script_basename} v#{Kettle::Gha::Pins::Version::VERSION} ==" if ARGV.delete("--verbose")
 
   status = Kettle::Gha::Pins::CLI.new(ARGV).run!
   exit(status)
