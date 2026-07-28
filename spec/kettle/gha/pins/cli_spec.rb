@@ -1076,6 +1076,88 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(second_run.run!).to eq(0)
     end
 
+    it "normalizes a non-existent more-specific equivalent comment to the resolved real tag" do
+      File.write(
+        workflow_path,
+        <<~YAML
+          name: ci
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: foo/bar@bbb # v2.0.0
+        YAML
+      )
+      cli_client = instance_double(described_class::GitHubClient)
+      allow(described_class::GitHubClient).to receive(:new).and_return(cli_client)
+      allow(cli_client).to receive(:versions_for_repo).with("foo/bar").and_return([
+        {tag: "v2.0", version_obj: Gem::Version.new("2.0"), version: "2.0", sha: "bbb"}
+      ])
+      allow(cli_client).to receive(:commit_sha).with("foo/bar", "bbb").and_return("bbb")
+
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "major", "--check"])
+
+      expect do
+        expect(cli.run!).to eq(3)
+      end.to output(/2\.0\.0 2\.0 .* update_version_comment/m).to_stdout
+    end
+
+    it "updates a two-segment version comment to a more-specific equivalent" do
+      File.write(
+        workflow_path,
+        <<~YAML
+          name: ci
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: foo/bar@bbb # v2.0
+        YAML
+      )
+      cli_client = instance_double(described_class::GitHubClient)
+      allow(described_class::GitHubClient).to receive(:new).and_return(cli_client)
+      allow(cli_client).to receive(:versions_for_repo).with("foo/bar").and_return([
+        {tag: "v2.0.0", version_obj: Gem::Version.new("2.0.0"), version: "2.0.0", sha: "bbb"}
+      ])
+      allow(cli_client).to receive(:commit_sha).with("foo/bar", "bbb").and_return("bbb")
+
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "major", "--write"])
+
+      expect(cli.run!).to eq(0)
+      expect(File.read(workflow_path)).to include("uses: foo/bar@bbb # v2.0.0")
+      expect(File.read(workflow_path)).not_to include("# v2.0\n")
+    end
+
+    it "prefers the most specific real equivalent tag for SHA pin comments" do
+      File.write(
+        workflow_path,
+        <<~YAML
+          name: ci
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: foo/bar@bbb # v2.0
+        YAML
+      )
+      cli_client = instance_double(described_class::GitHubClient)
+      allow(described_class::GitHubClient).to receive(:new).and_return(cli_client)
+      allow(cli_client).to receive(:versions_for_repo).with("foo/bar").and_return([
+        {tag: "v2.0", version_obj: Gem::Version.new("2.0"), version: "2.0", sha: "bbb"},
+        {tag: "v2.0.0", version_obj: Gem::Version.new("2.0.0"), version: "2.0.0", sha: "bbb"}
+      ])
+      allow(cli_client).to receive(:commit_sha).with("foo/bar", "bbb").and_return("bbb")
+
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "major", "--write"])
+
+      expect(cli.run!).to eq(0)
+      expect(File.read(workflow_path)).to include("uses: foo/bar@bbb # v2.0.0")
+      expect(File.read(workflow_path)).not_to include("# v2.0\n")
+    end
+
     it "updates shorthand major-line version comments to the canonical explicit equivalent" do
       File.write(
         workflow_path,

@@ -34,8 +34,8 @@ module Kettle
         VALID_UPGRADE_LEVELS = Kettle::Gha::Pins::VALID_UPGRADE_LEVELS
         PersistentActionCache = Kettle::Gha::Pins::PersistentActionCache
         GitHubClient = Kettle::Gha::Pins::GitHubClient
-        VERSION_COMMENT_SUFFIX_RE = /\A\s+#\s*v?(?<version>\d+(?:\.\d+\.\d+(?:[-.]?[0-9A-Za-z.-]+)?)?)/
-        VERSION_COMMENT_REPLACEMENT_RE = /\A(?<prefix>\s+#\s*)v?\d+(?:\.\d+\.\d+(?:[-.]?[0-9A-Za-z.-]+)?)?/
+        VERSION_COMMENT_SUFFIX_RE = /\A\s+#\s*v?(?<version>\d+(?:\.\d+){0,2}(?:[-.]?[0-9A-Za-z.-]+)?)/
+        VERSION_COMMENT_REPLACEMENT_RE = /\A(?<prefix>\s+#\s*)v?\d+(?:\.\d+){0,2}(?:[-.]?[0-9A-Za-z.-]+)?/
 
         def self.release_version_sort_key(entry)
           Kettle::Gha::Pins::VersionRubric.sort_key(entry)
@@ -151,10 +151,15 @@ module Kettle
                 end
                 if updates.nil? && upgrade_plan[:current_version]
                   comment_version = version_comment_from_line(text, node[:line], node[:col], parsed_ref[:value])
-                  if comment_version && comment_version != upgrade_plan[:current_version]
+                  comment_update_version = VersionRubric.comment_update_version(
+                    comment_version,
+                    upgrade_plan[:current_version],
+                    known_versions: upgrade_plan.fetch(:versions, [])
+                  )
+                  if comment_update_version
                     updates = {
                       new_ref: old_ref,
-                      new_version: upgrade_plan[:current_version],
+                      new_version: comment_update_version,
                       old_version: comment_version,
                       reason: COMMENT_REASON,
                       action: repo_ref

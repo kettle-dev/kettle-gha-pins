@@ -115,6 +115,24 @@ RSpec.describe Kettle::Gha::Pins do
       expect(described_class.send(:allowed_by_level?, "1.2.0", Gem::Version.new("1.2.0"), versions.first, "custom")).to be(true)
     end
 
+    it "normalizes version comments to the resolved real tag spelling" do
+      expect(described_class.comment_update_version("2.0.0", "2.0")).to eq("2.0")
+      expect(described_class.comment_update_version("2.0", "2.0.0")).to eq("2.0.0")
+      expect(described_class.comment_update_version("2", "2.0")).to eq("2.0")
+      expect(described_class.comment_update_version("2.0", "2.0")).to be_nil
+      expect(described_class.comment_update_version("2.0.0", "2.0.1")).to eq("2.0.1")
+    end
+
+    it "prefers the most specific known real tag for equivalent version comments" do
+      known_versions = [
+        {tag: "v2.0.0", version_obj: Gem::Version.new("2.0.0"), version: "2.0.0", sha: "b" * 40},
+        {tag: "v2.0", version_obj: Gem::Version.new("2.0"), version: "2.0", sha: "b" * 40}
+      ]
+
+      expect(described_class.comment_update_version("2.0", "2.0.0", known_versions: known_versions)).to eq("2.0.0")
+      expect(described_class.comment_update_version("2.0.0", "2.0", known_versions: known_versions)).to be_nil
+    end
+
     it "only upgrades major-line tags under the major policy" do
       major_line_versions = [
         {tag: "v3", version_obj: Gem::Version.new("3"), version: "3", sha: "c" * 40},

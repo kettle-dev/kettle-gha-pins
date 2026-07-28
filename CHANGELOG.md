@@ -28,6 +28,12 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Version comment normalization now rewrites equivalent comments to a real
+  action tag, preferring the most specific version spelling when both equivalent
+  tags exist.
+- Two-segment version comments like `v2.0` are now parsed when deciding whether
+  an adjacent SHA-pin comment needs normalization.
+
 ### Security
 
 ## [0.3.2] - 2026-07-27

@@ -27,9 +27,9 @@ module Kettle
           level = VersionRubric.normalize_upgrade_level(upgrade_level)
 
           current_ref = old_ref.to_s.strip
-          return {is_outdated: false, updates: nil, reason: nil, current_version: nil} if current_ref.empty?
-
           available_versions = versions || []
+          return {is_outdated: false, updates: nil, reason: nil, current_version: nil, versions: available_versions} if current_ref.empty?
+
           latest = available_versions.first
 
           current_sha = if SHA_RE.match?(current_ref) || WEAK_SHA_RE.match?(current_ref)
@@ -114,6 +114,7 @@ module Kettle
             updates: updates,
             reason: reason,
             current_version: current_version,
+            versions: available_versions,
             latest_outdated: latest_outdated
           }
         end
