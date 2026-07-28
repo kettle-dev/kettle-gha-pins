@@ -7,7 +7,7 @@ module Kettle
       module VersionRubric
         VALID_UPGRADE_LEVELS = %w[major minor patch].freeze
         DEFAULT_UPGRADE_LEVEL = "major"
-        RELEASE_TAG_RE = /\A(?:\d+|\d+\.\d+\.\d+(?:[-.]?[0-9A-Za-z.-]+)?)\z/
+        RELEASE_TAG_RE = /\A(?:\d+|\d+\.\d+(?:\.\d+)?(?:[-.]?[0-9A-Za-z.-]+)?)\z/
 
         module_function
 

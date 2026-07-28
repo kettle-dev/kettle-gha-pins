@@ -42,6 +42,9 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Two-segment GitHub Action releases like `v2.0` are now recognized as
+  versioned action tags, so SHA pin updaters do not collapse them to evergreen
+  major tags like `v2`.
 - kettle-jem-template-20260726-002 - Generated version files now document their
   version namespace and constants, reducing warning-only YARD lint output.
 

@@ -18,6 +18,7 @@ RSpec.describe Kettle::Gha::Pins do
 
     it "parses concrete and major-line action release tags" do
       expect(described_class.parse("v1.2.3")).to eq(Gem::Version.new("1.2.3"))
+      expect(described_class.parse("v2.0")).to eq(Gem::Version.new("2.0"))
       expect(described_class.parse("v2")).to eq(Gem::Version.new("2"))
       expect(described_class.parse("bad-tag")).to be_nil
       expect(described_class.parse("1.0.0-")).to be_nil
@@ -39,6 +40,36 @@ RSpec.describe Kettle::Gha::Pins do
       expect(releases).to contain_exactly(
         include(tag: "v7.0.0", version: "7.0.0", sha: "a" * 40)
       )
+    end
+
+    it "prefers the matching release tag with the most numeric version sections" do
+      releases = described_class.build_release_versions(
+        release_tags: ["v2", "v2.0", "v2.0.0"],
+        tag_shas: {
+          "v2" => "a" * 40,
+          "v2.0" => "a" * 40,
+          "v2.0.0" => "a" * 40
+        }
+      )
+
+      expect(releases).to contain_exactly(
+        include(tag: "v2.0.0", version: "2.0.0", sha: "a" * 40)
+      )
+    end
+
+    it "keeps unknown-SHA equivalent release spellings ordered by specificity" do
+      releases = described_class.build_release_versions(
+        release_tags: ["v2", "v2.0"],
+        tag_shas: {
+          "v2" => nil,
+          "v2.0" => nil
+        }
+      )
+
+      expect(releases).to match([
+        include(tag: "v2.0", version: "2.0", sha: nil),
+        include(tag: "v2", version: "2", sha: nil)
+      ])
     end
 
     it "keeps a moving major-line tag when it points at a different SHA" do
