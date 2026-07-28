@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kettle-gha-pins (0.3.2)
+    kettle-gha-pins (0.3.3)
       ruby-progressbar (~> 1.13)
       tty-progressbar (~> 0.18)
       version_gem (~> 1.1, >= 1.1.14)
@@ -487,7 +487,7 @@ CHECKSUMS
   json (2.21.1) sha256=13a43df75d95641443f5702dff350f237164a9d811ff0f2c2800d4d980220583
   kettle-dev (2.5.3) sha256=4b1ee590bce64a4ad0c24b7b3a51b8f7ba6a1738cd2e52614f60e752c892f528
   kettle-family (1.2.0) sha256=a6dd7f25d0008efaba19c82227363beff5eb457052187a4e082d3126358d68b7
-  kettle-gha-pins (0.3.2)
+  kettle-gha-pins (0.3.3)
   kettle-ndjson (0.1.1) sha256=2d84314e8c911d6f560f2736e8f72019df6d811829674788ff33b3bbf518ed66
   kettle-rb (0.1.5) sha256=0322a569860c86e70f90d5ebe72353b8720b7054c7efa9f9044857f5c972d29f
   kettle-soup-cover (3.0.5) sha256=80abb42eb294fa5d3c8632c259a297c554fbc01902714461f3bf99a65190f5d0

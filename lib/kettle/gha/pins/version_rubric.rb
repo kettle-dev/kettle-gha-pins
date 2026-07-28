@@ -117,7 +117,7 @@ module Kettle
           if comment == resolved && resolved_entry && comment_entry
             preferred = entries_for_semantic_version(known_versions, comment).max_by { |known_entry| sort_key(known_entry) }
             preferred_version = preferred.fetch(:version)
-            preferred_version == comment_version.to_s ? nil : preferred_version
+            (preferred_version == comment_version.to_s) ? nil : preferred_version
           else
             return nil if comment_version.to_s == resolved_version.to_s
 

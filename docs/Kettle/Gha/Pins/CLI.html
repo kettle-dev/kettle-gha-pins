@@ -204,12 +204,12 @@
         <dt id="VERSION_COMMENT_SUFFIX_RE-constant" class="">VERSION_COMMENT_SUFFIX_RE =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A\s+#\s*v?(?&lt;version&gt;\d+(?:\.\d+\.\d+(?:[-.]?[0-9A-Za-z.-]+)?)?)</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A\s+#\s*v?(?&lt;version&gt;\d+(?:\.\d+){0,2}(?:[-.]?[0-9A-Za-z.-]+)?)</span><span class='regexp_end'>/</span></span></pre></dd>
       
         <dt id="VERSION_COMMENT_REPLACEMENT_RE-constant" class="">VERSION_COMMENT_REPLACEMENT_RE =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A(?&lt;prefix&gt;\s+#\s*)v?\d+(?:\.\d+\.\d+(?:[-.]?[0-9A-Za-z.-]+)?)?</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A(?&lt;prefix&gt;\s+#\s*)v?\d+(?:\.\d+){0,2}(?:[-.]?[0-9A-Za-z.-]+)?</span><span class='regexp_end'>/</span></span></pre></dd>
       
     </dl>
   
@@ -704,7 +704,12 @@
 261
 262
 263
-264</pre>
+264
+265
+266
+267
+268
+269</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 77</span>
@@ -786,10 +791,15 @@
         <span class='kw'>end</span>
         <span class='kw'>if</span> <span class='id identifier rubyid_updates'>updates</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_version</span><span class='rbracket'>]</span>
           <span class='id identifier rubyid_comment_version'>comment_version</span> <span class='op'>=</span> <span class='id identifier rubyid_version_comment_from_line'>version_comment_from_line</span><span class='lparen'>(</span><span class='id identifier rubyid_text'>text</span><span class='comma'>,</span> <span class='id identifier rubyid_node'>node</span><span class='lbracket'>[</span><span class='symbol'>:line</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_node'>node</span><span class='lbracket'>[</span><span class='symbol'>:col</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_parsed_ref'>parsed_ref</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-          <span class='kw'>if</span> <span class='id identifier rubyid_comment_version'>comment_version</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_comment_version'>comment_version</span> <span class='op'>!=</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_version</span><span class='rbracket'>]</span>
+          <span class='id identifier rubyid_comment_update_version'>comment_update_version</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span></span><span class='period'>.</span><span class='id identifier rubyid_comment_update_version'><span class='object_link'><a href="VersionRubric.html#comment_update_version-class_method" title="Kettle::Gha::Pins::VersionRubric.comment_update_version (method)">comment_update_version</a></span></span><span class='lparen'>(</span>
+            <span class='id identifier rubyid_comment_version'>comment_version</span><span class='comma'>,</span>
+            <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_version</span><span class='rbracket'>]</span><span class='comma'>,</span>
+            <span class='label'>known_versions:</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:versions</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+          <span class='rparen'>)</span>
+          <span class='kw'>if</span> <span class='id identifier rubyid_comment_update_version'>comment_update_version</span>
             <span class='id identifier rubyid_updates'>updates</span> <span class='op'>=</span> <span class='lbrace'>{</span>
               <span class='label'>new_ref:</span> <span class='id identifier rubyid_old_ref'>old_ref</span><span class='comma'>,</span>
-              <span class='label'>new_version:</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_version</span><span class='rbracket'>]</span><span class='comma'>,</span>
+              <span class='label'>new_version:</span> <span class='id identifier rubyid_comment_update_version'>comment_update_version</span><span class='comma'>,</span>
               <span class='label'>old_version:</span> <span class='id identifier rubyid_comment_version'>comment_version</span><span class='comma'>,</span>
               <span class='label'>reason:</span> <span class='const'><span class='object_link'><a href="#COMMENT_REASON-constant" title="Kettle::Gha::Pins::CLI::COMMENT_REASON (constant)">COMMENT_REASON</a></span></span><span class='comma'>,</span>
               <span class='label'>action:</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span>

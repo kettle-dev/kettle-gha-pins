@@ -28,13 +28,22 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+### Security
+
+## [0.3.3] - 2026-07-28
+
+- TAG: [v0.3.3][0.3.3t]
+- COVERAGE: 98.94% -- 935/945 lines in 8 files
+- BRANCH COVERAGE: 90.91% -- 380/418 branches in 8 files
+- 24.04% documented
+
+### Fixed
+
 - Version comment normalization now rewrites equivalent comments to a real
   action tag, preferring the most specific version spelling when both equivalent
   tags exist.
 - Two-segment version comments like `v2.0` are now parsed when deciding whether
   an adjacent SHA-pin comment needs normalization.
-
-### Security
 
 ## [0.3.2] - 2026-07-27
 
@@ -187,7 +196,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.2...v0.3.3
+[0.3.3t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.3
 [0.3.2]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.1...v0.3.2
 [0.3.2t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.2
 [0.3.1]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.0...v0.3.1
