@@ -70,7 +70,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 and <a href="https://tom.preston-werner.com/2022/05/23/major-version-numbers-are-not-sacred.html">yes</a>, platform and engine support are part of the <a href="https://github.com/semver/semver/issues/716#issuecomment-869336139">public API</a>.<br>
 Please file a bug if you notice a violation of semantic versioning.</p>
 
-<h2 id="unreleased"><a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.1...HEAD">Unreleased</a></h2>
+<h2 id="unreleased"><a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.2...HEAD">Unreleased</a></h2>
 
 <h3 id="added">Added</h3>
 
@@ -84,6 +84,69 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 
 <h3 id="security">Security</h3>
 
+<h2 id="032---2026-07-27">
+<a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.1...v0.3.2">0.3.2</a> - 2026-07-27</h2>
+
+<ul>
+  <li>TAG: <a href="https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.2">v0.3.2</a>
+</li>
+  <li>COVERAGE: 98.92% – 915/925 lines in 8 files</li>
+  <li>BRANCH COVERAGE: 90.93% – 371/408 branches in 8 files</li>
+  <li>24.75% documented</li>
+</ul>
+
+<h3 id="added-1">Added</h3>
+
+<ul>
+  <li>
+    <p>kettle-jem-template-20260726-001 - Projects now include YARD lint<br>
+configuration and documentation dependencies so documentation issues fail<br>
+before generated docs are refreshed.</p>
+  </li>
+  <li>
+    <p>kettle-jem-template-20260727-001 - Spec harness documentation now lists the<br>
+RSpec helpers provided by <code>kettle-test</code>.</p>
+  </li>
+</ul>
+
+<h3 id="changed-1">Changed</h3>
+
+<ul>
+  <li>
+    <p>The <code>kettle-gha-pins</code> executable startup header is now shown only when<br>
+<code>--verbose</code> is passed; <code>-v</code> and <code>--version</code> still print just the executable<br>
+version and exit.</p>
+  </li>
+  <li>kettle-jem-template-20260725-001 - Release pull request branches beginning<br>
+with <code>feature/release</code> now run JRuby and TruffleRuby workflows.</li>
+  <li>
+    <p>kettle-jem-template-20260725-002 - Version specs now use <code>anonymous_loader</code> to<br>
+cover <code>version.rb</code> without redefining constants, or are removed when version<br>
+specs are not managed for the project.</p>
+  </li>
+  <li>kettle-jem-template-20260728-001 - Generated Ruby workflows now use clearer<br>
+setup-ruby-flash planning and can prepare appraisal-only jobs without<br>
+installing the main Gemfile bundle.</li>
+</ul>
+
+<h3 id="fixed-1">Fixed</h3>
+
+<ul>
+  <li>Two-segment GitHub Action releases like <code>v2.0</code> are now recognized as<br>
+versioned action tags, so SHA pin updaters do not collapse them to evergreen<br>
+major tags like <code>v2</code>.</li>
+  <li>
+    <p>kettle-jem-template-20260726-002 - Generated version files now document their<br>
+version namespace and constants, reducing warning-only YARD lint output.</p>
+  </li>
+  <li>kettle-jem-template-20260726-003 - Coverage upload steps now treat Coveralls,<br>
+QLTY, and Codecov as optional, so provider outages do not fail CI when local<br>
+coverage thresholds still pass.</li>
+  <li>kettle-jem-template-20260728-002 - Generated RuboCop configs now ignore the<br>
+same <code>gemfiles/vendor/bundle</code> tree as <code>.gitignore</code>, so vendored dependency<br>
+installs are not reported as project lint debt.</li>
+</ul>
+
 <h2 id="031---2026-07-23">
 <a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.0...v0.3.1">0.3.1</a> - 2026-07-23</h2>
 
@@ -95,14 +158,14 @@ Please file a bug if you notice a violation of semantic versioning.</p>
   <li>22.77% documented</li>
 </ul>
 
-<h3 id="changed-1">Changed</h3>
+<h3 id="changed-2">Changed</h3>
 
 <ul>
   <li>The <code>kettle-gha-pins</code> executable now supports <code>-v</code> / <code>--version</code> and prints a<br>
 standard startup header on normal runs.</li>
 </ul>
 
-<h3 id="fixed-1">Fixed</h3>
+<h3 id="fixed-2">Fixed</h3>
 
 <ul>
   <li>The <code>kettle-gha-pins</code> executable now uses normal <code>require</code> loading for its<br>
@@ -121,7 +184,7 @@ in shipped executables.</li>
   <li>22.77% documented</li>
 </ul>
 
-<h3 id="changed-2">Changed</h3>
+<h3 id="changed-3">Changed</h3>
 
 <ul>
   <li>
@@ -137,7 +200,7 @@ action version upgrades before enforcing them.</p>
 cached, live, and skipped counters no longer overwrite each other on TTYs.</li>
 </ul>
 
-<h3 id="fixed-2">Fixed</h3>
+<h3 id="fixed-3">Fixed</h3>
 
 <ul>
   <li>GitHub Actions pin cache writes now persist tag SHA refs from release version<br>
@@ -156,7 +219,7 @@ rechecking freshly cached actions live.</li>
   <li>22.22% documented</li>
 </ul>
 
-<h3 id="fixed-3">Fixed</h3>
+<h3 id="fixed-4">Fixed</h3>
 
 <ul>
   <li>Lowered the generated gemspec Ruby requirement to <code>&gt;= 2.4.0</code> to match<br>
@@ -177,7 +240,7 @@ versions.</li>
   <li>22.22% documented</li>
 </ul>
 
-<h3 id="added-1">Added</h3>
+<h3 id="added-2">Added</h3>
 
 <ul>
   <li>Added the shared <code>PersistentActionCache</code>, <code>GitHubClient</code>, and action ref<br>
@@ -199,7 +262,7 @@ workflow YAML files and updating action refs to immutable SHAs.</li>
   <li>Initial release</li>
 </ul>
 
-<h3 id="added-2">Added</h3>
+<h3 id="added-3">Added</h3>
 
 <ul>
   <li>Added <code>Kettle::Gha::Pins::VersionRubric</code> as the shared version parsing,<br>
@@ -207,7 +270,7 @@ canonicalization, and upgrade-target selection API for GitHub Actions pin<br>
 maintenance.</li>
 </ul>
 
-<h3 id="changed-3">Changed</h3>
+<h3 id="changed-4">Changed</h3>
 
 <ul>
   <li>kettle-jem-template-20260716-001 - Shim gemspec manifests now include<br>

@@ -20,6 +20,25 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.3.2] - 2026-07-27
+
+- TAG: [v0.3.2][0.3.2t]
+- COVERAGE: 98.92% -- 915/925 lines in 8 files
+- BRANCH COVERAGE: 90.93% -- 371/408 branches in 8 files
+- 24.75% documented
+
+### Added
+
 - kettle-jem-template-20260726-001 - Projects now include YARD lint
   configuration and documentation dependencies so documentation issues fail
   before generated docs are refreshed.
@@ -43,10 +62,6 @@ Please file a bug if you notice a violation of semantic versioning.
   setup-ruby-flash planning and can prepare appraisal-only jobs without
   installing the main Gemfile bundle.
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 
 - Two-segment GitHub Action releases like `v2.0` are now recognized as
@@ -61,8 +76,6 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260728-002 - Generated RuboCop configs now ignore the
   same `gemfiles/vendor/bundle` tree as `.gitignore`, so vendored dependency
   installs are not reported as project lint debt.
-
-### Security
 
 ## [0.3.1] - 2026-07-23
 
@@ -168,7 +181,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.1...v0.3.2
+[0.3.2t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.2
 [0.3.1]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.0...v0.3.1
 [0.3.1t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.1
 [0.3.0]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.2.1...v0.3.0
