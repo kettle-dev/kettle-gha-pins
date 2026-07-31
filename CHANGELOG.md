@@ -20,15 +20,28 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
-- kettle-jem-template-20260729-005 - Gemspec metadata now publishes this
-  project's RubyForum tag as `mailing_list_uri`, and support docs link to the
-  tagged RubyForum community alongside Discord.
-
 ### Changed
 
 ### Deprecated
 
 ### Removed
+
+### Fixed
+
+### Security
+
+## [0.3.4] - 2026-07-30
+
+- TAG: [v0.3.4][0.3.4t]
+- COVERAGE: 98.94% -- 935/945 lines in 8 files
+- BRANCH COVERAGE: 90.91% -- 380/418 branches in 8 files
+- 24.04% documented
+
+### Added
+
+- kettle-jem-template-20260729-005 - Gemspec metadata now publishes this
+  project's RubyForum tag as `mailing_list_uri`, and support docs link to the
+  tagged RubyForum community alongside Discord.
 
 ### Fixed
 
@@ -54,8 +67,6 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260730-001 - Gemspec package file enumeration now runs
   relative to the gemspec directory, so release package contents stay correct
   even when the gemspec is loaded from another working directory.
-
-### Security
 
 ## [0.3.3] - 2026-07-28
 
@@ -223,7 +234,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.4...HEAD
+[0.3.4]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.3...v0.3.4
+[0.3.4t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.4
 [0.3.3]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.2...v0.3.3
 [0.3.3t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.3
 [0.3.2]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.1...v0.3.2
