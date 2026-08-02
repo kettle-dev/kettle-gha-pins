@@ -22,12 +22,25 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
-- kettle-jem-template-20260801-001 - Generated README gem dashboard links now
-  use ClickGems instead of BestGems.
-
 ### Deprecated
 
 ### Removed
+
+### Fixed
+
+### Security
+
+## [0.3.5] - 2026-08-01
+
+- TAG: [v0.3.5][0.3.5t]
+- COVERAGE: 98.94% -- 935/945 lines in 8 files
+- BRANCH COVERAGE: 90.91% -- 380/418 branches in 8 files
+- 24.04% documented
+
+### Changed
+
+- kettle-jem-template-20260801-001 - Generated README gem dashboard links now
+  use ClickGems instead of BestGems.
 
 ### Fixed
 
@@ -40,8 +53,6 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260801-004 - Generated organization README logos now
   use GitHub's stable organization avatar endpoint instead of assuming a
   matching Galtzo-hosted asset exists.
-
-### Security
 
 ## [0.3.4] - 2026-07-30
 
@@ -247,7 +258,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.5...HEAD
+[0.3.5]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.4...v0.3.5
+[0.3.5t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.5
 [0.3.4]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.3...v0.3.4
 [0.3.4t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.4
 [0.3.3]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.2...v0.3.3
