@@ -28,10 +28,19 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+### Security
+
+## [0.3.6] - 2026-08-03
+
+- TAG: [v0.3.6][0.3.6t]
+- COVERAGE: 98.94% -- 935/945 lines in 8 files
+- BRANCH COVERAGE: 90.91% -- 380/418 branches in 8 files
+- 24.04% documented
+
+### Fixed
+
 - kettle-jem-template-20260802-001 - Devcontainer JSON files now merge as JSONC,
   preserving comments and trailing commas during template updates.
-
-### Security
 
 ## [0.3.5] - 2026-08-01
 
@@ -244,7 +253,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.5...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.6...HEAD
+[0.3.6]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.5...v0.3.6
+[0.3.6t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.6
 [0.3.5]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.4...v0.3.5
 [0.3.5t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.5
 [0.3.4]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.3...v0.3.4

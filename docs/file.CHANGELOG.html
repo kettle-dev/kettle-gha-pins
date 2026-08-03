@@ -70,7 +70,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 and <a href="https://tom.preston-werner.com/2022/05/23/major-version-numbers-are-not-sacred.html">yes</a>, platform and engine support are part of the <a href="https://github.com/semver/semver/issues/716#issuecomment-869336139">public API</a>.<br>
 Please file a bug if you notice a violation of semantic versioning.</p>
 
-<h2 id="unreleased"><a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.5...HEAD">Unreleased</a></h2>
+<h2 id="unreleased"><a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.6...HEAD">Unreleased</a></h2>
 
 <h3 id="added">Added</h3>
 
@@ -83,6 +83,24 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 <h3 id="fixed">Fixed</h3>
 
 <h3 id="security">Security</h3>
+
+<h2 id="036---2026-08-03">
+<a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.5...v0.3.6">0.3.6</a> - 2026-08-03</h2>
+
+<ul>
+  <li>TAG: <a href="https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.6">v0.3.6</a>
+</li>
+  <li>COVERAGE: 98.94% – 935/945 lines in 8 files</li>
+  <li>BRANCH COVERAGE: 90.91% – 380/418 branches in 8 files</li>
+  <li>24.04% documented</li>
+</ul>
+
+<h3 id="fixed-1">Fixed</h3>
+
+<ul>
+  <li>kettle-jem-template-20260802-001 - Devcontainer JSON files now merge as JSONC,<br>
+preserving comments and trailing commas during template updates.</li>
+</ul>
 
 <h2 id="035---2026-08-01">
 <a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.4...v0.3.5">0.3.5</a> - 2026-08-01</h2>
@@ -102,7 +120,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 use ClickGems instead of BestGems.</li>
 </ul>
 
-<h3 id="fixed-1">Fixed</h3>
+<h3 id="fixed-2">Fixed</h3>
 
 <ul>
   <li>kettle-jem-template-20260801-002 - Generated RSpec helpers now normalize<br>
@@ -129,13 +147,7 @@ matching Galtzo-hosted asset exists.</li>
 
 <h3 id="added-1">Added</h3>
 
-<ul>
-  <li>kettle-jem-template-20260729-005 - Gemspec metadata now publishes this<br>
-project’s RubyForum tag as <code>mailing_list_uri</code>, and support docs link to the<br>
-tagged RubyForum community alongside Discord.</li>
-</ul>
-
-<h3 id="fixed-2">Fixed</h3>
+<h3 id="fixed-3">Fixed</h3>
 
 <ul>
   <li>kettle-jem-template-20260728-003 - Generated dep-heads workflows now run<br>
@@ -150,13 +162,6 @@ specs.</li>
   <li>kettle-jem-template-20260729-001 - Generated JRuby 9.4 workflows now use the<br>
 legacy manual bundle install path, avoiding setup-time Bundler full-index<br>
 failures against <code>gem.coop</code>.</li>
-  <li>kettle-jem-template-20260729-002 - VersionGem bootstrap now preserves<br>
-and templates dedicated <code>version_gem.rb</code> entrypoints even when the gemspec<br>
-dependency is intentionally omitted, and generated anonymous-loader specs<br>
-cover both <code>version.rb</code> and <code>version_gem.rb</code>.</li>
-  <li>kettle-jem-template-20260729-003 - Old-Ruby gems below the VersionGem runtime<br>
-floor now get managed minimal <code>version.rb</code> files and anonymous-loader version<br>
-specs without adding <code>version_gem</code>.</li>
   <li>kettle-jem-template-20260730-001 - Gemspec package file enumeration now runs<br>
 relative to the gemspec directory, so release package contents stay correct<br>
 even when the gemspec is loaded from another working directory.</li>
@@ -173,7 +178,7 @@ even when the gemspec is loaded from another working directory.</li>
   <li>24.04% documented</li>
 </ul>
 
-<h3 id="fixed-3">Fixed</h3>
+<h3 id="fixed-4">Fixed</h3>
 
 <ul>
   <li>Version comment normalization now rewrites equivalent comments to a real<br>
@@ -228,7 +233,7 @@ setup-ruby-flash planning and can prepare appraisal-only jobs without<br>
 installing the main Gemfile bundle.</li>
 </ul>
 
-<h3 id="fixed-4">Fixed</h3>
+<h3 id="fixed-5">Fixed</h3>
 
 <ul>
   <li>Two-segment GitHub Action releases like <code>v2.0</code> are now recognized as<br>
@@ -264,7 +269,7 @@ installs are not reported as project lint debt.</li>
 standard startup header on normal runs.</li>
 </ul>
 
-<h3 id="fixed-5">Fixed</h3>
+<h3 id="fixed-6">Fixed</h3>
 
 <ul>
   <li>The <code>kettle-gha-pins</code> executable now uses normal <code>require</code> loading for its<br>
@@ -299,7 +304,7 @@ action version upgrades before enforcing them.</p>
 cached, live, and skipped counters no longer overwrite each other on TTYs.</li>
 </ul>
 
-<h3 id="fixed-6">Fixed</h3>
+<h3 id="fixed-7">Fixed</h3>
 
 <ul>
   <li>GitHub Actions pin cache writes now persist tag SHA refs from release version<br>
@@ -318,7 +323,7 @@ rechecking freshly cached actions live.</li>
   <li>22.22% documented</li>
 </ul>
 
-<h3 id="fixed-7">Fixed</h3>
+<h3 id="fixed-8">Fixed</h3>
 
 <ul>
   <li>Lowered the generated gemspec Ruby requirement to <code>&gt;= 2.4.0</code> to match<br>
@@ -372,18 +377,12 @@ maintenance.</li>
 <h3 id="changed-5">Changed</h3>
 
 <ul>
-  <li>kettle-jem-template-20260716-001 - Shim gemspec manifests now include<br>
-<code>LICENSE.md</code> instead of nonexistent <code>LICENSE.txt</code>.</li>
   <li>kettle-jem-template-20260716-002 - Generated gemspec manifests now ship fewer<br>
 repository-only files by default to reduce downstream distro packaging churn.</li>
-  <li>kettle-jem-template-20260720-001 - Generated READMEs can now render<br>
-template-managed corporate sponsor logos from project or family config.</li>
   <li>kettle-jem-template-20260720-002 - Generated development Gemfiles now use the<br>
 released <code>tree_sitter_language_pack</code> gem 1.13.3 or newer by default.</li>
   <li>kettle-jem-template-20260720-003 - Generated StructuredMerge Git diff driver<br>
 config now uses the installed <code>smorg-rb</code> Ruby driver name.</li>
-  <li>kettle-jem-template-20260720-004 - Generated multi-engine workflow files now<br>
-omit JRuby and TruffleRuby jobs when project config declares MRI-only engines.</li>
   <li>kettle-jem-template-20260720-005 - Generated README Support &amp; Community rows<br>
 now include a RubyForum help badge.</li>
 </ul>
