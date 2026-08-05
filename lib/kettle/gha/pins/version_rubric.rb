@@ -121,6 +121,8 @@ module Kettle
           else
             return nil if comment_version.to_s == resolved_version.to_s
 
+            return nil if resolved < comment
+
             resolved_version
           end
         end

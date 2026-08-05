@@ -163,6 +163,17 @@ RSpec.describe Kettle::Gha::Pins do
       expect(described_class.latest_outdated_target("v1.2.0", prerelease_versions)).to be_nil
     end
 
+    it "does not downgrade the in-file version comment" do
+      known_versions = [
+        {tag: "v2.1", version_obj: Gem::Version.new("2.1"), version: "2.1", sha: "a" * 40},
+        {tag: "v2.0", version_obj: Gem::Version.new("2.0"), version: "2.0", sha: "b" * 40}
+      ]
+
+      expect(described_class.comment_update_version("2.1", "2.0", known_versions: known_versions)).to be_nil
+      expect(described_class.comment_update_version("2.1.0", "2.0", known_versions: known_versions)).to be_nil
+      expect(described_class.comment_update_version("v2.1", "2.0", known_versions: known_versions)).to be_nil
+    end
+
     it "allows prerelease pins to advance to newer prerelease tags" do
       prerelease_versions = [
         {tag: "v1.3.0.pre", version_obj: Gem::Version.new("1.3.0.pre"), version: "1.3.0.pre", sha: "p" * 40},
