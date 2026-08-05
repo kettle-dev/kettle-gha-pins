@@ -111,34 +111,23 @@ module Kettle
           resolved = parse(resolved_version)
           return nil unless comment && resolved
 
-          resolved_entry = exact_entry_for_version(known_versions, resolved_version)
-          comment_entry = exact_entry_for_version(known_versions, comment_version)
+          canonical = canonical_version_for(resolved_version, known_versions)
+          return nil if comment_version.to_s == canonical
 
-          if comment == resolved && resolved_entry && comment_entry
-            preferred = entries_for_semantic_version(known_versions, comment).max_by { |known_entry| sort_key(known_entry) }
-            preferred_version = preferred.fetch(:version)
-            (preferred_version == comment_version.to_s) ? nil : preferred_version
-          else
-            return nil if comment_version.to_s == resolved_version.to_s
-
-            return nil if resolved < comment
-
-            resolved_version
-          end
-        end
-
-        def exact_entry_for_version(versions, version)
-          parsed = parse(version)
-          return nil unless parsed
-
-          versions.find do |entry|
-            entry.fetch(:version_obj, nil) == parsed &&
-              entry.fetch(:version, nil).to_s == parsed.to_s
-          end
+          canonical
         end
 
         def entries_for_semantic_version(versions, version_obj)
           versions.select { |entry| entry.fetch(:version_obj, nil) == version_obj }
+        end
+
+        def canonical_version_for(resolved_version, known_versions)
+          resolved = parse(resolved_version)
+          return resolved_version.to_s unless resolved
+
+          equivalents = entries_for_semantic_version(known_versions, resolved)
+          preferred = equivalents.max_by { |entry| sort_key(entry) }
+          preferred ? preferred[:version] : resolved.to_s
         end
 
         def normalize_upgrade_level(level)
