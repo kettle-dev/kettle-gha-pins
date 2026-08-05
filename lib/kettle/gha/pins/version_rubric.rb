@@ -106,6 +106,12 @@ module Kettle
           end.max_by { |entry| sort_key(entry) }
         end
 
+        # The comment on `uses:` is a cached record that needs to do two things:
+        #
+        # 1. Track the currently resolved target (if the target changes, update
+        #    the comment even when both values parse to version objects).
+        # 2. Normalize equivalent spellings (v2, v2.0, v2.0.0...) to the most
+        #    specific canonical form available for that SHA in known_versions.
         def comment_update_version(comment_version, resolved_version, known_versions: [])
           comment = parse(comment_version)
           resolved = parse(resolved_version)
@@ -121,6 +127,9 @@ module Kettle
           versions.select { |entry| entry.fetch(:version_obj, nil) == version_obj }
         end
 
+        # When multiple release spellings resolve to the same SHA, prefer the
+        # most specific equivalent tag. If there is no known equivalent, fall
+        # back to the plain resolved version string.
         def canonical_version_for(resolved_version, known_versions)
           resolved = parse(resolved_version)
           return resolved_version.to_s unless resolved
