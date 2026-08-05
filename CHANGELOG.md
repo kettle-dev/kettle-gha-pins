@@ -30,6 +30,13 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Security
 
+## [0.3.7] - 2026-08-05
+
+- TAG: [v0.3.7][0.3.7t]
+- COVERAGE: 98.94% -- 931/941 lines in 8 files
+- BRANCH COVERAGE: 90.87% -- 378/416 branches in 8 files
+- 25.96% documented
+
 ## [0.3.6] - 2026-08-03
 
 - TAG: [v0.3.6][0.3.6t]
@@ -253,7 +260,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.6...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.7...HEAD
+[0.3.7]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.6...v0.3.7
+[0.3.7t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.7
 [0.3.6]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.5...v0.3.6
 [0.3.6t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.6
 [0.3.5]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.4...v0.3.5

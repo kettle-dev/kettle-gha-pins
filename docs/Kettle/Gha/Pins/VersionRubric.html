@@ -186,6 +186,29 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#canonical_version_for-class_method" title="canonical_version_for (class method)">.<strong>canonical_version_for</strong>(resolved_version, known_versions)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>When multiple release spellings resolve to the same SHA, prefer the most specific equivalent tag.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#canonicalize_equivalent_release_versions-class_method" title="canonicalize_equivalent_release_versions (class method)">.<strong>canonicalize_equivalent_release_versions</strong>(releases)  &#x21d2; Object </a>
     
 
@@ -246,7 +269,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
+    <span class="summary_desc"><div class='inline'><p>The comment on <code>uses:</code> is a cached record that needs to do two things:.</p>
 </div></span>
   
 </li>
@@ -302,29 +325,6 @@
   <span class="summary_signature">
     
       <a href="#equivalent_release_tag%3F-class_method" title="equivalent_release_tag? (class method)">.<strong>equivalent_release_tag?</strong>(left, right)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#exact_entry_for_version-class_method" title="exact_entry_for_version (class method)">.<strong>exact_entry_for_version</strong>(versions, version)  &#x21d2; Object </a>
     
 
     
@@ -645,6 +645,58 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="canonical_version_for-class_method">
+  
+    .<strong>canonical_version_for</strong>(resolved_version, known_versions)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>When multiple release spellings resolve to the same SHA, prefer the<br />
+most specific equivalent tag. If there is no known equivalent, fall<br />
+back to the plain resolved version string.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+133
+134
+135
+136
+137
+138
+139
+140</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/version_rubric.rb', line 133</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_canonical_version_for'>canonical_version_for</span><span class='lparen'>(</span><span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='comma'>,</span> <span class='id identifier rubyid_known_versions'>known_versions</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_resolved'>resolved</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='kw'>unless</span> <span class='id identifier rubyid_resolved'>resolved</span>
+
+  <span class='id identifier rubyid_equivalents'>equivalents</span> <span class='op'>=</span> <span class='id identifier rubyid_entries_for_semantic_version'>entries_for_semantic_version</span><span class='lparen'>(</span><span class='id identifier rubyid_known_versions'>known_versions</span><span class='comma'>,</span> <span class='id identifier rubyid_resolved'>resolved</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_preferred'>preferred</span> <span class='op'>=</span> <span class='id identifier rubyid_equivalents'>equivalents</span><span class='period'>.</span><span class='id identifier rubyid_max_by'>max_by</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_entry'>entry</span><span class='op'>|</span> <span class='id identifier rubyid_sort_key'>sort_key</span><span class='lparen'>(</span><span class='id identifier rubyid_entry'>entry</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_preferred'>preferred</span> <span class='op'>?</span> <span class='id identifier rubyid_preferred'>preferred</span><span class='lbracket'>[</span><span class='symbol'>:version</span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='id identifier rubyid_resolved'>resolved</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="canonicalize_equivalent_release_versions-class_method">
   
     .<strong>canonicalize_equivalent_release_versions</strong>(releases)  &#x21d2; <tt>Object</tt> 
@@ -739,18 +791,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The comment on <code>uses:</code> is a cached record that needs to do two things:</p>
+
+<ol>
+  <li>Track the currently resolved target (if the target changes, update<br />
+the comment even when both values parse to version objects).</li>
+  <li>Normalize equivalent spellings (v2, v2.0, v2.0.0…) to the most<br />
+specific canonical form available for that SHA in known_versions.</li>
+</ol>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-109
-110
-111
-112
-113
-114
 115
 116
 117
@@ -760,30 +823,20 @@
 121
 122
 123
-124
-125
-126</pre>
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/version_rubric.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/version_rubric.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_comment_update_version'>comment_update_version</span><span class='lparen'>(</span><span class='id identifier rubyid_comment_version'>comment_version</span><span class='comma'>,</span> <span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='comma'>,</span> <span class='label'>known_versions:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_comment'>comment</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_comment_version'>comment_version</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_resolved'>resolved</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_comment'>comment</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_resolved'>resolved</span>
 
-  <span class='id identifier rubyid_resolved_entry'>resolved_entry</span> <span class='op'>=</span> <span class='id identifier rubyid_exact_entry_for_version'>exact_entry_for_version</span><span class='lparen'>(</span><span class='id identifier rubyid_known_versions'>known_versions</span><span class='comma'>,</span> <span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_comment_entry'>comment_entry</span> <span class='op'>=</span> <span class='id identifier rubyid_exact_entry_for_version'>exact_entry_for_version</span><span class='lparen'>(</span><span class='id identifier rubyid_known_versions'>known_versions</span><span class='comma'>,</span> <span class='id identifier rubyid_comment_version'>comment_version</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_canonical'>canonical</span> <span class='op'>=</span> <span class='id identifier rubyid_canonical_version_for'>canonical_version_for</span><span class='lparen'>(</span><span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='comma'>,</span> <span class='id identifier rubyid_known_versions'>known_versions</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_comment_version'>comment_version</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_canonical'>canonical</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_comment'>comment</span> <span class='op'>==</span> <span class='id identifier rubyid_resolved'>resolved</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_resolved_entry'>resolved_entry</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_comment_entry'>comment_entry</span>
-    <span class='id identifier rubyid_preferred'>preferred</span> <span class='op'>=</span> <span class='id identifier rubyid_entries_for_semantic_version'>entries_for_semantic_version</span><span class='lparen'>(</span><span class='id identifier rubyid_known_versions'>known_versions</span><span class='comma'>,</span> <span class='id identifier rubyid_comment'>comment</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_max_by'>max_by</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_known_entry'>known_entry</span><span class='op'>|</span> <span class='id identifier rubyid_sort_key'>sort_key</span><span class='lparen'>(</span><span class='id identifier rubyid_known_entry'>known_entry</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-    <span class='id identifier rubyid_preferred_version'>preferred_version</span> <span class='op'>=</span> <span class='id identifier rubyid_preferred'>preferred</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:version</span><span class='rparen'>)</span>
-    <span class='lparen'>(</span><span class='id identifier rubyid_preferred_version'>preferred_version</span> <span class='op'>==</span> <span class='id identifier rubyid_comment_version'>comment_version</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='id identifier rubyid_preferred_version'>preferred_version</span>
-  <span class='kw'>else</span>
-    <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_comment_version'>comment_version</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_resolved_version'>resolved_version</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
-
-    <span class='id identifier rubyid_resolved_version'>resolved_version</span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_canonical'>canonical</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -805,12 +858,12 @@
       <pre class="lines">
 
 
-138
-139
-140</pre>
+126
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/version_rubric.rb', line 138</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/version_rubric.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_entries_for_semantic_version'>entries_for_semantic_version</span><span class='lparen'>(</span><span class='id identifier rubyid_versions'>versions</span><span class='comma'>,</span> <span class='id identifier rubyid_version_obj'>version_obj</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_versions'>versions</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_entry'>entry</span><span class='op'>|</span> <span class='id identifier rubyid_entry'>entry</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:version_obj</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='id identifier rubyid_version_obj'>version_obj</span> <span class='rbrace'>}</span>
@@ -921,48 +974,6 @@
     <span class='id identifier rubyid_left'>left</span><span class='lbracket'>[</span><span class='symbol'>:sha</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span>
     <span class='id identifier rubyid_right'>right</span><span class='lbracket'>[</span><span class='symbol'>:sha</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span>
     <span class='id identifier rubyid_left'>left</span><span class='lbracket'>[</span><span class='symbol'>:sha</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='id identifier rubyid_right'>right</span><span class='lbracket'>[</span><span class='symbol'>:sha</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="exact_entry_for_version-class_method">
-  
-    .<strong>exact_entry_for_version</strong>(versions, version)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-128
-129
-130
-131
-132
-133
-134
-135
-136</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/version_rubric.rb', line 128</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_exact_entry_for_version'>exact_entry_for_version</span><span class='lparen'>(</span><span class='id identifier rubyid_versions'>versions</span><span class='comma'>,</span> <span class='id identifier rubyid_version'>version</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_parsed'>parsed</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_version'>version</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_parsed'>parsed</span>
-
-  <span class='id identifier rubyid_versions'>versions</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_entry'>entry</span><span class='op'>|</span>
-    <span class='id identifier rubyid_entry'>entry</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:version_obj</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='id identifier rubyid_parsed'>parsed</span> <span class='op'>&amp;&amp;</span>
-      <span class='id identifier rubyid_entry'>entry</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:version</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_parsed'>parsed</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
-  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
