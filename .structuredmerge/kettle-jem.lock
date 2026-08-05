@@ -2,7 +2,7 @@
 version: 1
 template_state:
   version: 7.1.0
-  applied_at: '2026-08-04'
+  applied_at: '2026-08-05'
   changelog_replay:
     last_entry_key: kettle-jem-template-20260802-001
     last_entry_date: '2026-08-02'
@@ -1098,14 +1098,14 @@ files:
     recipe: template_source_application_kettle_gha_pins_gemspec
     action: write
     dest_sha256: e11a2b1529484128e9ff0a7469c83f3176007b1cf4beefc0bb4fe2562754f1f7
-    input_fingerprint: d18d739a960ebd42c4354b5efeae0abad231c386da204158dafaa4261f1d5655
+    input_fingerprint: 936e4b13dc60e68db7cf112c797652993b4ca85e167dedf8096dea481c6be11b
     template_sources:
     - gem.gemspec.example
   lib/kettle/gha/pins/version.rb:
     recipe: template_source_application_lib_kettle_gha_pins_version_rb
     action: write
     dest_sha256: ae4739a5b8d8c0dd92462fa6488675489fc5eabfe879ecb119a619c4352eb70a
-    input_fingerprint: 8b3c9a385a866aa7380772b5ffa4c27eee374315b1355080abd9fc32ee1dd33f
+    input_fingerprint: 49b366716b209d9045d046d41f68a2eedae957efdd148cd99491b663f44f958c
     template_sources:
     - lib/gem/version.rb.example
   mise.toml:
