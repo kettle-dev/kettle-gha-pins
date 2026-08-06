@@ -112,12 +112,17 @@ module Kettle
         #    the comment even when both values parse to version objects).
         # 2. Normalize equivalent spellings (v2, v2.0, v2.0.0...) to the most
         #    specific canonical form available for that SHA in known_versions.
-        def comment_update_version(comment_version, resolved_version, known_versions: [])
+        def comment_update_version(comment_version, resolved_version, resolved_sha: nil, known_versions: [])
           comment = parse(comment_version)
           resolved = parse(resolved_version)
           return nil unless comment && resolved
 
-          canonical = canonical_version_for(resolved_version, known_versions)
+          canonical = canonical_version_for(
+            resolved_version,
+            known_versions,
+            resolved_sha: resolved_sha,
+            comment_version: comment_version
+          )
           return nil if comment_version.to_s == canonical
 
           canonical
@@ -127,16 +132,38 @@ module Kettle
           versions.select { |entry| entry.fetch(:version_obj, nil) == version_obj }
         end
 
-        # When multiple release spellings resolve to the same SHA, prefer the
-        # most specific equivalent tag. If there is no known equivalent, fall
-        # back to the plain resolved version string.
-        def canonical_version_for(resolved_version, known_versions)
+        # Canonical spellings are version-specific and SHA-aware.
+        #
+        # - For SHA-tracked tags, prefer the most explicit spelling that resolves
+        #   to the same SHA as the currently resolved target.
+        # - If the resolved SHA is known but the currently-commented spellings
+        #   are tied to a different SHA, keep the in-file spelling when the
+        #   semantic version is unchanged, so we don't rewrite between aliases that
+        #   no longer represent the same object.
+        # - Otherwise fall back to the resolved version form.
+        def canonical_version_for(resolved_version, known_versions, resolved_sha: nil, comment_version: nil)
           resolved = parse(resolved_version)
           return resolved_version.to_s unless resolved
 
           equivalents = entries_for_semantic_version(known_versions, resolved)
+          if !resolved_sha.to_s.empty?
+            sha_matched_equivalents = equivalents.select do |entry|
+              entry.fetch(:sha).to_s == resolved_sha.to_s
+            end
+            equivalents = sha_matched_equivalents unless sha_matched_equivalents.empty?
+
+            if sha_matched_equivalents.empty? &&
+                comment_version &&
+                parse(comment_version) == resolved
+              return strip_leading_v(comment_version)
+            end
+          end
           preferred = equivalents.max_by { |entry| sort_key(entry) }
           preferred ? preferred[:version] : resolved.to_s
+        end
+
+        def strip_leading_v(text)
+          text.to_s.sub(/\A[vV]/, "")
         end
 
         def normalize_upgrade_level(level)

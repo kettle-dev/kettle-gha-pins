@@ -133,6 +133,16 @@ RSpec.describe Kettle::Gha::Pins do
       expect(described_class.comment_update_version("2.0.0", "2.0", known_versions: known_versions)).to be_nil
     end
 
+    it "does not normalize equivalent comment spellings across different SHAs" do
+      known_versions = [
+        {tag: "v2", version_obj: Gem::Version.new("2"), version: "2", sha: "a" * 40},
+        {tag: "v2.0", version_obj: Gem::Version.new("2.0"), version: "2.0", sha: "b" * 40}
+      ]
+
+      expect(described_class.comment_update_version("2", "2.0", known_versions: known_versions, resolved_sha: "a" * 40)).to be_nil
+      expect(described_class.comment_update_version("2", "2.0", known_versions: known_versions, resolved_sha: "b" * 40)).to eq("2.0")
+    end
+
     it "only upgrades major-line tags under the major policy" do
       major_line_versions = [
         {tag: "v3", version_obj: Gem::Version.new("3"), version: "3", sha: "c" * 40},

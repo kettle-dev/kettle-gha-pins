@@ -154,7 +154,8 @@ module Kettle
                   comment_update_version = VersionRubric.comment_update_version(
                     comment_version,
                     upgrade_plan[:current_version],
-                    known_versions: upgrade_plan.fetch(:versions, [])
+                    known_versions: upgrade_plan.fetch(:versions, []),
+                    resolved_sha: upgrade_plan[:current_sha]
                   )
                   if comment_update_version
                     updates = {

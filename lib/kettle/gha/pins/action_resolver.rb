@@ -115,7 +115,8 @@ module Kettle
             reason: reason,
             current_version: current_version,
             versions: available_versions,
-            latest_outdated: latest_outdated
+            latest_outdated: latest_outdated,
+            current_sha: current_sha
           }
         end
 
