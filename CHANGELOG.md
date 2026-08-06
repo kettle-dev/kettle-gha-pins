@@ -28,6 +28,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Emit NDJSON progress events for family orchestration without replaying the full human report.
+
 ### Security
 
 ## [0.3.8] - 2026-08-05

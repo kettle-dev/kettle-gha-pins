@@ -59,6 +59,7 @@ module Kettle
             dry_run: true,
             token: ENV["GITHUB_TOKEN"] || ENV["GH_TOKEN"],
             json: false,
+            events: false,
             validate: true,
             write: false,
             check: false,
@@ -104,8 +105,10 @@ module Kettle
           }
 
           progress_message("Discovering workflow files under #{display_path(@options[:root])}...")
+          emit_event("start", root: @options[:root])
           workflow_files = discover_workflow_files(@options[:root], @options[:reject_patterns])
           progress_message("Discovered #{workflow_files.length} workflow file(s).")
+          emit_event("workflows", total: workflow_files.length)
 
           workflows = load_workflows(workflow_files, state)
           action_count = workflows.sum { |workflow| workflow[:uses_nodes].count { |node| classify_action_ref(node[:value].to_s) } }
@@ -119,6 +122,7 @@ module Kettle
           )
           action_plan_cache = {}
 
+          completed_actions = 0
           workflows.each do |workflow|
             path = workflow.fetch(:path)
             text = workflow.fetch(:text)
@@ -134,12 +138,23 @@ module Kettle
                 action = parsed_ref[:action]
                 repo_ref = "#{action[:owner]}/#{action[:repo]}"
                 old_ref = action[:ref]
+                cached_before = action_plan_cache.key?(repo_ref)
                 upgrade_plan = resolve_action_plan(
                   cache: action_plan_cache,
                   client: client,
                   progress: action_progress,
                   repo_ref: repo_ref,
                   old_ref: old_ref
+                )
+                completed_actions += 1
+                emit_event(
+                  "action",
+                  action_ref: repo_ref,
+                  path: path,
+                  line: node[:line] + 1,
+                  completed: completed_actions,
+                  total: action_count,
+                  cache: (cached_before || (client.respond_to?(:last_versions_cache_hit) && client.last_versions_cache_hit)) ? "hit" : "miss"
                 )
 
                 updates = nil
@@ -261,6 +276,15 @@ module Kettle
           end
           action_progress.stop
           progress_message("Action resolution checks: #{action_progress.cached_count} cached, #{action_progress.live_count} live.") if action_count.positive?
+          emit_event(
+            "summary",
+            files_scanned: state[:files_scanned],
+            changed_files: state[:changed_files].length,
+            updates: state[:updates],
+            failures: state[:failures],
+            cached: action_progress.cached_count,
+            live: action_progress.live_count
+          )
 
           print_report(state)
           return 2 unless state[:failures].zero?
@@ -309,6 +333,9 @@ module Kettle
             end
             opt.on("--json", "Emit JSON report") do
               @options[:json] = true
+            end
+            opt.on("--events", "Emit line-delimited JSON events") do
+              @options[:events] = true
             end
             opt.on("--[no-]progress", "Show progress feedback on STDERR (default: on unless --json)") do |bool|
               @options[:progress] = bool
@@ -384,7 +411,13 @@ module Kettle
         def progress_enabled?
           return @options[:progress] unless @options[:progress].nil?
 
-          !@options[:json]
+          !@options[:json] && !@options[:events]
+        end
+
+        def emit_event(action, payload = {})
+          return unless @options[:events]
+
+          puts JSON.generate({"event_version" => 1, "type" => "gha_sha_pins_#{action}", "action" => action}.merge(payload))
         end
 
         def progress_message(message)
@@ -858,8 +891,12 @@ module Kettle
             lines << "Recommended fix: kettle-gha-pins --write --upgrade #{@options[:upgrade]}"
           end
 
-          puts lines.join("
-")
+          output = lines.join("\n")
+          if @options[:events]
+            @err.puts output
+          else
+            puts output
+          end
         end
       end
     end

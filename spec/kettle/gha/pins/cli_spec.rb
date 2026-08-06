@@ -1342,6 +1342,28 @@ RSpec.describe Kettle::Gha::Pins::CLI do
 
       expect(err.string).to eq("")
     end
+
+    it "emits compact NDJSON events and writes the detailed report to stderr" do
+      err = StringIO.new
+      cli = described_class.new(["--root", workflow_root, "--upgrade", "minor", "--events"], err: err)
+      event_output = nil
+
+      expect do
+        cli.run!
+      end.to output(satisfy do |value|
+        event_output = value
+        true
+      end).to_stdout
+
+      events = event_output.lines.map { |line| JSON.parse(line) }
+      expect(events.map { |event| event.fetch("type") }).to include(
+        "gha_sha_pins_start",
+        "gha_sha_pins_action",
+        "gha_sha_pins_summary"
+      )
+      expect(err.string).to include("kettle-gha-pins report")
+      expect(err.string).to include("Outdated actions")
+    end
   end
 end
 # rubocop:enable RSpec/VerifiedDoubles, RSpec/MessageSpies, ThreadSafety/ClassInstanceVariable
