@@ -404,6 +404,7 @@ RSpec.describe Kettle::Gha::Pins do
       versions = [{tag: "v1.0.0", version_obj: Gem::Version.new("1.0.0"), version: "1.0.0", sha: "a" * 40}]
       allow(cache).to receive(:versions_for_repo).with("actions/checkout", fresh: true).and_return(versions)
       client = described_class.new(token: nil, api_base: "https://api.example.test", user_agent: "spec", persistent_cache: cache)
+      allow(client).to receive(:request_json).with("/repos/actions/checkout/releases/latest").and_return({})
 
       expect(client.versions_for_repo("")).to be_empty
       expect(client.versions_for_repo("actions/checkout")).to eq(versions)

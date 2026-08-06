@@ -38,9 +38,11 @@ module Kettle
           unless @refresh_cache
             cached = @persistent_cache&.versions_for_repo(repo_ref, fresh: true)
             if cached
-              @last_versions_cache_hit = true
-              @release_cache[repo_ref] = cached
-              return cached
+              unless cache_requires_refresh?(repo_ref, cached)
+                @last_versions_cache_hit = true
+                @release_cache[repo_ref] = cached
+                return cached
+              end
             end
             stale = @persistent_cache&.versions_for_repo(repo_ref, fresh: false)
           end
@@ -62,13 +64,13 @@ module Kettle
           cached_versions(repo_ref, stale)
         end
 
-        def commit_sha(repo_ref, ref)
+        def commit_sha(repo_ref, ref, refresh: false)
           return nil if repo_ref.to_s.empty? || ref.to_s.empty?
 
           cache_key = "commit:#{repo_ref}:#{ref}"
-          return @commit_cache[cache_key] if @commit_cache.key?(cache_key)
+          return @commit_cache[cache_key] if @commit_cache.key?(cache_key) && !refresh
 
-          unless @refresh_cache
+          unless @refresh_cache || refresh
             cached = @persistent_cache&.ref_sha(repo_ref, ref, fresh: true)
             if cached
               @commit_cache[cache_key] = cached
@@ -102,6 +104,26 @@ module Kettle
           @last_versions_cache_hit = !stale.nil?
           @release_cache[repo_ref] = versions
           versions
+        end
+
+        # Release tags can be added or retargeted inside the cache TTL. Probe
+        # the latest release before trusting a cached inventory, and refresh
+        # only when that probe identifies a tag or target the cache lacks.
+        def cache_requires_refresh?(repo_ref, cached)
+          latest = request_json("/repos/#{repo_ref}/releases/latest")
+          return false unless latest.is_a?(Hash)
+
+          tag = latest["tag_name"].to_s
+          return false unless VersionRubric.parse(tag)
+
+          cached_entry = cached.find { |entry| entry[:tag].to_s == tag }
+          return true unless cached_entry
+
+          latest_sha = commit_sha(repo_ref, tag, refresh: true)
+          cached_sha = cached_entry[:sha].to_s
+          return !latest_sha.to_s.empty? if cached_sha.empty?
+
+          !latest_sha.to_s.empty? && latest_sha != cached_sha
         end
 
         def build_release_versions(data, tag_shas)
@@ -143,7 +165,7 @@ module Kettle
             when "commit"
               memo[tag] = sha
             when "tag"
-              memo[tag] = nil
+              memo[tag] = annotated_tag_commit_sha(repo_ref, sha)
             end
           end
         end

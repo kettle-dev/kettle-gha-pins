@@ -28,6 +28,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Refresh cached GitHub Action release data when a newer release tag is detected.
+
 ### Security
 
 ## [0.3.7] - 2026-08-05
