@@ -492,7 +492,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
         {"ref" => "refs/tags/v7", "object" => {"type" => "tag", "sha" => "a" * 40}},
         {"ref" => "refs/tags/v7.0.0", "object" => {"type" => "commit", "sha" => "b" * 40}}
       ])
-      allow(client).to receive(:request_json).with("/repos/foo/bar/git/tags/#{'a' * 40}")
+      allow(client).to receive(:request_json).with("/repos/foo/bar/git/tags/#{"a" * 40}")
         .and_return({"object" => {"type" => "commit", "sha" => "a" * 40}})
 
       versions = client.versions_for_repo("foo/bar")
@@ -512,9 +512,9 @@ RSpec.describe Kettle::Gha::Pins::CLI do
         {"ref" => "refs/tags/v1.0.0", "object" => {"type" => "tag", "sha" => "1" * 40}},
         {"ref" => "refs/tags/v1.0.1", "object" => {"type" => "tag", "sha" => "2" * 40}}
       ])
-      allow(client).to receive(:request_json).with("/repos/foo/bar/git/tags/#{'1' * 40}")
+      allow(client).to receive(:request_json).with("/repos/foo/bar/git/tags/#{"1" * 40}")
         .and_return({"object" => {"type" => "commit", "sha" => "a" * 40}})
-      allow(client).to receive(:request_json).with("/repos/foo/bar/git/tags/#{'2' * 40}")
+      allow(client).to receive(:request_json).with("/repos/foo/bar/git/tags/#{"2" * 40}")
         .and_return({"object" => {"type" => "commit", "sha" => "b" * 40}})
 
       versions = client.versions_for_repo("foo/bar")

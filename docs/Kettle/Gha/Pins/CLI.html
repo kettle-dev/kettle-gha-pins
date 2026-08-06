@@ -709,7 +709,8 @@
 266
 267
 268
-269</pre>
+269
+270</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/cli.rb', line 77</span>
@@ -794,7 +795,8 @@
           <span class='id identifier rubyid_comment_update_version'>comment_update_version</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="VersionRubric.html" title="Kettle::Gha::Pins::VersionRubric (module)">VersionRubric</a></span></span><span class='period'>.</span><span class='id identifier rubyid_comment_update_version'><span class='object_link'><a href="VersionRubric.html#comment_update_version-class_method" title="Kettle::Gha::Pins::VersionRubric.comment_update_version (method)">comment_update_version</a></span></span><span class='lparen'>(</span>
             <span class='id identifier rubyid_comment_version'>comment_version</span><span class='comma'>,</span>
             <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_version</span><span class='rbracket'>]</span><span class='comma'>,</span>
-            <span class='label'>known_versions:</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:versions</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+            <span class='label'>known_versions:</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:versions</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span>
+            <span class='label'>resolved_sha:</span> <span class='id identifier rubyid_upgrade_plan'>upgrade_plan</span><span class='lbracket'>[</span><span class='symbol'>:current_sha</span><span class='rbracket'>]</span>
           <span class='rparen'>)</span>
           <span class='kw'>if</span> <span class='id identifier rubyid_comment_update_version'>comment_update_version</span>
             <span class='id identifier rubyid_updates'>updates</span> <span class='op'>=</span> <span class='lbrace'>{</span>
