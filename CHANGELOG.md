@@ -28,9 +28,18 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
-- Emit NDJSON progress events for family orchestration without replaying the full human report.
-
 ### Security
+
+## [0.3.9] - 2026-08-05
+
+- TAG: [v0.3.9][0.3.9t]
+- COVERAGE: 98.36% -- 961/977 lines in 8 files
+- BRANCH COVERAGE: 89.95% -- 394/438 branches in 8 files
+- 25.71% documented
+
+### Fixed
+
+- Emit NDJSON progress events for family orchestration without replaying the full human report.
 
 ## [0.3.8] - 2026-08-05
 
@@ -273,7 +282,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.8...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.9...HEAD
+[0.3.9]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.8...v0.3.9
+[0.3.9t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.9
 [0.3.8]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.7...v0.3.8
 [0.3.8t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.8
 [0.3.7]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.6...v0.3.7
