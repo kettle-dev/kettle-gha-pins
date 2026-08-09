@@ -325,12 +325,12 @@ module Kettle
           workflow_files = discover_workflow_files(@options[:root], @options[:reject_patterns])
           workflows = load_workflows(workflow_files, state)
           pins = workflows.flat_map do |workflow|
-            workflow.fetch(:uses_nodes).filter_map do |node|
+            workflow.fetch(:uses_nodes).each_with_object([]) do |node, entries|
               parsed = classify_action_ref(node[:value].to_s)
               next unless parsed
 
               action = parsed.fetch(:action)
-              {
+              entries << {
                 "repository" => "#{action[:owner]}/#{action[:repo]}",
                 "ref" => action[:ref],
                 "value" => parsed[:value],
@@ -385,10 +385,10 @@ module Kettle
           else
             []
           end
-          entries.filter_map do |entry|
+          entries.each_with_object([]) do |entry, repositories|
             value = entry.is_a?(Hash) ? (entry["repository"] || entry["action"] || entry["value"]) : entry
             repository = value.to_s.split("@", 2).first
-            repository if repository.match?(%r{\A[^/\s]+/[^/\s]+\z})
+            repositories << repository if repository.match?(%r{\A[^/\s]+/[^/\s]+\z})
           end.uniq.sort
         rescue JSON::ParserError => error
           raise Error, "invalid review JSON: #{error.message}"

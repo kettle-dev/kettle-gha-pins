@@ -28,6 +28,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Keep JSON action inventory and review parsing compatible with Ruby 2.5.
+
 ### Security
 
 ## [0.3.10] - 2026-08-09
