@@ -28,8 +28,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
-- Keep JSON action inventory and review parsing compatible with Ruby 2.5.
-
 ### Security
 
 ## [0.3.10] - 2026-08-09
@@ -42,6 +40,10 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Added
 
 - Add JSON action inventory and cache review modes, strict offline pin resolution, and configurable action metadata TTL handling.
+
+### Fixed
+
+- Keep JSON action inventory and review parsing compatible with Ruby 2.5.
 
 ## [0.3.9] - 2026-08-05
 
