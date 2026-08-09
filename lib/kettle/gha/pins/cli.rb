@@ -67,9 +67,13 @@ module Kettle
             user_agent: "kettle-gha-pins",
             upgrade: DEFAULT_UPGRADE_LEVEL,
             cache_path: ENV["KETTLE_GHA_SHA_PINS_CACHE"] || PersistentActionCache.default_path,
+            ttl_days: DEFAULT_CACHE_TTL_SECONDS / 86_400.0,
             cooldown_days: cooldown_days,
             clock: clock,
             refresh_cache: false,
+            offline: false,
+            mode: :project,
+            input: nil,
             reject_patterns: Set.new,
             progress: nil
           }
@@ -78,20 +82,43 @@ module Kettle
         def run!
           parse!
 
-          @options[:token] ||= gh_auth_token if @options[:api_base] == API_BASE
+          return list_workflows! if @options[:mode] == :list
+
+          client, persistent_cache = build_client
+          return review_cache!(client: client, persistent_cache: persistent_cache) if @options[:mode] == :review
+
+          run_project!(client: client)
+        rescue Error, GitHubClient::CacheMissError, GitHubClient::RefreshError => error
+          @err.puts("kettle-gha-pins: #{error.message}")
+          2
+        end
+
+        private
+
+        def build_client
+          @options[:token] ||= gh_auth_token if @options[:api_base] == API_BASE && !@options[:offline]
           persistent_cache = if @options[:cache_path].to_s.empty?
             nil
           else
-            PersistentActionCache.new(path: @options[:cache_path])
+            PersistentActionCache.new(
+              path: @options[:cache_path],
+              ttl_seconds: (@options[:ttl_days] * 86_400).to_i,
+              clock: @options[:clock]
+            )
           end
           client = GitHubClient.new(
             token: @options[:token],
             api_base: @options[:api_base],
             user_agent: @options[:user_agent],
             persistent_cache: persistent_cache,
-            refresh_cache: @options[:refresh_cache]
+            refresh_cache: @options[:refresh_cache],
+            offline: @options[:offline],
+            fail_on_refresh_error: @options[:mode] == :review
           )
+          [client, persistent_cache]
+        end
 
+        def run_project!(client:)
           state = {
             files_scanned: 0,
             files_with_changes: 0,
@@ -293,7 +320,79 @@ module Kettle
           0
         end
 
-        private
+        def list_workflows!
+          state = {files_scanned: 0, failures: 0, errors: []}
+          workflow_files = discover_workflow_files(@options[:root], @options[:reject_patterns])
+          workflows = load_workflows(workflow_files, state)
+          pins = workflows.flat_map do |workflow|
+            workflow.fetch(:uses_nodes).filter_map do |node|
+              parsed = classify_action_ref(node[:value].to_s)
+              next unless parsed
+
+              action = parsed.fetch(:action)
+              {
+                "repository" => "#{action[:owner]}/#{action[:repo]}",
+                "ref" => action[:ref],
+                "value" => parsed[:value],
+                "path" => workflow[:path],
+                "line" => node[:line].to_i + 1
+              }
+            end
+          end
+          repositories = pins.map { |pin| pin.fetch("repository") }.uniq.sort
+          puts JSON.pretty_generate(
+            "schema_version" => 1,
+            "root" => @options[:root],
+            "repositories" => repositories,
+            "pins" => pins
+          )
+          state[:failures].zero? ? 0 : 2
+        end
+
+        def review_cache!(client:, persistent_cache:)
+          raise Error, "--review requires a writable cache; do not use --cache-path \"\"" unless persistent_cache
+
+          repositories = review_repositories
+          refreshed = repositories.map do |repository|
+            versions = client.versions_for_repo(repository)
+            {
+              "repository" => repository,
+              "versions" => versions.length,
+              "cache" => client.last_versions_cache_hit ? "hit" : "refreshed"
+            }
+          end
+          puts JSON.pretty_generate(
+            "schema_version" => 1,
+            "mode" => "review",
+            "ttl_days" => @options[:ttl_days],
+            "repositories" => refreshed
+          )
+          0
+        end
+
+        def review_repositories
+          source = @options[:input].to_s
+          source = if source.empty? || source == "-"
+            $stdin.read
+          else
+            File.read(source)
+          end
+          payload = JSON.parse(source)
+          entries = if payload.is_a?(Array)
+            payload
+          elsif payload.is_a?(Hash)
+            payload["repositories"] || payload["actions"] || payload["pins"] || []
+          else
+            []
+          end
+          entries.filter_map do |entry|
+            value = entry.is_a?(Hash) ? (entry["repository"] || entry["action"] || entry["value"]) : entry
+            repository = value.to_s.split("@", 2).first
+            repository if repository.match?(%r{\A[^/\s]+/[^/\s]+\z})
+          end.uniq.sort
+        rescue JSON::ParserError => error
+          raise Error, "invalid review JSON: #{error.message}"
+        end
 
         def parse!
           parser = OptionParser.new do |opt|
@@ -328,6 +427,27 @@ module Kettle
             opt.on("--refresh-cache", "Bypass cached action release data and refresh discovered actions") do
               @options[:refresh_cache] = true
             end
+            opt.on("--ttl DAYS", Float, "Cache TTL in days (default: #{@options[:ttl_days]})") do |days|
+              Kernel.abort("Invalid --ttl value #{days.inspect}; use a non-negative number") if days.negative?
+
+              @options[:ttl_days] = days
+            end
+            opt.on("--offline", "Use only the persistent cache; fail on a cache miss") do
+              @options[:offline] = true
+            end
+            opt.on("--list", "List project action pins as JSON without network access") do
+              raise OptionParser::InvalidOption, "--list cannot be combined with --review" if @options[:mode] == :review
+
+              @options[:mode] = :list
+            end
+            opt.on("--review", "Refresh action metadata from JSON input and update the cache") do
+              raise OptionParser::InvalidOption, "--review cannot be combined with --list" if @options[:mode] == :list
+
+              @options[:mode] = :review
+            end
+            opt.on("--input PATH", "Review JSON input path, or - for stdin") do |path|
+              @options[:input] = path
+            end
             opt.on("--cache-path PATH", "Action release cache path (default: #{@options[:cache_path]})") do |path|
               @options[:cache_path] = path
             end
@@ -356,6 +476,9 @@ module Kettle
             end
           end
           parser.parse!(@argv)
+          if @options[:mode] == :review && @options[:offline]
+            raise OptionParser::InvalidOption, "--review cannot be combined with --offline"
+          end
         end
 
         def display_path(path)

@@ -432,6 +432,29 @@ RSpec.describe Kettle::Gha::Pins do
       expect(no_cache_client.versions_for_repo("actions/checkout")).to be_empty
     end
 
+    it "trusts the persistent cache in offline mode and fails on a miss" do
+      cache = instance_double(Kettle::Gha::Pins::PersistentActionCache)
+      versions = [{tag: "v1.0.0", version_obj: Gem::Version.new("1.0.0"), version: "1.0.0", sha: "a" * 40}]
+      allow(cache).to receive(:versions_for_repo).with("actions/checkout", fresh: false).and_return(versions)
+      client = described_class.new(
+        token: nil,
+        api_base: "https://api.example.test",
+        user_agent: "spec",
+        persistent_cache: cache,
+        offline: true
+      )
+      allow(client).to receive(:request_json)
+
+      expect(client.versions_for_repo("actions/checkout")).to eq(versions)
+      expect(client).not_to have_received(:request_json)
+
+      allow(cache).to receive(:versions_for_repo).with("missing/action", fresh: false).and_return(nil)
+      expect { client.versions_for_repo("missing/action") }.to raise_error(
+        Kettle::Gha::Pins::GitHubClient::CacheMissError,
+        "offline cache miss for missing/action"
+      )
+    end
+
     it "resolves and caches commit SHAs with stale fallback" do
       cache = instance_double(Kettle::Gha::Pins::PersistentActionCache)
       allow(cache).to receive(:ref_sha).with("actions/checkout", "v1", fresh: true).and_return(nil)

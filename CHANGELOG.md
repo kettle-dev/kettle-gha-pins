@@ -20,6 +20,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- Add JSON action inventory and cache review modes, strict offline pin resolution, and configurable action metadata TTL handling.
+
 ### Changed
 
 ### Deprecated

@@ -155,6 +155,17 @@ cooldown window. The same default can be supplied with
 `KETTLE_GHA_PINS_COOLDOWN_DAYS`. The default is `0`, so checks remain strict
 unless a project opts into a warning window.
 
+The action metadata cache uses a one-day TTL by default. Set `--ttl DAYS` to
+change it; `--ttl 0` forces a refresh. `--offline` trusts the cache without
+checking TTL or contacting GitHub and fails if required repository metadata is
+missing.
+
+For family orchestration, `kettle-gha-pins --list --json` emits the action
+repositories used by a project without network access. A separate
+`kettle-gha-pins --review --input PATH` refreshes the repositories listed in
+that JSON and updates the shared cache. Review refreshes metadata independently
+of the selected major/minor/patch upgrade policy.
+
 `Kettle::Gha::Pins::PersistentActionCache.default_path` intentionally preserves
 the historical `kettle-gha-sha-pins` cache location so command-line tools can
 share action metadata without coupling to each other.
@@ -186,6 +197,14 @@ plan = Kettle::Gha::Pins.resolve_action_plan(
 
 plan[:updates]
 # => {sha: "...", version: "7.0.0", reason: "upgrade_to_allowed_release"}
+```
+
+The family-oriented cache workflow is:
+
+```console
+kettle-gha-pins --list --json
+kettle-gha-pins --review --input pins.json
+kettle-gha-pins --offline --write --upgrade major
 ```
 
 When two version-equivalent tags point at the same SHA, the rubric keeps the

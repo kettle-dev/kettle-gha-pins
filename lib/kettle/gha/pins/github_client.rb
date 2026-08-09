@@ -10,12 +10,17 @@ module Kettle
     module Pins
       # Lightweight GitHub API client for commit and release SHA resolution.
       class GitHubClient
-        def initialize(token:, api_base:, user_agent:, persistent_cache: nil, refresh_cache: false, open_timeout: DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS, read_timeout: DEFAULT_HTTP_READ_TIMEOUT_SECONDS, refresh_timeout: DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS)
+        class CacheMissError < Error; end
+        class RefreshError < Error; end
+
+        def initialize(token:, api_base:, user_agent:, persistent_cache: nil, refresh_cache: false, offline: false, fail_on_refresh_error: false, open_timeout: DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS, read_timeout: DEFAULT_HTTP_READ_TIMEOUT_SECONDS, refresh_timeout: DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS)
           @token = token
           @api_base = api_base
           @user_agent = user_agent
           @persistent_cache = persistent_cache
           @refresh_cache = refresh_cache
+          @offline = offline
+          @fail_on_refresh_error = fail_on_refresh_error
           @open_timeout = open_timeout
           @read_timeout = read_timeout
           @refresh_timeout = refresh_timeout
@@ -34,15 +39,22 @@ module Kettle
             return @release_cache[repo_ref]
           end
 
+          if @offline
+            cached = @persistent_cache&.versions_for_repo(repo_ref, fresh: false)
+            raise CacheMissError, "offline cache miss for #{repo_ref}" if cached.nil?
+
+            @last_versions_cache_hit = true
+            @release_cache[repo_ref] = cached
+            return cached
+          end
+
           stale = nil
           unless @refresh_cache
             cached = @persistent_cache&.versions_for_repo(repo_ref, fresh: true)
             if cached
-              unless cache_requires_refresh?(repo_ref, cached)
-                @last_versions_cache_hit = true
-                @release_cache[repo_ref] = cached
-                return cached
-              end
+              @last_versions_cache_hit = true
+              @release_cache[repo_ref] = cached
+              return cached
             end
             stale = @persistent_cache&.versions_for_repo(repo_ref, fresh: false)
           end
@@ -50,10 +62,10 @@ module Kettle
           releases = nil
           Timeout.timeout(@refresh_timeout) do
             data = request_json("/repos/#{repo_ref}/releases?per_page=100")
-            return cached_versions(repo_ref, stale) unless data.is_a?(Array)
+            return refresh_failed!(repo_ref, stale, "invalid releases response") unless data.is_a?(Array)
 
             tag_shas = tag_ref_shas(repo_ref)
-            return cached_versions(repo_ref, stale) unless tag_shas
+            return refresh_failed!(repo_ref, stale, "invalid tag response") unless tag_shas
 
             releases = build_release_versions(data, tag_shas)
           end
@@ -61,7 +73,7 @@ module Kettle
           @release_cache[repo_ref] = releases
           releases
         rescue Timeout::Error
-          cached_versions(repo_ref, stale)
+          refresh_failed!(repo_ref, stale, "GitHub refresh timed out")
         end
 
         def commit_sha(repo_ref, ref, refresh: false)
@@ -71,12 +83,14 @@ module Kettle
           return @commit_cache[cache_key] if @commit_cache.key?(cache_key) && !refresh
 
           unless @refresh_cache || refresh
-            cached = @persistent_cache&.ref_sha(repo_ref, ref, fresh: true)
+            cached = @persistent_cache&.ref_sha(repo_ref, ref, fresh: !@offline)
             if cached
               @commit_cache[cache_key] = cached
               return cached
             end
           end
+
+          raise CacheMissError, "offline cache miss for #{repo_ref}@#{ref}" if @offline
 
           data = request_json("/repos/#{repo_ref}/commits/#{uri_encode(ref)}")
           sha = if data.is_a?(Hash)
@@ -106,24 +120,10 @@ module Kettle
           versions
         end
 
-        # Release tags can be added or retargeted inside the cache TTL. Probe
-        # the latest release before trusting a cached inventory, and refresh
-        # only when that probe identifies a tag or target the cache lacks.
-        def cache_requires_refresh?(repo_ref, cached)
-          latest = request_json("/repos/#{repo_ref}/releases/latest")
-          return false unless latest.is_a?(Hash)
+        def refresh_failed!(repo_ref, stale, message)
+          return cached_versions(repo_ref, stale) unless @fail_on_refresh_error
 
-          tag = latest["tag_name"].to_s
-          return false unless VersionRubric.parse(tag)
-
-          cached_entry = cached.find { |entry| entry[:tag].to_s == tag }
-          return true unless cached_entry
-
-          latest_sha = commit_sha(repo_ref, tag, refresh: true)
-          cached_sha = cached_entry[:sha].to_s
-          return !latest_sha.to_s.empty? if cached_sha.empty?
-
-          !latest_sha.to_s.empty? && latest_sha != cached_sha
+          raise RefreshError, "#{message} for #{repo_ref}"
         end
 
         def build_release_versions(data, tag_shas)

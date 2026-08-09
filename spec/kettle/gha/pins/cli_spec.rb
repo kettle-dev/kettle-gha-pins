@@ -58,6 +58,23 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(cli.instance_variable_get(:@options)[:cooldown_days]).to eq(3)
     end
 
+    it "accepts --ttl, --offline, --list, and --review input" do
+      cli = described_class.new(["--ttl", "0.5", "--offline", "--root", workflow_root])
+      cli.send(:parse!)
+      options = cli.instance_variable_get(:@options)
+
+      expect(options[:ttl_days]).to eq(0.5)
+      expect(options[:offline]).to be(true)
+
+      list = described_class.new(["--list", "--root", workflow_root])
+      list.send(:parse!)
+      expect(list.instance_variable_get(:@options)[:mode]).to eq(:list)
+
+      review = described_class.new(["--review", "--input", "pins.json"])
+      review.send(:parse!)
+      expect(review.instance_variable_get(:@options)).to include(mode: :review, input: "pins.json")
+    end
+
     it "aborts on negative --cooldown-days values", :real_exit_adapter do
       cli = described_class.new(["--root", workflow_root, "--cooldown-days", "-1"])
 
@@ -118,6 +135,12 @@ RSpec.describe Kettle::Gha::Pins::CLI do
   end
 
   describe "workflow discovery" do
+    it "lists external action pins as JSON without resolving them" do
+      cli = described_class.new(["--list", "--root", workflow_root], err: StringIO.new)
+
+      expect { expect(cli.run!).to eq(0) }.to output(/"repositories": \[\s*"foo\/bar"/).to_stdout
+    end
+
     it "scans only the selected workflow directory when given a project root" do
       nested_workflow = File.join(workflow_root, "tmp", "template_test", "destination", ".github", "workflows", "ci.yml")
       FileUtils.mkdir_p(File.dirname(nested_workflow))
@@ -582,7 +605,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(versions.map { |entry| entry[:version] }).to eq(%w[2.0.0 1.3.0 1.2.3])
     end
 
-    it "refreshes a fresh cache when a newer release tag appears" do
+    it "trusts a fresh cache without probing for newer release tags" do
       cache_path = File.join(workflow_root, "gha-cache.json")
       cache = Kettle::Gha::Pins::CLI::PersistentActionCache.new(path: cache_path)
       cache.write_versions(
@@ -595,22 +618,12 @@ RSpec.describe Kettle::Gha::Pins::CLI do
         user_agent: "kettle-gha-pins",
         persistent_cache: cache
       )
-      allow(client).to receive(:request_json).with("/repos/foo/bar/releases/latest").and_return(
-        {"tag_name" => "v2.1"}
-      )
-      allow(client).to receive(:request_json).with("/repos/foo/bar/releases?per_page=100").and_return([
-        {"tag_name" => "v2", "prerelease" => false},
-        {"tag_name" => "v2.1", "prerelease" => false}
-      ])
-      allow(client).to receive(:request_json).with("/repos/foo/bar/git/matching-refs/tags/").and_return([
-        {"ref" => "refs/tags/v2", "object" => {"type" => "commit", "sha" => "a" * 40}},
-        {"ref" => "refs/tags/v2.1", "object" => {"type" => "commit", "sha" => "b" * 40}}
-      ])
+      allow(client).to receive(:request_json)
 
       versions = client.versions_for_repo("foo/bar")
 
-      expect(versions.map { |entry| entry[:version] }).to eq(%w[2.1 2])
-      expect(client).to have_received(:request_json).with("/repos/foo/bar/releases?per_page=100")
+      expect(versions.map { |entry| entry[:version] }).to eq(["2"])
+      expect(client).not_to have_received(:request_json)
     end
 
     it "reports persistent cache hits as cached action checks", freeze: Time.utc(2026, 6, 8, 12, 0, 0) do
@@ -840,6 +853,19 @@ RSpec.describe Kettle::Gha::Pins::CLI do
           "v2.0.0" => "ccc"
         }
       )
+    end
+
+    it "reviews repositories from JSON and updates the cache without project scanning" do
+      input_path = File.join(workflow_root, "review.json")
+      File.write(input_path, JSON.generate("repositories" => ["foo/bar", "foo/bar", "actions/checkout@v4"]))
+      client = instance_double(described_class::GitHubClient, last_versions_cache_hit: false)
+      allow(client).to receive(:versions_for_repo).with("actions/checkout").and_return([])
+      allow(client).to receive(:versions_for_repo).with("foo/bar").and_return([])
+      allow(described_class::GitHubClient).to receive(:new).and_return(client)
+      output = /"mode": "review".*"repository": "actions\/checkout"/m
+
+      cli = described_class.new(["--review", "--input", input_path, "--json", "--cache-path", File.join(workflow_root, "cache.json")])
+      expect { expect(cli.run!).to eq(0) }.to output(output).to_stdout
     end
 
     it "emits JSON report with outdated_pins and version-equivalent values" do
