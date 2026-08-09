@@ -20,8 +20,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
-- Add JSON action inventory and cache review modes, strict offline pin resolution, and configurable action metadata TTL handling.
-
 ### Changed
 
 ### Deprecated
@@ -31,6 +29,17 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Fixed
 
 ### Security
+
+## [0.3.10] - 2026-08-09
+
+- TAG: [v0.3.10][0.3.10t]
+- COVERAGE: 98.08% -- 1022/1042 lines in 8 files
+- BRANCH COVERAGE: 88.03% -- 412/468 branches in 8 files
+- 26.17% documented
+
+### Added
+
+- Add JSON action inventory and cache review modes, strict offline pin resolution, and configurable action metadata TTL handling.
 
 ## [0.3.9] - 2026-08-05
 
@@ -284,7 +293,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.9...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.10...HEAD
+[0.3.10]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.9...v0.3.10
+[0.3.10t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.10
 [0.3.9]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.8...v0.3.9
 [0.3.9t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.9
 [0.3.8]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.7...v0.3.8
