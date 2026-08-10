@@ -546,6 +546,25 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(versions.map { |entry| entry[:sha] }).to eq(["b" * 40, "a" * 40])
     end
 
+    it "uses one Git tag exchange for large annotated tag inventories" do
+      client = described_class.new(token: nil, api_base: Kettle::Gha::Pins::CLI::API_BASE, user_agent: "kettle-gha-pins")
+      releases = (1..5).map { |index| {"tag_name" => "v1.0.#{index}", "prerelease" => false} }
+      refs = releases.map do |release|
+        {"ref" => "refs/tags/#{release.fetch("tag_name")}", "object" => {"type" => "tag", "sha" => "t" * 40}}
+      end
+      peeled = releases.each_with_object({}) do |release, memo|
+        memo[release.fetch("tag_name")] = "c" * 40
+      end
+      allow(client).to receive(:request_json).with("/repos/foo/bar/releases?per_page=100").and_return(releases)
+      allow(client).to receive(:request_json).with("/repos/foo/bar/git/matching-refs/tags/").and_return(refs)
+      allow(client).to receive(:git_tag_ref_shas).with("foo/bar").and_return(peeled)
+      expect(client).not_to receive(:annotated_tag_commit_sha)
+
+      versions = client.versions_for_repo("foo/bar")
+
+      expect(versions.map { |entry| entry[:sha] }).to eq(Array.new(5, "c" * 40).reverse)
+    end
+
     it "does not dereference annotated tags that are not action release versions" do
       client = described_class.new(token: nil, api_base: Kettle::Gha::Pins::CLI::API_BASE, user_agent: "kettle-gha-pins")
       allow(client).to receive(:request_json).with("/repos/foo/bar/releases?per_page=100").and_return([

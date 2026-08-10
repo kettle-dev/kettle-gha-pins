@@ -2,6 +2,7 @@
 
 require "json"
 require "net/http"
+require "open3"
 require "timeout"
 require "uri"
 
@@ -10,6 +11,7 @@ module Kettle
     module Pins
       # Lightweight GitHub API client for commit and release SHA resolution.
       class GitHubClient
+        ANNOTATED_TAG_GIT_FALLBACK_THRESHOLD = 4
         class CacheMissError < Error; end
         class RefreshError < Error; end
 
@@ -150,7 +152,7 @@ module Kettle
           data = request_json("/repos/#{repo_ref}/git/matching-refs/tags/")
           return nil unless data.is_a?(Array)
 
-          data.each_with_object({}) do |entry, memo|
+          entries = data.each_with_object([]) do |entry, memo|
             ref = entry["ref"].to_s
             next unless ref.start_with?("refs/tags/")
 
@@ -160,14 +162,49 @@ module Kettle
             object = entry["object"]
             next unless object.is_a?(Hash)
 
-            sha = object["sha"].to_s[0, 40]
-            case object["type"]
+            memo << [tag, object["type"].to_s, object["sha"].to_s[0, 40]]
+          end
+          annotated_tag_shas = git_tag_ref_shas(repo_ref) if entries.count { |_, type, _| type == "tag" } > ANNOTATED_TAG_GIT_FALLBACK_THRESHOLD
+
+          entries.each_with_object({}) do |(tag, type, sha), memo|
+            case type
             when "commit"
               memo[tag] = sha
             when "tag"
-              memo[tag] = annotated_tag_commit_sha(repo_ref, sha)
+              memo[tag] = annotated_tag_shas&.fetch(tag, nil) || annotated_tag_commit_sha(repo_ref, sha)
             end
           end
+        end
+
+        # The REST API exposes annotated tags as tag objects, requiring one
+        # additional request per tag to reach the commit. A single Git
+        # protocol exchange returns both tag objects and peeled commit refs,
+        # avoiding a refresh timeout for repositories with large tag histories.
+        def git_tag_ref_shas(repo_ref)
+          return unless @api_base.to_s.sub(%r{/\z}, "") == API_BASE
+
+          stdout, _stderr, status = Open3.capture3(
+            {"GIT_TERMINAL_PROMPT" => "0"},
+            "git",
+            "ls-remote",
+            "--tags",
+            "https://github.com/#{repo_ref}.git"
+          )
+          return unless status.success?
+
+          stdout.each_line.each_with_object({}) do |line, memo|
+            sha, ref = line.split
+            next unless SHA_RE.match?(sha.to_s)
+            next unless ref.to_s.start_with?("refs/tags/")
+
+            peeled = ref.end_with?("^{}")
+            tag = ref.sub(%r{\Arefs/tags/}, "").sub(/\^\{\}\z/, "")
+            next unless VersionRubric.parse(tag)
+
+            memo[tag] = sha if peeled || !memo.key?(tag)
+          end
+        rescue IOError, SystemCallError
+          nil
         end
 
         def annotated_tag_commit_sha(repo_ref, tag_sha)
