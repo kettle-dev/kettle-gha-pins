@@ -348,13 +348,14 @@ RSpec.describe Kettle::Gha::Pins do
       expect(described_class.new(path: path).to_h).to eq("version" => described_class::VERSION, "actions" => {})
     end
 
-    it "rejects mixed-freshness version caches" do
+    it "replaces a repository inventory when refreshing versions" do
       stale_clock = -> { clock_time - (25 * 60 * 60) }
       cache = described_class.new(path: path, clock: stale_clock)
       cache.write_versions(
         "actions/checkout",
         [{tag: "v1.0.0", version_obj: Gem::Version.new("1.0.0"), version: "1.0.0", sha: "a" * 40}]
       )
+      cache.write_ref_sha("actions/checkout", "refs/heads/main", "c" * 40)
 
       fresh_cache = described_class.new(path: path, clock: clock)
       fresh_cache.write_versions(
@@ -364,8 +365,9 @@ RSpec.describe Kettle::Gha::Pins do
 
       reloaded = described_class.new(path: path, clock: clock)
 
-      expect(reloaded.versions_for_repo("actions/checkout")).to be_nil
-      expect(reloaded.versions_for_repo("actions/checkout", fresh: false).map { |entry| entry[:version] }).to eq(%w[1.0.1 1.0.0])
+      expect(reloaded.versions_for_repo("actions/checkout").map { |entry| entry[:version] }).to eq(["1.0.1"])
+      expect(reloaded.ref_sha("actions/checkout", "v1.0.0", fresh: false)).to be_nil
+      expect(reloaded.ref_sha("actions/checkout", "refs/heads/main", fresh: false)).to eq("c" * 40)
     end
   end
 

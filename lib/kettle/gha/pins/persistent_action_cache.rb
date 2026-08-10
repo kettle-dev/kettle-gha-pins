@@ -54,8 +54,15 @@ module Kettle
           return if repo_ref.to_s.empty?
 
           action = data.fetch("actions")[repo_ref] ||= {}
-          stored_versions = action["versions"] ||= {}
-          refs = action["refs"] ||= {}
+          previous_versions = action["versions"] || {}
+          previous_tags = previous_versions.values.each_with_object([]) do |entry, tags|
+            tag = entry["tag"].to_s
+            tags << tag unless tag.empty?
+          end
+          stored_versions = {}
+          refs = (action["refs"] || {}).reject { |ref, _entry| previous_tags.include?(ref) }
+          action["versions"] = stored_versions
+          action["refs"] = refs
           timestamp = @clock.call.utc.iso8601
 
           versions.each do |entry|

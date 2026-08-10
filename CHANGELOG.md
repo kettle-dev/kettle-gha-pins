@@ -30,6 +30,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 - Resolve large GitHub Actions annotated-tag inventories through a single Git exchange so stale cache reviews do not time out on repositories such as codecov/codecov-action.
 
+- Replace refreshed GitHub Actions cache inventories instead of retaining obsolete versions and forcing repeated refreshes.
+
 ### Security
 
 ## [0.3.10] - 2026-08-09
