@@ -28,11 +28,20 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+### Security
+
+## [0.3.11] - 2026-08-10
+
+- TAG: [v0.3.11][0.3.11t]
+- COVERAGE: 97.00% -- 1033/1065 lines in 8 files
+- BRANCH COVERAGE: 85.60% -- 416/486 branches in 8 files
+- 25.93% documented
+
+### Fixed
+
 - Resolve large GitHub Actions annotated-tag inventories through a single Git exchange so stale cache reviews do not time out on repositories such as codecov/codecov-action.
 
 - Replace refreshed GitHub Actions cache inventories instead of retaining obsolete versions and forcing repeated refreshes.
-
-### Security
 
 ## [0.3.10] - 2026-08-09
 
@@ -301,7 +310,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.10...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.11...HEAD
+[0.3.11]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.10...v0.3.11
+[0.3.11t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.11
 [0.3.10]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.9...v0.3.10
 [0.3.10t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.10
 [0.3.9]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.8...v0.3.9

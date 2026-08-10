@@ -123,6 +123,22 @@
   
 </p>
 
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="ANNOTATED_TAG_GIT_FALLBACK_THRESHOLD-constant" class="">ANNOTATED_TAG_GIT_FALLBACK_THRESHOLD =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>4</span></pre></dd>
+      
+    </dl>
+  
+
 
 
 
@@ -296,8 +312,6 @@
       <pre class="lines">
 
 
-16
-17
 18
 19
 20
@@ -310,10 +324,12 @@
 27
 28
 29
-30</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>token:</span><span class='comma'>,</span> <span class='label'>api_base:</span><span class='comma'>,</span> <span class='label'>user_agent:</span><span class='comma'>,</span> <span class='label'>persistent_cache:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>refresh_cache:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>offline:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>fail_on_refresh_error:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>open_timeout:</span> <span class='const'><span class='object_link'><a href="../Pins.html#DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS-constant" title="Kettle::Gha::Pins::DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS (constant)">DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS</a></span></span><span class='comma'>,</span> <span class='label'>read_timeout:</span> <span class='const'><span class='object_link'><a href="../Pins.html#DEFAULT_HTTP_READ_TIMEOUT_SECONDS-constant" title="Kettle::Gha::Pins::DEFAULT_HTTP_READ_TIMEOUT_SECONDS (constant)">DEFAULT_HTTP_READ_TIMEOUT_SECONDS</a></span></span><span class='comma'>,</span> <span class='label'>refresh_timeout:</span> <span class='const'><span class='object_link'><a href="../Pins.html#DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS-constant" title="Kettle::Gha::Pins::DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS (constant)">DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS</a></span></span><span class='rparen'>)</span>
   <span class='ivar'>@token</span> <span class='op'>=</span> <span class='id identifier rubyid_token'>token</span>
@@ -367,12 +383,12 @@
       <pre class="lines">
 
 
-32
-33
-34</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_last_versions_cache_hit'>last_versions_cache_hit</span>
   <span class='ivar'>@last_versions_cache_hit</span>
@@ -427,8 +443,6 @@
       <pre class="lines">
 
 
-79
-80
 81
 82
 83
@@ -454,10 +468,12 @@
 103
 104
 105
-106</pre>
+106
+107
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commit_sha'>commit_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='label'>refresh:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>||</span> <span class='id identifier rubyid_ref'>ref</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -507,14 +523,14 @@
       <pre class="lines">
 
 
-108
-109
 110
 111
-112</pre>
+112
+113
+114</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 110</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release_latest_sha'>release_latest_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_versions'>versions</span> <span class='op'>=</span> <span class='id identifier rubyid_versions_for_repo'>versions_for_repo</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
@@ -541,8 +557,6 @@
       <pre class="lines">
 
 
-34
-35
 36
 37
 38
@@ -584,10 +598,12 @@
 74
 75
 76
-77</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_versions_for_repo'>versions_for_repo</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
   <span class='ivar'>@last_versions_cache_hit</span> <span class='op'>=</span> <span class='kw'>false</span>
