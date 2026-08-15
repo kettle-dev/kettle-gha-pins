@@ -28,9 +28,18 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
-- Retry transient GitHub Action metadata failures and report API response details during strict pin reviews.
-
 ### Security
+
+## [0.3.13] - 2026-08-15
+
+- TAG: [v0.3.13][0.3.13t]
+- COVERAGE: 97.09% -- 1067/1099 lines in 8 files
+- BRANCH COVERAGE: 85.66% -- 430/502 branches in 8 files
+- 26.13% documented
+
+### Fixed
+
+- Retry transient GitHub Action metadata failures and report API response details during strict pin reviews.
 
 ## [0.3.12] - 2026-08-12
 
@@ -325,7 +334,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.12...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.13...HEAD
+[0.3.13]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.12...v0.3.13
+[0.3.13t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.13
 [0.3.12]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.11...v0.3.12
 [0.3.12t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.12
 [0.3.11]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.10...v0.3.11

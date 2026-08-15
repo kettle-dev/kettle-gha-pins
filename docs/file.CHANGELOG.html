@@ -70,7 +70,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 and <a href="https://tom.preston-werner.com/2022/05/23/major-version-numbers-are-not-sacred.html">yes</a>, platform and engine support are part of the <a href="https://github.com/semver/semver/issues/716#issuecomment-869336139">public API</a>.<br>
 Please file a bug if you notice a violation of semantic versioning.</p>
 
-<h2 id="unreleased"><a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.12...HEAD">Unreleased</a></h2>
+<h2 id="unreleased"><a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.13...HEAD">Unreleased</a></h2>
 
 <h3 id="added">Added</h3>
 
@@ -83,6 +83,23 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 <h3 id="fixed">Fixed</h3>
 
 <h3 id="security">Security</h3>
+
+<h2 id="0313---2026-08-15">
+<a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.12...v0.3.13">0.3.13</a> - 2026-08-15</h2>
+
+<ul>
+  <li>TAG: <a href="https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.13">v0.3.13</a>
+</li>
+  <li>COVERAGE: 97.09% – 1067/1099 lines in 8 files</li>
+  <li>BRANCH COVERAGE: 85.66% – 430/502 branches in 8 files</li>
+  <li>26.13% documented</li>
+</ul>
+
+<h3 id="fixed-1">Fixed</h3>
+
+<ul>
+  <li>Retry transient GitHub Action metadata failures and report API response details during strict pin reviews.</li>
+</ul>
 
 <h2 id="0312---2026-08-12">
 <a href="https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.11...v0.3.12">0.3.12</a> - 2026-08-12</h2>
@@ -117,7 +134,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
   <li>25.93% documented</li>
 </ul>
 
-<h3 id="fixed-1">Fixed</h3>
+<h3 id="fixed-2">Fixed</h3>
 
 <ul>
   <li>
@@ -145,7 +162,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
   <li>Add JSON action inventory and cache review modes, strict offline pin resolution, and configurable action metadata TTL handling.</li>
 </ul>
 
-<h3 id="fixed-2">Fixed</h3>
+<h3 id="fixed-3">Fixed</h3>
 
 <ul>
   <li>Keep JSON action inventory and review parsing compatible with Ruby 2.5.</li>
@@ -162,7 +179,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
   <li>25.71% documented</li>
 </ul>
 
-<h3 id="fixed-3">Fixed</h3>
+<h3 id="fixed-4">Fixed</h3>
 
 <ul>
   <li>Emit NDJSON progress events for family orchestration without replaying the full human report.</li>
@@ -179,7 +196,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
   <li>25.71% documented</li>
 </ul>
 
-<h3 id="fixed-4">Fixed</h3>
+<h3 id="fixed-5">Fixed</h3>
 
 <ul>
   <li>Refresh cached GitHub Action release data when a newer release tag is detected.</li>
@@ -207,7 +224,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
   <li>24.04% documented</li>
 </ul>
 
-<h3 id="fixed-5">Fixed</h3>
+<h3 id="fixed-6">Fixed</h3>
 
 <ul>
   <li>kettle-jem-template-20260802-001 - Devcontainer JSON files now merge as JSONC,<br>
@@ -232,7 +249,7 @@ preserving comments and trailing commas during template updates.</li>
 use ClickGems instead of BestGems.</li>
 </ul>
 
-<h3 id="fixed-6">Fixed</h3>
+<h3 id="fixed-7">Fixed</h3>
 
 <ul>
   <li>kettle-jem-template-20260801-002 - Generated RSpec helpers now normalize<br>
@@ -259,7 +276,7 @@ matching Galtzo-hosted asset exists.</li>
 
 <h3 id="added-2">Added</h3>
 
-<h3 id="fixed-7">Fixed</h3>
+<h3 id="fixed-8">Fixed</h3>
 
 <ul>
   <li>kettle-jem-template-20260728-003 - Generated dep-heads workflows now run<br>
@@ -290,7 +307,7 @@ even when the gemspec is loaded from another working directory.</li>
   <li>24.04% documented</li>
 </ul>
 
-<h3 id="fixed-8">Fixed</h3>
+<h3 id="fixed-9">Fixed</h3>
 
 <ul>
   <li>Version comment normalization now rewrites equivalent comments to a real<br>
@@ -345,7 +362,7 @@ setup-ruby-flash planning and can prepare appraisal-only jobs without<br>
 installing the main Gemfile bundle.</li>
 </ul>
 
-<h3 id="fixed-9">Fixed</h3>
+<h3 id="fixed-10">Fixed</h3>
 
 <ul>
   <li>Two-segment GitHub Action releases like <code>v2.0</code> are now recognized as<br>
@@ -381,7 +398,7 @@ installs are not reported as project lint debt.</li>
 standard startup header on normal runs.</li>
 </ul>
 
-<h3 id="fixed-10">Fixed</h3>
+<h3 id="fixed-11">Fixed</h3>
 
 <ul>
   <li>The <code>kettle-gha-pins</code> executable now uses normal <code>require</code> loading for its<br>
@@ -416,7 +433,7 @@ action version upgrades before enforcing them.</p>
 cached, live, and skipped counters no longer overwrite each other on TTYs.</li>
 </ul>
 
-<h3 id="fixed-11">Fixed</h3>
+<h3 id="fixed-12">Fixed</h3>
 
 <ul>
   <li>GitHub Actions pin cache writes now persist tag SHA refs from release version<br>
@@ -435,7 +452,7 @@ rechecking freshly cached actions live.</li>
   <li>22.22% documented</li>
 </ul>
 
-<h3 id="fixed-12">Fixed</h3>
+<h3 id="fixed-13">Fixed</h3>
 
 <ul>
   <li>Lowered the generated gemspec Ruby requirement to <code>&gt;= 2.4.0</code> to match<br>

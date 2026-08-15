@@ -136,6 +136,16 @@
         </dt>
         <dd><pre class="code"><span class='int'>4</span></pre></dd>
       
+        <dt id="HTTP_RETRY_LIMIT-constant" class="">HTTP_RETRY_LIMIT =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>2</span></pre></dd>
+      
+        <dt id="RETRYABLE_HTTP_STATUS_CODES-constant" class="">RETRYABLE_HTTP_STATUS_CODES =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='int'>408</span><span class='comma'>,</span> <span class='int'>425</span><span class='comma'>,</span> <span class='int'>429</span><span class='comma'>,</span> <span class='int'>500</span><span class='comma'>,</span> <span class='int'>502</span><span class='comma'>,</span> <span class='int'>503</span><span class='comma'>,</span> <span class='int'>504</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
     </dl>
   
 
@@ -144,6 +154,34 @@
 
   <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
   <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#last_request_error-instance_method" title="#last_request_error (instance method)">#<strong>last_request_error</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute last_request_error.</p>
+</div></span>
+  
+</li>
+
     
       <li class="public ">
   <span class="summary_signature">
@@ -312,8 +350,6 @@
       <pre class="lines">
 
 
-18
-19
 20
 21
 22
@@ -326,10 +362,13 @@
 29
 30
 31
-32</pre>
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>token:</span><span class='comma'>,</span> <span class='label'>api_base:</span><span class='comma'>,</span> <span class='label'>user_agent:</span><span class='comma'>,</span> <span class='label'>persistent_cache:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>refresh_cache:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>offline:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>fail_on_refresh_error:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>open_timeout:</span> <span class='const'><span class='object_link'><a href="../Pins.html#DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS-constant" title="Kettle::Gha::Pins::DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS (constant)">DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS</a></span></span><span class='comma'>,</span> <span class='label'>read_timeout:</span> <span class='const'><span class='object_link'><a href="../Pins.html#DEFAULT_HTTP_READ_TIMEOUT_SECONDS-constant" title="Kettle::Gha::Pins::DEFAULT_HTTP_READ_TIMEOUT_SECONDS (constant)">DEFAULT_HTTP_READ_TIMEOUT_SECONDS</a></span></span><span class='comma'>,</span> <span class='label'>refresh_timeout:</span> <span class='const'><span class='object_link'><a href="../Pins.html#DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS-constant" title="Kettle::Gha::Pins::DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS (constant)">DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS</a></span></span><span class='rparen'>)</span>
   <span class='ivar'>@token</span> <span class='op'>=</span> <span class='id identifier rubyid_token'>token</span>
@@ -345,6 +384,7 @@
   <span class='ivar'>@commit_cache</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='ivar'>@release_cache</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='ivar'>@last_versions_cache_hit</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='ivar'>@last_request_error</span> <span class='op'>=</span> <span class='kw'>nil</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -359,7 +399,49 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id="last_versions_cache_hit-instance_method">
+  <h3 class="signature first" id="last_request_error-instance_method">
+  
+    #<strong>last_request_error</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute last_request_error.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_last_request_error'>last_request_error</span>
+  <span class='ivar'>@last_request_error</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="last_versions_cache_hit-instance_method">
   
     #<strong>last_versions_cache_hit</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
@@ -383,12 +465,12 @@
       <pre class="lines">
 
 
-34
-35
-36</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_last_versions_cache_hit'>last_versions_cache_hit</span>
   <span class='ivar'>@last_versions_cache_hit</span>
@@ -443,12 +525,6 @@
       <pre class="lines">
 
 
-81
-82
-83
-84
-85
-86
 87
 88
 89
@@ -470,10 +546,16 @@
 105
 106
 107
-108</pre>
+108
+109
+110
+111
+112
+113
+114</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commit_sha'>commit_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='label'>refresh:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>||</span> <span class='id identifier rubyid_ref'>ref</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -523,14 +605,14 @@
       <pre class="lines">
 
 
-110
-111
-112
-113
-114</pre>
+116
+117
+118
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release_latest_sha'>release_latest_sha</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_versions'>versions</span> <span class='op'>=</span> <span class='id identifier rubyid_versions_for_repo'>versions_for_repo</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
@@ -557,9 +639,6 @@
       <pre class="lines">
 
 
-36
-37
-38
 39
 40
 41
@@ -600,10 +679,16 @@
 76
 77
 78
-79</pre>
+79
+80
+81
+82
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/kettle/gha/pins/github_client.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_versions_for_repo'>versions_for_repo</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
   <span class='ivar'>@last_versions_cache_hit</span> <span class='op'>=</span> <span class='kw'>false</span>
@@ -636,7 +721,10 @@
   <span class='id identifier rubyid_releases'>releases</span> <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='const'>Timeout</span><span class='period'>.</span><span class='id identifier rubyid_timeout'>timeout</span><span class='lparen'>(</span><span class='ivar'>@refresh_timeout</span><span class='rparen'>)</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_request_json'>request_json</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/repos/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='embexpr_end'>}</span><span class='tstring_content'>/releases?per_page=100</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-    <span class='kw'>return</span> <span class='id identifier rubyid_refresh_failed!'>refresh_failed!</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_stale'>stale</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid releases response</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
+    <span class='kw'>unless</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_detail'>detail</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected an array, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+      <span class='kw'>return</span> <span class='id identifier rubyid_refresh_failed!'>refresh_failed!</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_stale'>stale</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid releases response</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>detail:</span> <span class='id identifier rubyid_detail'>detail</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
 
     <span class='id identifier rubyid_tag_shas'>tag_shas</span> <span class='op'>=</span> <span class='id identifier rubyid_tag_ref_shas'>tag_ref_shas</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='rparen'>)</span>
     <span class='kw'>return</span> <span class='id identifier rubyid_refresh_failed!'>refresh_failed!</span><span class='lparen'>(</span><span class='id identifier rubyid_repo_ref'>repo_ref</span><span class='comma'>,</span> <span class='id identifier rubyid_stale'>stale</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid tag response</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_tag_shas'>tag_shas</span>
