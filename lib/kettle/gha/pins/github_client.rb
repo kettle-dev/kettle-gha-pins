@@ -12,6 +12,8 @@ module Kettle
       # Lightweight GitHub API client for commit and release SHA resolution.
       class GitHubClient
         ANNOTATED_TAG_GIT_FALLBACK_THRESHOLD = 4
+        HTTP_RETRY_LIMIT = 2
+        RETRYABLE_HTTP_STATUS_CODES = [408, 425, 429, 500, 502, 503, 504].freeze
         class CacheMissError < Error; end
         class RefreshError < Error; end
 
@@ -29,9 +31,10 @@ module Kettle
           @commit_cache = {}
           @release_cache = {}
           @last_versions_cache_hit = false
+          @last_request_error = nil
         end
 
-        attr_reader :last_versions_cache_hit
+        attr_reader :last_request_error, :last_versions_cache_hit
 
         def versions_for_repo(repo_ref)
           @last_versions_cache_hit = false
@@ -64,7 +67,10 @@ module Kettle
           releases = nil
           Timeout.timeout(@refresh_timeout) do
             data = request_json("/repos/#{repo_ref}/releases?per_page=100")
-            return refresh_failed!(repo_ref, stale, "invalid releases response") unless data.is_a?(Array)
+            unless data.is_a?(Array)
+              detail = data.nil? ? nil : "expected an array, got #{data.class}"
+              return refresh_failed!(repo_ref, stale, "invalid releases response", detail: detail)
+            end
 
             tag_shas = tag_ref_shas(repo_ref)
             return refresh_failed!(repo_ref, stale, "invalid tag response") unless tag_shas
@@ -122,10 +128,12 @@ module Kettle
           versions
         end
 
-        def refresh_failed!(repo_ref, stale, message)
+        def refresh_failed!(repo_ref, stale, message, detail: nil)
           return cached_versions(repo_ref, stale) unless @fail_on_refresh_error
 
-          raise RefreshError, "#{message} for #{repo_ref}"
+          detail ||= @last_request_error
+          suffix = detail.to_s.empty? ? "" : ": #{detail}"
+          raise RefreshError, "#{message} for #{repo_ref}#{suffix}"
         end
 
         def build_release_versions(data, tag_shas)
@@ -222,8 +230,10 @@ module Kettle
 
         def request_json(path, redirects: 3)
           uri = URI.join(@api_base + "/", path)
+          @last_request_error = nil
 
           response = nil
+          retries = 0
           loop do
             request = Net::HTTP::Get.new(uri)
             request["Accept"] = "application/vnd.github+json"
@@ -231,27 +241,68 @@ module Kettle
             request["X-GitHub-Api-Version"] = "2022-11-28"
             request["Authorization"] = "Bearer #{@token}" if @token && !@token.empty?
 
-            response = http_request(uri, request)
+            begin
+              response = http_request(uri, request)
+            rescue IOError, SystemCallError, Net::OpenTimeout, Net::ReadTimeout => error
+              if retries < HTTP_RETRY_LIMIT
+                retries += 1
+                sleep(retry_delay(nil, retries))
+                next
+              end
 
-            break unless response.code.to_i.between?(300, 399)
-            redirects -= 1
-            return nil if redirects.negative?
+              @last_request_error = "GitHub request failed for #{path}: #{error.class}: #{error.message}"
+              return nil
+            end
 
-            location = response["location"].to_s
-            return nil if location.empty?
+            if response.code.to_i.between?(300, 399)
+              redirects -= 1
+              return nil if redirects.negative?
 
-            uri = URI.join(uri.to_s, location)
+              location = response["location"].to_s
+              return nil if location.empty?
+
+              uri = URI.join(uri.to_s, location)
+              next
+            end
+
+            status = response.code.to_i
+            unless status == 200
+              if RETRYABLE_HTTP_STATUS_CODES.include?(status) && retries < HTTP_RETRY_LIMIT
+                retries += 1
+                sleep(retry_delay(response, retries))
+                next
+              end
+
+              @last_request_error = response_error(response, path)
+              return nil
+            end
+
+            begin
+              return JSON.parse(response.body)
+            rescue JSON::ParserError
+              @last_request_error = "GitHub returned invalid JSON for #{path}"
+              return nil
+            end
           end
+        end
 
-          return nil unless response.code.to_i == 200
+        def retry_delay(response, attempt)
+          retry_after = response ? response["retry-after"].to_f : 0.0
+          return retry_after.clamp(0.0, 2.0) if retry_after.positive?
 
-          begin
-            JSON.parse(response.body)
+          0.25 * (2**(attempt - 1))
+        end
+
+        def response_error(response, path)
+          status = response.code.to_i
+          body = begin
+            JSON.parse(response.body.to_s)
           rescue JSON::ParserError
             nil
           end
-        rescue IOError, SystemCallError, Net::OpenTimeout, Net::ReadTimeout
-          nil
+          message = body.is_a?(Hash) ? body["message"].to_s : ""
+          detail = message.empty? ? "response body was not a GitHub API error object" : message
+          "GitHub API returned HTTP #{status} for #{path}: #{detail}"
         end
 
         def http_request(uri, request)

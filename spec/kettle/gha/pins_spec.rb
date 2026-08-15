@@ -496,6 +496,30 @@ RSpec.describe Kettle::Gha::Pins do
       expect(client.release_latest_sha("actions/checkout")).to be_nil
     end
 
+    it "retries transient GitHub responses before resolving releases" do
+      client = described_class.new(token: nil, api_base: "https://api.example.test", user_agent: "spec")
+      transient = response_class.new("503", JSON.generate("message" => "Service Unavailable"))
+      releases = response_class.new("200", JSON.generate([{"tag_name" => "v1.0.0", "prerelease" => false}]))
+      tags = response_class.new(
+        "200",
+        JSON.generate([{"ref" => "refs/tags/v1.0.0", "object" => {"type" => "commit", "sha" => "a" * 40}}])
+      )
+      allow(client).to receive(:http_request).and_return(transient, releases, tags)
+
+      expect(client.versions_for_repo("foo/bar").first).to include(version: "1.0.0", sha: "a" * 40)
+    end
+
+    it "reports the GitHub API response when strict refresh fails" do
+      client = described_class.new(token: nil, api_base: "https://api.example.test", user_agent: "spec", fail_on_refresh_error: true)
+      response = response_class.new("403", JSON.generate("message" => "API rate limit exceeded"))
+      allow(client).to receive(:http_request).and_return(response)
+
+      expect { client.versions_for_repo("foo/bar") }.to raise_error(
+        Kettle::Gha::Pins::GitHubClient::RefreshError,
+        /invalid releases response for foo\/bar: GitHub API returned HTTP 403 for \/repos\/foo\/bar\/releases\?per_page=100: API rate limit exceeded/
+      )
+    end
+
     it "handles tag refs, annotated tags, redirects, invalid JSON, and request errors" do
       client = described_class.new(token: "secret", api_base: "https://api.example.test", user_agent: "spec")
       tags = response_class.new(

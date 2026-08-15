@@ -28,6 +28,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Retry transient GitHub Action metadata failures and report API response details during strict pin reviews.
+
 ### Security
 
 ## [0.3.12] - 2026-08-12
