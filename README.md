@@ -96,7 +96,9 @@ The _amazing_ test matrix is powered by the kettle-dev stack.
 
 </details>
 
-### Enterprise Support [![Tidelift](https://tidelift.com/badges/package/rubygems/kettle-gha-pins)](https://tidelift.com/subscription/pkg/rubygems-kettle-gha-pins?utm_source=rubygems-kettle-gha-pins&utm_medium=referral&utm_campaign=readme)
+### Enterprise Support
+
+[![Tidelift](https://tidelift.com/badges/package/rubygems/kettle-gha-pins)](https://tidelift.com/subscription/pkg/rubygems-kettle-gha-pins?utm_source=rubygems-kettle-gha-pins&utm_medium=referral&utm_campaign=readme)
 
 Available as part of the Tidelift Subscription.
 
