@@ -28,6 +28,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Workflow discovery canonicalizes Windows paths so 8.3 aliases match the same files consistently.
+
 ### Security
 
 ## [0.3.16] - 2026-09-26

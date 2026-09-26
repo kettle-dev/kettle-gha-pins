@@ -9,6 +9,10 @@ RSpec.describe Kettle::Gha::Pins::CLI do
   let(:workflow_root) { Dir.mktmpdir }
   let(:workflow_path) { File.join(workflow_root, ".github", "workflows", "ci.yml") }
 
+  def canonical_workflow_path
+    File.realpath(workflow_path)
+  end
+
   before do
     FileUtils.mkdir_p(File.dirname(workflow_path))
     File.write(
@@ -147,14 +151,14 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       File.write(nested_workflow, File.read(workflow_path))
       cli = described_class.new(["--root", workflow_root])
 
-      expect(cli.send(:discover_workflow_files, workflow_root, Set.new)).to eq([workflow_path])
+      expect(cli.send(:discover_workflow_files, workflow_root, Set.new)).to eq([canonical_workflow_path])
     end
 
     it "accepts a workflow directory as the analysis root" do
       workflow_dir = File.dirname(workflow_path)
       cli = described_class.new(["--root", workflow_dir])
 
-      expect(cli.send(:discover_workflow_files, workflow_dir, Set.new)).to eq([workflow_path])
+      expect(cli.send(:discover_workflow_files, workflow_dir, Set.new)).to eq([canonical_workflow_path])
     end
 
     it "skips non-files and rejected workflow paths" do
@@ -164,7 +168,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       File.write(skipped_path, File.read(workflow_path))
       cli = described_class.new(["--root", workflow_dir])
 
-      expect(cli.send(:discover_workflow_files, workflow_dir, Set[/skip/])).to eq([workflow_path])
+      expect(cli.send(:discover_workflow_files, workflow_dir, Set[/skip/])).to eq([canonical_workflow_path])
     end
   end
 
@@ -900,7 +904,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
 
       expect(payload.fetch("outdated_pins")).to contain_exactly(
         a_hash_including(
-          "path" => workflow_path,
+          "path" => canonical_workflow_path,
           "line" => 7,
           "action" => "foo/bar",
           "old_ref" => "v1.2.0",
@@ -978,7 +982,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect do
         cli.run!
       end.to output(
-        %r{Outdated actions \(1\):\nAction Current Latest Location Reason\nfoo/bar 1\.2\.0 1\.3\.0 #{Regexp.escape(workflow_path)}:\d+ #{Regexp.escape(described_class::UPGRADE_REASON)}}
+        %r{Outdated actions \(1\):\nAction Current Latest Location Reason\nfoo/bar 1\.2\.0 1\.3\.0 #{Regexp.escape(canonical_workflow_path)}:\d+ #{Regexp.escape(described_class::UPGRADE_REASON)}}
       ).to_stdout
     end
 
@@ -1270,7 +1274,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
 
       expect do
         expect(cli.run!).to eq(2)
-      end.to output(/Errors:\n- #{Regexp.escape(workflow_path)}:7 token_parse_failed/m).to_stdout
+      end.to output(/Errors:\n- #{Regexp.escape(canonical_workflow_path)}:7 token_parse_failed/m).to_stdout
     end
 
     it "records read and YAML parse failures" do

@@ -573,11 +573,12 @@ module Kettle
             File.join(expanded_root.to_s, "*.yaml")
           ]
           files = Dir.glob(patterns, File::FNM_PATHNAME).uniq.sort
-          files.select do |path|
+          files = files.select do |path|
             next false unless File.file?(path)
             next false if reject_patterns.any? { |pattern| pattern.match?(path) }
             true
           end
+          files.map { |path| File.realpath(path) }.sort
         end
 
         def workflow_analysis_root(root)
