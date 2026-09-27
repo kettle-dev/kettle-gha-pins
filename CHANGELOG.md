@@ -22,26 +22,18 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
-- [kc] kettle-jem/prepare: updated 7 project files:
-  - dependencies (7)
-
-- [kc] kettle-jem/template: updated 1 project file:
-  - other (1)
-
 ### Deprecated
 
 ### Removed
 
 ### Fixed
 
-- Workflow discovery canonicalizes Windows paths so 8.3 aliases match the same files consistently.
-
 ### Security
 
 ## [0.3.16] - 2026-09-26
 
 - TAG: [v0.3.16][0.3.16t]
-- COVERAGE: 97.09% -- 1067/1099 lines in 8 files
+- COVERAGE: 97.09% -- 1068/1100 lines in 8 files
 - BRANCH COVERAGE: 85.66% -- 430/502 branches in 8 files
 - 26.13% documented
 
@@ -56,14 +48,17 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
-- [kc] kettle-jem/prepare: updated 12 project files:
-  - dependencies (12)
-
-- [kc] kettle-jem/template: updated 33 project files:
+- [kc] kettle-jem/prepare: updated 19 project files:
+  - dependencies (19)
+- [kc] kettle-jem/template: updated 34 project files:
   - code and tests (1)
   - dependencies (1)
-  - other (1)
+  - other (2)
   - workflows (30)
+
+### Fixed
+
+- Workflow discovery canonicalizes Windows paths so 8.3 aliases match the same files consistently.
 
 ## [0.3.15] - 2026-09-14
 
