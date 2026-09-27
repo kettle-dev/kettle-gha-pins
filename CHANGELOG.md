@@ -30,7 +30,7 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Security
 
-## [0.3.16] - 2026-09-26
+## [0.3.16] - 2026-09-27
 
 - TAG: [v0.3.16][0.3.16t]
 - COVERAGE: 97.09% -- 1068/1100 lines in 8 files
