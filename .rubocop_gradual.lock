@@ -307,18 +307,16 @@
     [188, 19, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
     [190, 19, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201]
   ],
-  "spec/kettle/gha/pins/cli_spec.rb:175874242": [
-    [339, 46, 1, "Lint/LtsRuby/UnavailableMethod: Enumerator#+ is unavailable before Ruby 2.6.", 177550],
-    [557, 40, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [560, 13, 27, "Lint/LtsRuby/UnavailableMethod: Matrix/Vector#[]= is unavailable before Ruby 2.6.", 3295678931],
-    [560, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [722, 21, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [905, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [918, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [919, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [1037, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [1038, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
-    [1409, 41, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201]
+  "spec/kettle/gha/pins/cli_spec.rb:995779812": [
+    [345, 46, 1, "Lint/LtsRuby/UnavailableMethod: Enumerator#+ is unavailable before Ruby 2.6.", 177550],
+    [563, 40, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
+    [566, 13, 27, "Lint/LtsRuby/UnavailableMethod: Matrix/Vector#[]= is unavailable before Ruby 2.6.", 3295678931],
+    [566, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
+    [728, 21, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
+    [911, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
+    [1043, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
+    [1044, 22, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
+    [1415, 41, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201]
   ],
   "spec/kettle/gha/pins_spec.rb:3817579977": [
     [655, 20, 5, "Lint/LtsRuby/UnavailableMethod: Thread#fetch is unavailable before Ruby 2.5.", 171106201],
