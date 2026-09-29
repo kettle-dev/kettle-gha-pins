@@ -2,6 +2,7 @@
 
 require "json"
 require "stringio"
+require "kettle/dev/paths"
 
 # rubocop:disable RSpec/VerifiedDoubles, RSpec/MessageSpies, ThreadSafety/ClassInstanceVariable
 
@@ -10,7 +11,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
   let(:workflow_path) { File.join(workflow_root, ".github", "workflows", "ci.yml") }
 
   def expect_same_workflow_path(path)
-    expect(File.identical?(path, workflow_path)).to be(true)
+    expect(Kettle::Dev::Paths.same?(path, workflow_path)).to be(true)
   end
 
   before do
