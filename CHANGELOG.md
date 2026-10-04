@@ -22,6 +22,15 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+- [kc] kettle-jem/prepare: updated 12 project files:
+  - dependencies (12)
+
+- [kc] kettle-jem/template: updated 5 project files:
+  - dependencies (1)
+  - documentation (1)
+  - other (2)
+  - workflows (1)
+
 ### Deprecated
 
 ### Removed
