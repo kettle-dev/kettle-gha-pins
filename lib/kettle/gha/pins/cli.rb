@@ -62,6 +62,8 @@ module Kettle
             events: false,
             validate: true,
             write: false,
+            commit: false,
+            push: false,
             check: false,
             api_base: API_BASE,
             user_agent: "kettle-gha-pins",
@@ -302,6 +304,7 @@ module Kettle
             end
           end
           action_progress.stop
+          commit_written_pins! if @options[:commit] && state[:changed_files].any?
           progress_message("Action resolution checks: #{action_progress.cached_count} cached, #{action_progress.live_count} live.") if action_count.positive?
           emit_event(
             "summary",
@@ -405,6 +408,17 @@ module Kettle
             opt.on("-w", "--write", "Write edits (dry-run is default)") do
               @options[:write] = true
               @options[:dry_run] = false
+            end
+            opt.on("--commit", "Commit written workflow files (implies --write; no-op without changes)") do
+              @options[:write] = true
+              @options[:dry_run] = false
+              @options[:commit] = true
+            end
+            opt.on("--push", "Push the commit created by --commit (requires --commit)") do
+              @options[:commit] = true
+              @options[:write] = true
+              @options[:dry_run] = false
+              @options[:push] = true
             end
             opt.on("--check", "Fail when workflow action pins are stale or mutable") do
               @options[:check] = true
@@ -859,6 +873,44 @@ module Kettle
           }
         end
 
+        # Commit (and optionally push) the workflow files written by this run.
+        # Scoped to .github/workflows so unrelated dirty files are never
+        # swept into the pin commit. No-op when nothing changed.
+        def commit_written_pins!
+          commit_message = "🔒️ Pin GitHub Actions SHAs"
+          # @options[:root] may be anywhere (often ".github/workflows" under
+          # the process cwd); anchor every git invocation at the containing
+          # repository worktree rather than guessing from the scan path.
+          git_dir, stderr, status = Open3.capture3("git", "-C", @options[:root], "rev-parse", "--show-toplevel")
+          unless status.success?
+            progress_message("Could not locate git repository for pin commit: #{stderr.strip}")
+            return
+          end
+          project_root = git_dir.strip
+          stdout, stderr, status = Open3.capture3(
+            "git", "-C", project_root, "add", "--", ".github/workflows"
+          )
+          unless status.success?
+            progress_message("Could not stage updated workflow files: #{(stdout + stderr).strip}")
+            return
+          end
+
+          stdout, stderr, status = Open3.capture3("git", "-C", project_root, "commit", "-m", commit_message)
+          unless status.success?
+            # Nothing to commit (race with another writer) is benign; anything
+            # else is reported but does not flip the exit code — the pin files
+            # themselves were written successfully.
+            progress_message("Could not commit updated workflow files: #{(stdout + stderr).strip}") unless stderr.match?(/nothing to commit|no changes added/i)
+            return
+          end
+          progress_message("Committed updated workflow files: #{commit_message}")
+
+          return unless @options[:push]
+
+          stdout, stderr, status = Open3.capture3("git", "-C", project_root, "push")
+          progress_message(status.success? ? "Pushed pin commit." : "Could not push pin commit: #{(stdout + stderr).strip}")
+        end
+
         def locate_scalar_token(line_text, col, old_token)
           return nil if col.nil? || col.negative? || col >= line_text.length
 
@@ -1012,7 +1064,7 @@ module Kettle
           end
           if @options[:check] && state[:planned_changes].any?
             lines << ""
-            lines << "Recommended fix: kettle-gha-pins --write --upgrade #{@options[:upgrade]} && git add -- .github/workflows && git commit -m '🔒️ Pin GitHub Actions SHAs' && git push"
+            lines << "Recommended fix: kettle-gha-pins --commit --push --upgrade #{@options[:upgrade]}"
             lines << "Only afterwards re-run the release resume command printed by kettle-family."
           end
 

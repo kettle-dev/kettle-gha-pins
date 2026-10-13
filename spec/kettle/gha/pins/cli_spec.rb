@@ -1018,7 +1018,7 @@ RSpec.describe Kettle::Gha::Pins::CLI do
 
       expect do
         expect(cli.run!).to eq(3)
-      end.to output(/Outdated actions \(1\):.*Recommended fix: kettle-gha-pins --write --upgrade minor/m).to_stdout
+      end.to output(/Outdated actions \(1\):.*Recommended fix: kettle-gha-pins --commit --push --upgrade minor/m).to_stdout
     end
 
     it "warns without failing check mode for fresh release upgrades inside cooldown" do
