@@ -1012,8 +1012,8 @@ module Kettle
           end
           if @options[:check] && state[:planned_changes].any?
             lines << ""
-            lines << "Recommended fix: kettle-gha-pins --write --upgrade #{@options[:upgrade]}"
-            lines << "Then commit and push the updated workflow files, and only afterwards re-run the release resume command printed by kettle-family."
+            lines << "Recommended fix: kettle-gha-pins --write --upgrade #{@options[:upgrade]} && git add -- .github/workflows && git commit -m '🔒️ Pin GitHub Actions SHAs' && git push"
+            lines << "Only afterwards re-run the release resume command printed by kettle-family."
           end
 
           output = lines.join("\n")
