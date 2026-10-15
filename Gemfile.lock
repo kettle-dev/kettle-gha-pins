@@ -209,7 +209,7 @@ GEM
       simplecov-rcov (~> 0.3, >= 0.3.7)
       simplecov_lcov_formatter (~> 0.9, >= 0.9.0)
       version_gem (~> 1.1, >= 1.1.15)
-    kettle-test (2.0.26)
+    kettle-test (2.0.27)
       appraisal2 (~> 3.0, >= 3.0.6)
       backports (~> 3.0)
       rspec (~> 3.0)
@@ -673,7 +673,7 @@ CHECKSUMS
   kettle-ndjson (0.1.20) sha256=75c366059d43a2d73a32a87e7e5fd28ccfacf658753469845601e03557290eab
   kettle-rb (0.1.17) sha256=70e23641ad50453c95b1d7215281754bb3bf55114dc535ce94d3a198879c7b7f
   kettle-soup-cover (3.0.12) sha256=bce9a259d67a0d12a9d61d1195d0ee4137aa0c1887935e0982d98ac7ab3f4949
-  kettle-test (2.0.26) sha256=f41539eb483a6d6c891ead48c785d27bb4c52c4b6a338bbe5829a6851399fe8f
+  kettle-test (2.0.27) sha256=2f922b0353f378e5c7d1dbcba06464753df1d3e7b4fc7e29ed0109857229e9c8
   kettle-wash (0.1.11) sha256=e1510eb1b7cc2e9d0b489c98cc43a58857e242d8bfdd7f8bbe9045d0fa602a29
   kramdown (2.5.2) sha256=1ba542204c66b6f9111ff00dcc26075b95b220b07f2905d8261740c82f7f02fa
   kramdown-parser-gfm (1.1.0) sha256=fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729
