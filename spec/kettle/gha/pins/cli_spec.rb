@@ -45,6 +45,14 @@ RSpec.describe Kettle::Gha::Pins::CLI do
   end
 
   describe "CLI options" do
+    it "rejects combining --events with --json" do
+      err = StringIO.new
+      cli = described_class.new(["--root", workflow_root, "--events", "--json"], err: err)
+
+      expect(cli.run!).to eq(2)
+      expect(err.string).to include("--events cannot be combined with --json")
+    end
+
     it "defaults --upgrade to major" do
       cli = described_class.new(["--root", workflow_root])
       cli.send(:parse!)
@@ -1400,8 +1408,13 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(err.string).to eq("")
     end
 
-    it "emits compact NDJSON events and writes the detailed report to stderr" do
+    it "emits compact NDJSON events through kettle-ndjson and writes the detailed report to stderr" do
       err = StringIO.new
+      event_io = nil
+      allow(Kettle::Ndjson).to receive(:event_stream).and_wrap_original do |original, io, **options|
+        event_io = io
+        original.call(io, **options)
+      end
       cli = described_class.new(["--root", workflow_root, "--upgrade", "minor", "--events"], err: err)
       event_output = nil
 
@@ -1413,11 +1426,18 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       end).to_stdout
 
       events = event_output.lines.map { |line| JSON.parse(line) }
+      expect(event_io).not_to be_nil
+      expect(Kettle::Ndjson).to have_received(:event_stream).with(
+        event_io,
+        types: "gha_sha_pins_start,gha_sha_pins_workflows,gha_sha_pins_action,gha_sha_pins_summary",
+        event_types: described_class::EVENT_TYPES
+      )
       expect(events.map { |event| event.fetch("type") }).to include(
         "gha_sha_pins_start",
         "gha_sha_pins_action",
         "gha_sha_pins_summary"
       )
+      expect(events).to all(include("event_version" => 1))
       expect(err.string).to include("kettle-gha-pins report")
       expect(err.string).to include("Outdated actions")
     end

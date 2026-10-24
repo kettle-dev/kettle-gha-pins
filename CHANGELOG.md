@@ -22,6 +22,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+- [kc] ndjson-producer-stream: Emit kettle-gha-pins events through kettle-ndjson with the family-consumed type names and fields. Reject --events with --json to keep stdout a single unambiguous output format.
+
 ### Deprecated
 
 ### Removed

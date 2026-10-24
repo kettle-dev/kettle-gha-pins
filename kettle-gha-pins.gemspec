@@ -109,6 +109,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Utilities
+  spec.add_dependency("kettle-ndjson", "~> 0.1", ">= 0.1.20")              # Ruby >= 2.4.0, shared NDJSON event stream
   spec.add_dependency("ruby-progressbar", "~> 1.13")                    # ruby >= 0
   spec.add_dependency("tty-progressbar", "~> 0.18")                     # ruby >= 2.0.0
   spec.add_dependency("version_gem", "~> 1.1", ">= 1.1.16")              # ruby >= 2.2.0

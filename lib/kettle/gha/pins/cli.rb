@@ -9,6 +9,7 @@ require "time"
 
 require "psych"
 require "ruby-progressbar"
+require "kettle/ndjson"
 require "kettle/gha/pins"
 require_relative "cache_progress"
 
@@ -36,6 +37,7 @@ module Kettle
         GitHubClient = Kettle::Gha::Pins::GitHubClient
         VERSION_COMMENT_SUFFIX_RE = /\A\s+#\s*v?(?<version>\d+(?:\.\d+){0,2}(?:[-.]?[0-9A-Za-z.-]+)?)/
         VERSION_COMMENT_REPLACEMENT_RE = /\A(?<prefix>\s+#\s*)v?\d+(?:\.\d+){0,2}(?:[-.]?[0-9A-Za-z.-]+)?/
+        EVENT_TYPES = %w[gha_sha_pins_start gha_sha_pins_workflows gha_sha_pins_action gha_sha_pins_summary].freeze
 
         def self.release_version_sort_key(entry)
           Kettle::Gha::Pins::VersionRubric.sort_key(entry)
@@ -77,12 +79,20 @@ module Kettle
             mode: :project,
             input: nil,
             reject_patterns: Set.new,
-            progress: nil
+            progress: nil,
+            event_stream: nil
           }
         end
 
         def run!
           parse!
+          if @options[:events]
+            @options[:event_stream] = Kettle::Ndjson.event_stream(
+              $stdout,
+              types: EVENT_TYPES.join(","),
+              event_types: EVENT_TYPES
+            )
+          end
 
           return list_workflows! if @options[:mode] == :list
 
@@ -468,7 +478,7 @@ module Kettle
             opt.on("--json", "Emit JSON report") do
               @options[:json] = true
             end
-            opt.on("--events", "Emit line-delimited JSON events") do
+            opt.on("--events", "Emit kettle-ndjson event stream to stdout; write the human report to stderr") do
               @options[:events] = true
             end
             opt.on("--[no-]progress", "Show progress feedback on STDERR (default: on unless --json)") do |bool|
@@ -490,6 +500,9 @@ module Kettle
             end
           end
           parser.parse!(@argv)
+          if @options[:events] && @options[:json]
+            raise Error, "--events cannot be combined with --json"
+          end
           if @options[:mode] == :review && @options[:offline]
             raise OptionParser::InvalidOption, "--review cannot be combined with --offline"
           end
@@ -554,7 +567,11 @@ module Kettle
         def emit_event(action, payload = {})
           return unless @options[:events]
 
-          puts JSON.generate({"event_version" => 1, "type" => "gha_sha_pins_#{action}", "action" => action}.merge(payload))
+          Kettle::Ndjson.emit_event(
+            @options.fetch(:event_stream),
+            "gha_sha_pins_#{action}",
+            payload.merge(action: action)
+          )
         end
 
         def progress_message(message)
