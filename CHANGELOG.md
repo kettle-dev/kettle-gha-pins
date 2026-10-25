@@ -22,6 +22,23 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.3.19] - 2026-10-24
+
+- TAG: [v0.3.19][0.3.19t]
+- COVERAGE: 95.16% -- 1081/1136 lines in 8 files
+- BRANCH COVERAGE: 83.65% -- 435/520 branches in 8 files
+- 25.89% documented
+
+### Changed
+
 - [kc] ndjson-producer-stream: Emit kettle-gha-pins events through kettle-ndjson with the family-consumed type names and fields. Reject --events with --json to keep stdout a single unambiguous output format.
 
 - [kc] kettle-jem/prepare: updated 17 project files:
@@ -33,14 +50,6 @@ Please file a bug if you notice a violation of semantic versioning.
   - documentation (1)
   - other (1)
   - workflows (7)
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [0.3.18] - 2026-10-15
 
@@ -446,7 +455,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.18...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.19...HEAD
+[0.3.19]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.18...v0.3.19
+[0.3.19t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.19
 [0.3.18]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.17...v0.3.18
 [0.3.18t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.18
 [0.3.17]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.16...v0.3.17
