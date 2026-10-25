@@ -25,6 +25,15 @@ PATH
       version_gem (~> 1.1, >= 1.1.16)
 
 PATH
+  remote: /var/home/pboling/src/my/kettle-dev/kettle-deps-floor
+  specs:
+    kettle-deps-floor (0.1.0)
+      kettle-dev (~> 3.1, >= 3.1.24)
+      kettle-ndjson (~> 0.1, >= 0.1.20)
+      prism (>= 1.3)
+      version_gem (~> 1.1, >= 1.1.16)
+
+PATH
   remote: /var/home/pboling/src/my/kettle-dev/kettle-dev
   specs:
     kettle-dev (3.1.25)
@@ -41,6 +50,28 @@ PATH
   remote: /var/home/pboling/src/my/kettle-dev/kettle-drift
   specs:
     kettle-drift (1.0.17)
+      version_gem (~> 1.1, >= 1.1.16)
+
+PATH
+  remote: /var/home/pboling/src/my/kettle-dev/kettle-family
+  specs:
+    kettle-family (1.3.34)
+      ast-crispr (~> 7.1, >= 7.1.11)
+      ast-crispr-toml (~> 7.1, >= 7.1.11)
+      command_kit (~> 0.6)
+      command_kit-completion (~> 0.1)
+      kettle-changelog (~> 1.0, >= 1.0.13)
+      kettle-deps-floor (~> 0.1, >= 0.1.0)
+      kettle-dev (~> 3.1, >= 3.1.24)
+      kettle-gha-pins (~> 0.3, >= 0.3.18)
+      kettle-jem (~> 7.1, >= 7.1.28)
+      kettle-ndjson (~> 0.1, >= 0.1.20)
+      kettle-test (~> 2.0, >= 2.0.27)
+      psych-merge (~> 7.1, >= 7.1.4)
+      toml-merge (~> 7.1, >= 7.1.11)
+      tsort (~> 0.2)
+      tty-screen (~> 0.8)
+      unicode-display_width (~> 2.6)
       version_gem (~> 1.1, >= 1.1.16)
 
 PATH
@@ -67,6 +98,22 @@ PATH
       version_gem (~> 1.1, >= 1.1.16)
 
 PATH
+  remote: /var/home/pboling/src/my/kettle-dev/kettle-test
+  specs:
+    kettle-test (2.0.28)
+      appraisal2 (~> 3.0, >= 3.0.6)
+      backports (~> 3.0)
+      rspec (~> 3.0)
+      rspec-block_is_expected (~> 1.0, >= 1.0.6)
+      rspec-pending_for (~> 0.1, >= 0.1.20)
+      rspec-stubbed_env (~> 1.0, >= 1.0.17)
+      rspec_junit_formatter (~> 0.6)
+      silent_stream (~> 1.0, >= 1.0.12)
+      timecop-rspec (~> 1.0, >= 1.0.3)
+      turbo_tests2 (>= 3.1.12)
+      version_gem (~> 1.1, >= 1.1.16)
+
+PATH
   remote: /var/home/pboling/src/my/structuredmerge/ruby/gems/ast-crispr-markdown-markly
   specs:
     ast-crispr-markdown-markly (7.1.16)
@@ -82,6 +129,14 @@ PATH
       ast-crispr (= 7.1.16)
       prism-merge (= 7.1.16)
       tree_haver (= 7.1.16)
+      version_gem (~> 1.1, >= 1.1.16)
+
+PATH
+  remote: /var/home/pboling/src/my/structuredmerge/ruby/gems/ast-crispr-toml
+  specs:
+    ast-crispr-toml (7.1.16)
+      ast-crispr (= 7.1.16)
+      toml-merge (= 7.1.16)
       version_gem (~> 1.1, >= 1.1.16)
 
 PATH
@@ -367,10 +422,6 @@ GEM
       rubocop (>= 1.0)
       version_gem (~> 1.1, >= 1.1.15)
     ast (2.4.3)
-    ast-crispr-toml (7.1.16)
-      ast-crispr (= 7.1.16)
-      toml-merge (= 7.1.16)
-      version_gem (~> 1.1, >= 1.1.15)
     backports (3.25.3)
     benchmark (0.5.0)
     bigdecimal (4.1.3)
@@ -447,39 +498,6 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (3.1.0)
-    kettle-deps-floor (0.1.0)
-      kettle-dev (~> 3.1, >= 3.1.24)
-      kettle-ndjson (~> 0.1, >= 0.1.20)
-      prism (>= 1.3)
-      version_gem (~> 1.1, >= 1.1.16)
-    kettle-family (1.3.33)
-      ast-crispr (~> 7.1, >= 7.1.11)
-      ast-crispr-toml (~> 7.1, >= 7.1.11)
-      command_kit (~> 0.6)
-      command_kit-completion (~> 0.1)
-      kettle-changelog (~> 1.0, >= 1.0.13)
-      kettle-dev (~> 3.1, >= 3.1.24)
-      kettle-gha-pins (~> 0.3, >= 0.3.18)
-      kettle-jem (~> 7.1, >= 7.1.28)
-      kettle-test (~> 2.0, >= 2.0.27)
-      psych-merge (~> 7.1, >= 7.1.4)
-      toml-merge (~> 7.1, >= 7.1.11)
-      tsort (~> 0.2)
-      tty-screen (~> 0.8)
-      unicode-display_width (~> 2.6)
-      version_gem (~> 1.1, >= 1.1.16)
-    kettle-test (2.0.27)
-      appraisal2 (~> 3.0, >= 3.0.6)
-      backports (~> 3.0)
-      rspec (~> 3.0)
-      rspec-block_is_expected (~> 1.0, >= 1.0.6)
-      rspec-pending_for (~> 0.1, >= 0.1.20)
-      rspec-stubbed_env (~> 1.0, >= 1.0.17)
-      rspec_junit_formatter (~> 0.6)
-      silent_stream (~> 1.0, >= 1.0.12)
-      timecop-rspec (~> 1.0, >= 1.0.3)
-      turbo_tests2 (>= 3.1.12)
-      version_gem (~> 1.1, >= 1.1.15)
     kettle-wash (0.1.11)
       version_gem (~> 1.1, >= 1.1.15)
     kramdown (2.5.2)
@@ -782,13 +800,14 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  addressable (>= 2.8, < 3)
-  anonymous_loader (~> 0.1, >= 0.1.3)
-  appraisal2 (~> 3.2, >= 3.2.5)
-  appraisal2-rubocop (~> 1.0, >= 1.0.4)
+  addressable (>= 2.9.0, < 3)
+  anonymous_loader (~> 0.1, >= 0.1.4)
+  appraisal2 (~> 3.2, >= 3.2.6)
+  appraisal2-rubocop (~> 1.0, >= 1.0.5)
   ast-crispr!
   ast-crispr-markdown-markly!
   ast-crispr-ruby-prism!
+  ast-crispr-toml!
   ast-merge!
   ast-merge-git!
   ast-template!
@@ -798,7 +817,7 @@ DEPENDENCIES
   bundler-audit (~> 0.9.3)
   cgi (~> 0.5)
   citrus-toml-merge!
-  debug (>= 1.1)
+  debug (>= 1.11.1)
   dotenv-merge!
   erb (~> 6.0, >= 6.0.7)
   gem_bench (~> 2.0, >= 2.0.5)
@@ -808,15 +827,16 @@ DEPENDENCIES
   irb (~> 1.17)
   json-merge!
   kettle-changelog!
-  kettle-dev (~> 3.1, >= 3.1.13)!
+  kettle-deps-floor!
+  kettle-dev (~> 3.1, >= 3.1.24)!
   kettle-drift!
-  kettle-family (~> 1.3, >= 1.3.10)
+  kettle-family (~> 1.3, >= 1.3.33)!
   kettle-gha-pins!
   kettle-jem!
-  kettle-ndjson!
+  kettle-ndjson (~> 0.1, >= 0.1.20)!
   kettle-rb!
   kettle-soup-cover!
-  kettle-test (~> 2.0, >= 2.0.25)
+  kettle-test (~> 2.0, >= 2.0.27)!
   kramdown (~> 2.5, >= 2.5.2)
   kramdown-parser-gfm (~> 1.1)
   markdown-merge!
@@ -829,14 +849,14 @@ DEPENDENCIES
   prism-merge!
   psych-merge!
   rake (~> 13.0)
-  rbs (>= 3.0)
+  rbs (>= 4.2.0)
   rbs-merge!
   reek (~> 6.6, >= 6.6.0)
   require_bench (~> 1.0, >= 1.0.4)
   rubocop-gradual (~> 0.4, >= 0.4.0)
   rubocop-lts (~> 12.3, >= 12.3.3)
-  rubocop-lts-rspec (~> 1.0, >= 1.0.7)
-  rubocop-minitest (~> 0.40, >= 0.40.0)
+  rubocop-lts-rspec (~> 1.0, >= 1.0.8)
+  rubocop-minitest (~> 0.41, >= 0.41.0)
   rubocop-on-rbs (~> 2.2, >= 2.2.0)
   rubocop-packaging!
   rubocop-ruby2_4 (~> 3.0, >= 3.0.7)
@@ -845,7 +865,7 @@ DEPENDENCIES
   smorg-rb!
   standard (~> 1.57, >= 1.57.0)
   stone_checksums (~> 1.0, >= 1.0.9)
-  stringio (>= 3.0)
+  stringio (>= 3.2.0)
   toml-merge!
   tree_haver!
   turbo_tests2 (~> 4.0, >= 4.0.0)
@@ -872,7 +892,7 @@ CHECKSUMS
   ast-crispr (7.1.16)
   ast-crispr-markdown-markly (7.1.16)
   ast-crispr-ruby-prism (7.1.16)
-  ast-crispr-toml (7.1.16) sha256=057cd645807619cb7dbe60d84725889dcdecc0437e941b1f0bdfbe880f53f5d4
+  ast-crispr-toml (7.1.16)
   ast-merge (7.1.16)
   ast-merge-git (7.1.16)
   ast-template (7.1.16)
@@ -922,13 +942,13 @@ CHECKSUMS
   kettle-deps-floor (0.1.0)
   kettle-dev (3.1.25)
   kettle-drift (1.0.17)
-  kettle-family (1.3.33) sha256=481f2db92a7e5f53299a641de097b12251b14228aefbf8ded2fb72269962086d
+  kettle-family (1.3.34)
   kettle-gha-pins (0.3.19)
   kettle-jem (7.1.41)
   kettle-ndjson (0.1.20)
   kettle-rb (0.1.18)
   kettle-soup-cover (3.0.13)
-  kettle-test (2.0.27) sha256=2f922b0353f378e5c7d1dbcba06464753df1d3e7b4fc7e29ed0109857229e9c8
+  kettle-test (2.0.28)
   kettle-wash (0.1.11) sha256=e1510eb1b7cc2e9d0b489c98cc43a58857e242d8bfdd7f8bbe9045d0fa602a29
   kramdown (2.5.2) sha256=1ba542204c66b6f9111ff00dcc26075b95b220b07f2905d8261740c82f7f02fa
   kramdown-parser-gfm (1.1.0) sha256=fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729

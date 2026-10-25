@@ -24,6 +24,16 @@ Please file a bug if you notice a violation of semantic versioning.
 
 - [kc] ndjson-producer-stream: Emit kettle-gha-pins events through kettle-ndjson with the family-consumed type names and fields. Reject --events with --json to keep stdout a single unambiguous output format.
 
+- [kc] kettle-jem/prepare: updated 17 project files:
+  - dependencies (17)
+
+- [kc] kettle-jem/template: updated 12 project files:
+  - code and tests (1)
+  - dependencies (2)
+  - documentation (1)
+  - other (1)
+  - workflows (7)
+
 ### Deprecated
 
 ### Removed
