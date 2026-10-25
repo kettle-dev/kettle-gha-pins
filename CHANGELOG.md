@@ -22,12 +22,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
-- [kc] kettle-jem/prepare: updated 4 project files:
-  - dependencies (4)
-
-- [kc] kettle-jem/template: updated 1 project file:
-  - other (1)
-
 ### Deprecated
 
 ### Removed
@@ -36,7 +30,7 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Security
 
-## [0.3.19] - 2026-10-24
+## [0.3.19] - 2026-10-25
 
 - TAG: [v0.3.19][0.3.19t]
 - COVERAGE: 95.16% -- 1081/1136 lines in 8 files
@@ -47,14 +41,13 @@ Please file a bug if you notice a violation of semantic versioning.
 
 - [kc] ndjson-producer-stream: Emit kettle-gha-pins events through kettle-ndjson with the family-consumed type names and fields. Reject --events with --json to keep stdout a single unambiguous output format.
 
-- [kc] kettle-jem/prepare: updated 17 project files:
-  - dependencies (17)
-
-- [kc] kettle-jem/template: updated 12 project files:
+- [kc] kettle-jem/prepare: updated 21 project files:
+  - dependencies (21)
+- [kc] kettle-jem/template: updated 13 project files:
   - code and tests (1)
   - dependencies (2)
   - documentation (1)
-  - other (1)
+  - other (2)
   - workflows (7)
 
 ## [0.3.18] - 2026-10-15
