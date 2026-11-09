@@ -20,8 +20,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
-- --offline-fallback flag and KETTLE_GHA_PINS_OFFLINE_FALLBACK env switch: with --offline, fetch live from the GitHub API on a cache miss and populate the cache instead of failing with 'offline cache miss' (family pins runs no longer die on newly introduced actions)
-
 ### Changed
 
 ### Deprecated
@@ -31,6 +29,17 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Fixed
 
 ### Security
+
+## [0.3.21] - 2026-11-08
+
+- TAG: [v0.3.21][0.3.21t]
+- COVERAGE: 95.18% -- 1085/1140 lines in 8 files
+- BRANCH COVERAGE: 84.10% -- 439/522 branches in 8 files
+- 25.89% documented
+
+### Added
+
+- --offline-fallback flag and KETTLE_GHA_PINS_OFFLINE_FALLBACK env switch: with --offline, fetch live from the GitHub API on a cache miss and populate the cache instead of failing with 'offline cache miss' (family pins runs no longer die on newly introduced actions)
 
 ## [0.3.20] - 2026-10-28
 
@@ -475,7 +484,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.20...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.21...HEAD
+[0.3.21]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.20...v0.3.21
+[0.3.21t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.21
 [0.3.20]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.19...v0.3.20
 [0.3.20t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.20
 [0.3.19]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.18...v0.3.19
