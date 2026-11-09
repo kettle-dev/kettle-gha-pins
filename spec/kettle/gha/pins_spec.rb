@@ -455,6 +455,40 @@ RSpec.describe Kettle::Gha::Pins do
         Kettle::Gha::Pins::GitHubClient::CacheMissError,
         "offline cache miss for missing/action"
       )
+
+      allow(cache).to receive(:ref_sha).with("missing/action", "v6", fresh: false).and_return(nil)
+      expect { client.commit_sha("missing/action", "v6") }.to raise_error(
+        Kettle::Gha::Pins::GitHubClient::CacheMissError,
+        "offline cache miss for missing/action@v6"
+      )
+    end
+
+    it "fetches live and populates the cache on an offline miss when the offline fallback is enabled" do
+      cache = instance_double(Kettle::Gha::Pins::PersistentActionCache)
+      allow(cache).to receive(:versions_for_repo).with("missing/action", fresh: false).and_return(nil)
+      allow(cache).to receive(:write_versions)
+      allow(cache).to receive(:ref_sha).with("missing/action", "v6", fresh: false).and_return(nil)
+      allow(cache).to receive(:write_ref_sha)
+      client = described_class.new(
+        token: nil,
+        api_base: "https://api.example.test",
+        user_agent: "spec",
+        persistent_cache: cache,
+        offline: true,
+        offline_fallback: true
+      )
+      allow(client).to receive(:request_json).and_return(
+        [{"tag_name" => "v6.0.0", "published_at" => "2026-07-22T12:00:00Z"}],
+        {"sha" => "c" * 40}
+      )
+      allow(client).to receive(:tag_ref_shas).with("missing/action").and_return({"v6.0.0" => "a" * 40})
+
+      versions = client.versions_for_repo("missing/action")
+      expect(versions).to contain_exactly(include(tag: "v6.0.0", version: "6.0.0", sha: "a" * 40))
+      expect(cache).to have_received(:write_versions).with("missing/action", versions)
+
+      expect(client.commit_sha("missing/action", "v6")).to eq("c" * 40)
+      expect(cache).to have_received(:write_ref_sha).with("missing/action", "v6", "c" * 40)
     end
 
     it "resolves and caches commit SHAs with stale fallback" do

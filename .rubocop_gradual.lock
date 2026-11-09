@@ -1,5 +1,5 @@
 {
-  "gemfiles/modular/style_local.gemfile:2370969209": [
+  "gemfiles/modular/style_local.gemfile:1925067320": [
     [71, 23, 20, "Style/SafeNavigation: Use safe navigation (`&.`) instead of checking if an object exists before calling the method.", 1851388465]
   ]
 }

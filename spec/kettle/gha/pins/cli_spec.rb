@@ -88,6 +88,49 @@ RSpec.describe Kettle::Gha::Pins::CLI do
       expect(review.instance_variable_get(:@options)).to include(mode: :review, input: "pins.json")
     end
 
+    it "defaults --offline-fallback to false without the env switch" do
+      hide_env("KETTLE_GHA_PINS_OFFLINE_FALLBACK")
+      cli = described_class.new(["--root", workflow_root])
+      cli.send(:parse!)
+      expect(cli.instance_variable_get(:@options)[:offline_fallback]).to be(false)
+    end
+
+    it "defaults --offline-fallback from KETTLE_GHA_PINS_OFFLINE_FALLBACK" do
+      stub_env("KETTLE_GHA_PINS_OFFLINE_FALLBACK" => "true")
+      cli = described_class.new(["--root", workflow_root])
+      cli.send(:parse!)
+      expect(cli.instance_variable_get(:@options)[:offline_fallback]).to be(true)
+    end
+
+    it "accepts --offline-fallback" do
+      hide_env("KETTLE_GHA_PINS_OFFLINE_FALLBACK")
+      cli = described_class.new(["--offline", "--offline-fallback", "--root", workflow_root])
+      cli.send(:parse!)
+      options = cli.instance_variable_get(:@options)
+
+      expect(options[:offline]).to be(true)
+      expect(options[:offline_fallback]).to be(true)
+    end
+
+    it "resolves a gh token for the offline fallback live fetch, but not for pure offline mode" do
+      hide_env("GITHUB_TOKEN", "GH_TOKEN", "KETTLE_GHA_PINS_OFFLINE_FALLBACK")
+      fallback_cli = described_class.new(["--offline", "--offline-fallback", "--root", workflow_root])
+      fallback_cli.send(:parse!)
+      allow(fallback_cli).to receive(:gh_auth_token).and_return("token-from-gh")
+      client, = fallback_cli.send(:build_client)
+
+      expect(fallback_cli.instance_variable_get(:@options)[:token]).to eq("token-from-gh")
+      expect(client.instance_variable_get(:@offline_fallback)).to be(true)
+
+      offline_cli = described_class.new(["--offline", "--root", workflow_root])
+      offline_cli.send(:parse!)
+      allow(offline_cli).to receive(:gh_auth_token).and_return("token-from-gh")
+      client, = offline_cli.send(:build_client)
+
+      expect(offline_cli.instance_variable_get(:@options)[:token]).to be_nil
+      expect(client.instance_variable_get(:@offline_fallback)).to be(false)
+    end
+
     it "aborts on negative --cooldown-days values", :real_exit_adapter do
       cli = described_class.new(["--root", workflow_root, "--cooldown-days", "-1"])
 

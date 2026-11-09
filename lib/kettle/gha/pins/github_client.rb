@@ -17,13 +17,14 @@ module Kettle
         class CacheMissError < Error; end
         class RefreshError < Error; end
 
-        def initialize(token:, api_base:, user_agent:, persistent_cache: nil, refresh_cache: false, offline: false, fail_on_refresh_error: false, open_timeout: DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS, read_timeout: DEFAULT_HTTP_READ_TIMEOUT_SECONDS, refresh_timeout: DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS)
+        def initialize(token:, api_base:, user_agent:, persistent_cache: nil, refresh_cache: false, offline: false, offline_fallback: false, fail_on_refresh_error: false, open_timeout: DEFAULT_HTTP_OPEN_TIMEOUT_SECONDS, read_timeout: DEFAULT_HTTP_READ_TIMEOUT_SECONDS, refresh_timeout: DEFAULT_HTTP_REFRESH_TIMEOUT_SECONDS)
           @token = token
           @api_base = api_base
           @user_agent = user_agent
           @persistent_cache = persistent_cache
           @refresh_cache = refresh_cache
           @offline = offline
+          @offline_fallback = offline_fallback
           @fail_on_refresh_error = fail_on_refresh_error
           @open_timeout = open_timeout
           @read_timeout = read_timeout
@@ -46,15 +47,17 @@ module Kettle
 
           if @offline
             cached = @persistent_cache&.versions_for_repo(repo_ref, fresh: false)
-            raise CacheMissError, "offline cache miss for #{repo_ref}" if cached.nil?
-
-            @last_versions_cache_hit = true
-            @release_cache[repo_ref] = cached
-            return cached
+            if cached.nil?
+              raise CacheMissError, "offline cache miss for #{repo_ref}" unless @offline_fallback
+            else
+              @last_versions_cache_hit = true
+              @release_cache[repo_ref] = cached
+              return cached
+            end
           end
 
           stale = nil
-          unless @refresh_cache
+          unless @refresh_cache || @offline
             cached = @persistent_cache&.versions_for_repo(repo_ref, fresh: true)
             if cached
               @last_versions_cache_hit = true
@@ -98,7 +101,7 @@ module Kettle
             end
           end
 
-          raise CacheMissError, "offline cache miss for #{repo_ref}@#{ref}" if @offline
+          raise CacheMissError, "offline cache miss for #{repo_ref}@#{ref}" if @offline && !@offline_fallback
 
           data = request_json("/repos/#{repo_ref}/commits/#{uri_encode(ref)}")
           sha = if data.is_a?(Hash)

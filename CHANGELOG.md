@@ -20,6 +20,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- --offline-fallback flag and KETTLE_GHA_PINS_OFFLINE_FALLBACK env switch: with --offline, fetch live from the GitHub API on a cache miss and populate the cache instead of failing with 'offline cache miss' (family pins runs no longer die on newly introduced actions)
+
 ### Changed
 
 ### Deprecated

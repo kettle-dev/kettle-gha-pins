@@ -144,7 +144,9 @@ unless a project opts into a warning window.
 The action metadata cache uses a one-day TTL by default. Set `--ttl DAYS` to
 change it; `--ttl 0` forces a refresh. `--offline` trusts the cache without
 checking TTL or contacting GitHub and fails if required repository metadata is
-missing.
+missing. Add `--offline-fallback` (or set `KETTLE_GHA_PINS_OFFLINE_FALLBACK=true`)
+to fetch live from the GitHub API on a cache miss instead of failing; the
+fetched metadata populates the cache, so later offline runs succeed.
 
 For family orchestration, `kettle-gha-pins --list --json` emits the action
 repositories used by a project without network access. A separate

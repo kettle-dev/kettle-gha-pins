@@ -76,6 +76,7 @@ module Kettle
             clock: clock,
             refresh_cache: false,
             offline: false,
+            offline_fallback: %w[true yes 1 on enabled].include?(ENV["KETTLE_GHA_PINS_OFFLINE_FALLBACK"].to_s.strip.downcase),
             mode: :project,
             input: nil,
             reject_patterns: Set.new,
@@ -108,7 +109,7 @@ module Kettle
         private
 
         def build_client
-          @options[:token] ||= gh_auth_token if @options[:api_base] == API_BASE && !@options[:offline]
+          @options[:token] ||= gh_auth_token if @options[:api_base] == API_BASE && (!@options[:offline] || @options[:offline_fallback])
           persistent_cache = if @options[:cache_path].to_s.empty?
             nil
           else
@@ -125,6 +126,7 @@ module Kettle
             persistent_cache: persistent_cache,
             refresh_cache: @options[:refresh_cache],
             offline: @options[:offline],
+            offline_fallback: @options[:offline_fallback],
             fail_on_refresh_error: @options[:mode] == :review
           )
           [client, persistent_cache]
@@ -458,6 +460,9 @@ module Kettle
             end
             opt.on("--offline", "Use only the persistent cache; fail on a cache miss") do
               @options[:offline] = true
+            end
+            opt.on("--offline-fallback", "With --offline, fetch live from the GitHub API on a cache miss and populate the cache") do
+              @options[:offline_fallback] = true
             end
             opt.on("--list", "List project action pins as JSON without network access") do
               raise OptionParser::InvalidOption, "--list cannot be combined with --review" if @options[:mode] == :review
