@@ -22,6 +22,23 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.3.22] - 2026-11-27
+
+- TAG: [v0.3.22][0.3.22t]
+- COVERAGE: 95.18% -- 1085/1140 lines in 8 files
+- BRANCH COVERAGE: 84.10% -- 439/522 branches in 8 files
+- 25.89% documented
+
+### Changed
+
 - [kc] kettle-jem/prepare: updated 18 project files since the last release:
   - dependencies (18)
 
@@ -30,14 +47,6 @@ Please file a bug if you notice a violation of semantic versioning.
   - dependencies (14)
   - other (4)
   - workflows (8)
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [0.3.21] - 2026-11-08
 
@@ -493,7 +502,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - kettle-jem-template-20260720-005 - Generated README Support & Community rows
   now include a RubyForum help badge.
 
-[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.21...HEAD
+[Unreleased]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.22...HEAD
+[0.3.22]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.21...v0.3.22
+[0.3.22t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.22
 [0.3.21]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.20...v0.3.21
 [0.3.21t]: https://github.com/kettle-dev/kettle-gha-pins/releases/tag/v0.3.21
 [0.3.20]: https://github.com/kettle-dev/kettle-gha-pins/compare/v0.3.19...v0.3.20
