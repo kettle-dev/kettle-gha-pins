@@ -3,9 +3,9 @@
     {
       "file": "CHANGELOG.md",
       "lines": [
-        25,
-        72,
-        154
+        62,
+        101,
+        183
       ]
     }
   ],
@@ -13,9 +13,9 @@
     {
       "file": "CHANGELOG.md",
       "lines": [
-        26,
-        73,
-        155
+        63,
+        102,
+        184
       ]
     }
   ],
@@ -23,8 +23,8 @@
     {
       "file": "CHANGELOG.md",
       "lines": [
-        30,
-        58
+        67,
+        87
       ]
     }
   ],
@@ -32,9 +32,9 @@
     {
       "file": "CHANGELOG.md",
       "lines": [
-        31,
-        59,
-        95
+        68,
+        88,
+        124
       ]
     }
   ],
@@ -42,8 +42,8 @@
     {
       "file": "CHANGELOG.md",
       "lines": [
-        32,
-        96
+        69,
+        125
       ]
     }
   ],
@@ -71,6 +71,24 @@
       "lines": [
         44,
         50
+      ]
+    }
+  ],
+  "out != \"\" { print > out }\n' \"$bundle\"": [
+    {
+      "file": ".github/workflows/current.yml",
+      "lines": [
+        95,
+        124
+      ]
+    }
+  ],
+  "subject=\"$(openssl x509 -in \"$file\" -noout -subject 2>/dev/null || true)\"\nif [ -n \"$subject\" ] && matches \"$subject\"; then": [
+    {
+      "file": ".github/workflows/current.yml",
+      "lines": [
+        103,
+        127
       ]
     }
   ]
